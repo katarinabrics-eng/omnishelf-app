@@ -520,7 +520,7 @@
 
         var openaiKey = ctx.getOpenAiKey ? ctx.getOpenAiKey() : '';
         if (!openaiKey || (openaiKey.trim && !openaiKey.trim())) {
-            if (ctx.showError) ctx.showError('Chybí OpenAI API klíč. Nastavte ho v „Nastavení“ (OpenAI API klíč) – ukládá se jen do localStorage, nebo lokálně do config.local.js (necommitovat).', errorMessage);
+            if (ctx.showError) ctx.showError('Chybí OpenAI API klíč. Použijte process.env.OPENAI_API_KEY, nebo nastavte v „Nastavení“, případně lokálně v config.js (necommitovat).', errorMessage);
             return;
         }
         if (!file) {

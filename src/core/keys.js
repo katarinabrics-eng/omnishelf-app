@@ -17,6 +17,14 @@
     }
 
     function getOpenAiKey() {
+        var fromEnv = '';
+        try {
+            if (typeof process !== 'undefined' && process.env && process.env.OPENAI_API_KEY) {
+                fromEnv = safeTrim(String(process.env.OPENAI_API_KEY));
+            }
+        } catch (e) { fromEnv = ''; }
+        if (fromEnv) return fromEnv;
+
         var fromLs = '';
         try { fromLs = safeTrim(localStorage.getItem(OPENAI_LS_KEY) || ''); } catch (e0) { fromLs = ''; }
         if (fromLs) return fromLs;
