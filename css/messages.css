@@ -1,0 +1,104 @@
+/**
+ * messages.css – styly pro sekci Zprávy (Messenger / Slack styl)
+ */
+
+/* Zobrazení sekce při aktivním modulu Zprávy */
+body.module-messages #messagesSection { display: block !important; }
+body.module-messages #topBar,
+body.module-messages #readingViewWrap,
+body.module-messages #libraryModulesWrap,
+body.module-messages #scanHistorySection,
+body.module-messages #resultsSectionWrap,
+body.module-messages #friendsRecommendationsSection,
+body.module-messages #marketplaceSection {
+    display: none !important;
+}
+body.module-messages #sidebarMainLibrary #librarySubmenu { display: none !important; }
+body.module-messages .main-content { background: #f0f0f0 !important; }
+
+.messages-section {
+    padding: 1.5rem 1.5rem 3rem;
+    max-width: 100%;
+    background: #f0f0f0;
+    min-height: 60vh;
+}
+
+.messages-header {
+    margin-bottom: 1.5rem;
+}
+
+.messages-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1d1d1f;
+    margin: 0 0 0.25rem 0;
+}
+
+.messages-subtitle {
+    font-size: 0.9375rem;
+    color: #666;
+    margin: 0;
+}
+
+.messages-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    overflow: hidden;
+}
+
+.messages-contact {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.messages-contact:last-child { border-bottom: none; }
+
+.messages-contact:hover {
+    background: #f8f8f8;
+}
+
+.messages-contact-avatar {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: #e8e8e8;
+}
+
+.messages-contact-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.messages-contact-body {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.messages-contact-name {
+    font-weight: 600;
+    font-size: 1rem;
+    color: #1d1d1f;
+}
+
+.messages-contact-preview {
+    font-size: 0.875rem;
+    color: #666;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

@@ -1,0 +1,1714 @@
+<!DOCTYPE html>
+<!-- OmniShelf – hlavní aplikace: Knihovna, Tržiště (NOVINKA, 2+1, Co prodávám), Vitus, Workshop, Šatník. Všechny cesty relativní (./) pro Vercel. -->
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="application-name" content="OmniShelf">
+    <title>OmniShelf 2.0</title>
+    <link rel="manifest" href="./manifest.json">
+    <meta name="theme-color" content="#8DD311">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="apple-touch-icon" href="./assets/img/ikona_kartyknih.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./style.css?v=final_design">
+    <link rel="stylesheet" href="./css/pricing.css">
+    <link rel="stylesheet" href="./css/marketplace.css?v=1">
+    <link rel="stylesheet" href="./css/messages.css?v=1">
+</head>
+<body>
+    <div class="sidebar-overlay-backdrop" id="sidebarOverlayBackdrop" aria-hidden="true" role="button" tabindex="-1" title="Zavřít menu"></div>
+    <script>
+        (function () {
+            var p = new URLSearchParams(window.location.search);
+            if (p.get('mode') === 'kids') window.__omniModeKids = true;
+            var mod = p.get('module');
+            if (mod === 'vitus' || mod === 'library' || mod === 'marketplace') window.__omniOpenModule = mod;
+        })();
+    </script>
+    <div class="dashboard">
+        <div id="sidebar-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <button type="button" class="btn-sidebar-close-mobile" id="btnSidebarCloseMobile" aria-label="Zavřít menu" title="Zavřít"><span aria-hidden="true">×</span></button>
+                <button type="button" class="btn-back-to-dashboard" id="btnBackToDashboard" style="display:none;"><span class="btn-back-arrow" style="color:#8DD311;">←</span><span class="btn-back-text">zpět na OmniShelf</span></button>
+                <button type="button" class="sidebar-logo" id="sidebarLogo" aria-label="Zpět na Knihovnu">
+                    <div class="sidebar-logo-icon">
+                        <img src="./Ikony do aplikace _ 200px/Logo.png" alt="" class="sidebar-logo-img">
+                    </div>
+                    <div class="sidebar-logo-inner">
+                        <div class="sidebar-logo-text" id="sidebarLogoText">OmniShelf AI</div>
+                        <div class="sidebar-slogan" id="sidebarSlogan" data-i18n="slogan">Vše, co miluješ, na jedné chytré polici</div>
+                    </div>
+                </button>
+            </div>
+            <div class="sidebar-module-switcher" id="sidebarModuleSwitcher" aria-label="Přepnout modul">
+                <a href="./app.html" class="sidebar-module-btn sidebar-module-link active" data-omni-module="library" aria-pressed="true" title="Knihovna">
+                    <span class="sidebar-module-icon" aria-hidden="true"><img src="./Ikony do aplikace _ 200px/01_small200px_4.png" alt=""></span>
+                    <span class="sidebar-module-label">Knihovna</span>
+                </a>
+                <a href="./app.html?module=vitus" class="sidebar-module-btn sidebar-module-link" data-omni-module="vitus" aria-pressed="false" title="Vitus (Apatyka)">
+                    <span class="sidebar-module-icon" aria-hidden="true"><img src="./Ikony do aplikace _ 200px/01_small200px_8.png" alt=""></span>
+                    <span class="sidebar-module-label">Vitus</span>
+                </a>
+                <a href="./coming-soon.html?module=wardrobe" class="sidebar-module-btn sidebar-module-link" title="Šatník – již brzy">
+                    <span class="sidebar-module-icon" aria-hidden="true"><img src="./Ikony do aplikace _ 200px/01_small200px_13.png" alt=""></span>
+                    <span class="sidebar-module-label">Šatník</span>
+                    <span class="sidebar-module-soon">Soon</span>
+                </a>
+                <a href="./coming-soon.html?module=workshop" class="sidebar-module-btn sidebar-module-link" title="Workshop – již brzy">
+                    <span class="sidebar-module-icon" aria-hidden="true"><img src="./Ikony do aplikace _ 200px/01_small200px_14.png" alt=""></span>
+                    <span class="sidebar-module-label">Workshop</span>
+                    <span class="sidebar-module-soon">Soon</span>
+                </a>
+                <a href="./coming-soon.html?module=pantry" class="sidebar-module-btn sidebar-module-link" title="Pantry – již brzy">
+                    <span class="sidebar-module-icon" aria-hidden="true"><img src="./Ikony do aplikace _ 200px/01_small200px_5.png" alt=""></span>
+                    <span class="sidebar-module-label">Pantry</span>
+                    <span class="sidebar-module-soon">Soon</span>
+                </a>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="sidebar-menu sidebar-menu--library" id="sidebarMenuLibrary">
+                <div class="sidebar-library-group sidebar-group-expandable" id="sidebarMainLibrary">
+                    <button type="button" class="sidebar-nav-item sidebar-nav-toggle" id="sidebarMojeKnihovnaToggle" data-module="library" data-has-submenu="1" aria-expanded="true" aria-controls="librarySubmenu">Moje knihovna</button>
+                    <div class="sidebar-submenu" id="librarySubmenu" role="group" aria-label="Moje knihovna">
+                        <button type="button" class="sidebar-submenu-item" data-view="collection" data-i18n="myCollection">Tvoje sbírka</button>
+                        <button type="button" class="sidebar-submenu-item active" data-view="currentlyReading" data-i18n="currentlyReading">Rozečteno</button>
+                        <button type="button" class="sidebar-submenu-item" data-view="borrowed" data-i18n="borrowed">Půjčil/a jsem</button>
+                        <button type="button" class="sidebar-submenu-item" data-view="borrowedByMe" data-i18n="borrowedByMe">Mám vypůjčeno</button>
+                        <button type="button" class="sidebar-submenu-item" data-view="wishlist">Wishlist</button>
+                        <button type="button" class="sidebar-submenu-item" data-view="forSale">Na prodej</button>
+                        <button type="button" class="sidebar-submenu-item" data-view="favorites">Srdcovky</button>
+                        <button type="button" class="sidebar-submenu-item" data-view="friendsHighlights" data-i18n="friendsHighlights">Přátelé doporučují</button>
+                    </div>
+                </div>
+                <button type="button" class="sidebar-back-to-library" id="btnSidebarBackToLibrary"><span class="sidebar-back-arrow">←</span> zpět na hlavní nástěnku</button>
+                <hr class="sidebar-divider">
+                <div class="sidebar-library-group" id="sidebarChildrenLibrary">
+                    <button type="button" class="sidebar-nav-item" data-module="childrenLibrary" id="btnChildrenLibraryToggle"><span class="sidebar-nav-icon sidebar-nav-icon-img"><img src="./Ikony do aplikace _ 200px/01_small200px_11.png" alt=""></span> OmniShelf Kids</button>
+                </div>
+                <hr class="sidebar-divider" data-adult-only>
+                <div class="sidebar-library-group" id="sidebarPracovna" data-adult-only>
+                    <button type="button" class="sidebar-nav-item" data-module="pracovna" id="btnPracovnaToggle"><span class="sidebar-nav-icon sidebar-nav-icon-img"><img src="./Ikony do aplikace _ 200px/01_small200px_1.png" alt=""></span> Pracovna (Studium)</button>
+                </div>
+                <hr class="sidebar-divider" data-adult-only>
+                <button type="button" class="sidebar-nav-item" data-module="marketplace" id="btnMarketplace" title="Prodat duplicitu, koupit z Wishlistu"><span class="sidebar-nav-icon sidebar-nav-icon-img"><img src="./Ikony do aplikace _ 200px/01_small200px_12.png" alt=""></span> Tržiště</button>
+                <button type="button" class="sidebar-nav-item" data-module="messages" id="btnMessages" title="Zprávy"><span class="sidebar-nav-icon sidebar-nav-icon-img"><img src="./Ikony do aplikace _ 200px/01_small200px_7.png" alt=""></span> Zprávy</button>
+                <a href="./coming-soon.html?module=friends" class="sidebar-nav-item sidebar-coming-soon sidebar-nav-link" title="Přátelé – již brzy">Přátelé <span class="sidebar-badge-coming">Coming Soon</span></a>
+                <hr class="sidebar-divider" data-adult-only>
+                <button type="button" class="sidebar-nav-item sidebar-nav-admin-only" data-module="statistics" data-i18n="moduleStatistics" data-adult-only>Statistiky</button>
+                <div class="sidebar-rodina-wrap" id="sidebarRodinaWrap" data-adult-only>
+                    <hr class="sidebar-rodina-divider">
+                    <div class="sidebar-rodina-title">RODINA</div>
+                    <div id="sidebarRodinaList" class="sidebar-rodina-list"></div>
+                </div>
+                </div>
+
+                <div class="sidebar-menu sidebar-menu--vitus" id="sidebarMenuVitus" hidden>
+                    <div class="sidebar-vitus-title">Vitus (Apatyka)</div>
+                    <button type="button" class="vitus-nav-item active" data-vitus-view="meds">Léky</button>
+                    <button type="button" class="vitus-nav-item" data-vitus-view="dose">Dávkování</button>
+                    <button type="button" class="vitus-nav-item" data-vitus-view="herbalist">Bába Kořenářka</button>
+                </div>
+                <button type="button" class="sidebar-nav-item sidebar-nav-settings" id="btnOpenSettings" data-open-modal="settings">Nastavení<span class="settings-pending-dot" id="settingsPendingDot" aria-hidden="true"></span></button>
+                <div class="sidebar-export" data-adult-only>
+                    <div class="sidebar-export-title">Export</div>
+                    <div class="sidebar-export-btns">
+                        <button type="button" class="btn-export" id="btnExportPdf">Stáhnout PDF</button>
+                        <button type="button" class="btn-export" id="btnExportCsv">Stáhnout CSV</button>
+                    </div>
+                </div>
+            </nav>
+            <div class="sidebar-stats" id="sidebarStats">Celkem: 0 položek</div>
+        </aside>
+        </div>
+        <main class="main-content">
+            <!-- Globální varovný pruh: zobrazí se, pokud existuje kniha s datem vrácení <= dnes -->
+            <div class="overdue-banner" id="overdueBanner" style="display: none;" role="alert">
+                <span class="overdue-banner-text" id="overdueBannerText">Pozor, jedna knížka se nám někde zapomněla! Někdo ji má u sebe už moc dlouho…</span>
+                <button type="button" class="overdue-banner-btn" id="overdueBannerBtn">Poslat jemné popostrčení</button>
+            </div>
+            <!-- 1. MODULES/MainHeader.html – horní lišta: lupa a ikona vpravo (nadpis „Moje knihovna“ je v levé kartě) -->
+            <div class="top-bar main-top-bar has-trial" id="topBar">
+                <div id="trialWarningBanner" class="trial-banner trial-banner-admin-visible" role="alert">
+                    <span class="trial-banner-icon" aria-hidden="true"></span>
+                    <p class="trial-banner-text" id="trialBannerText">Zkušební verze – aktivujte členství pro plný přístup.</p>
+                    <button type="button" class="trial-banner-cta" id="trialBannerActivate">Aktivovat členství</button>
+                </div>
+                <button type="button" class="btn-mobile-menu-toggle" id="btnMobileMenuToggle" aria-label="Otevřít menu" aria-expanded="false"><span class="hamburger-icon" aria-hidden="true">☰</span></button>
+                <div class="header-actions header-actions-top">
+                    <div class="global-search-wrap">
+                        <button type="button" class="btn-global-search-toggle" id="btnGlobalSearchToggle" aria-label="Hledat">🔍</button>
+                        <div class="global-search-bar" id="globalSearchBar">
+                            <input type="text" id="globalSearchInput" data-i18n-placeholder="globalSearchPlaceholder" placeholder="Najdi cokoliv ve sbírkách…" autocomplete="off" />
+                            <button type="button" class="btn-global-search-close" id="btnGlobalSearchClose" aria-label="Zavřít">×</button>
+                        </div>
+                        <div class="global-search-results" id="globalSearchResults" aria-hidden="true"></div>
+                    </div>
+                    <div class="library-global-sort-wrap">
+                        <select id="libraryGlobalSortSelect" class="library-global-sort-select" aria-label="Seřadit knihy">
+                            <option value="">Seřadit…</option>
+                            <option value="author">Autor A–Z</option>
+                            <option value="author_desc">Autor Z–A</option>
+                            <option value="genre">Žánr</option>
+                            <option value="status">Stav</option>
+                            <option value="privacy">Sdílení</option>
+                        </select>
+                        <span class="library-filter-summary" id="libraryFilterSummaryTop" aria-live="polite"></span>
+                    </div>
+                    <div class="profile-switcher-wrap">
+                        <button type="button" class="btn-profile-switcher" id="btnProfileSwitcher" aria-label="Profil" title="Profil"><span class="profile-initials" id="profileInitials">Já</span></button>
+                        <div class="profile-dropdown" id="profileDropdown" style="display:none;">
+                            <button type="button" class="profile-dropdown-item profile-dropdown-settings" id="profileDropdownSettings">Nastavení účtu</button>
+                            <div class="profile-dropdown-list" id="profileDropdownList"></div>
+                            <button type="button" class="profile-add-member" id="btnAddFamilyMember" data-i18n="addFamilyMember">+ Přidat člena rodiny</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Vitus (Apatyka) – samostatný dashboard (placeholder) -->
+            <section class="vitus-section" id="vitusSection" style="display:none;" aria-label="Vitus – Apatyka">
+                <div class="vitus-hero">
+                    <div class="vitus-hero-badge">🌿 Vitus</div>
+                    <h2 class="vitus-hero-title">Apatyka</h2>
+                    <p class="vitus-hero-sub" id="vitusWelcomeText">Vítejte v Apatyce. Bába Kořenářka připravuje vaše bylinky a léky.</p>
+                </div>
+                <div class="vitus-panel">
+                    <div class="vitus-panel-header">
+                        <h3 class="vitus-panel-title" id="vitusViewTitle">Léky</h3>
+                        <span class="vitus-panel-hint">Jste v novém modulu – odlišná paleta je záměr.</span>
+                    </div>
+                    <div class="vitus-panel-body" id="vitusViewBody"></div>
+                </div>
+            </section>
+            <!-- Statistiky (pouze dospělý režim) -->
+            <section class="statistics-section" id="statisticsSection" data-adult-only style="display:none;">
+                <h2 class="statistics-title">Statistiky</h2>
+                <div class="statistics-casostroj" id="statisticsCasostroj">
+                    <label class="statistics-casostroj-label">⏱️ Časostroj – filtr podle data přidání</label>
+                    <div class="statistics-casostroj-row">
+                        <input type="date" id="statisticsDateFrom" class="statistics-date-input" />
+                        <span class="statistics-date-sep">–</span>
+                        <input type="date" id="statisticsDateTo" class="statistics-date-input" />
+                        <button type="button" class="btn-casostroj-reset" id="btnCasostrojReset">Zrušit filtr</button>
+                    </div>
+                </div>
+
+                <div class="statistics-filter-accordion" id="statisticsFilterAccordion">
+                    <button type="button" class="statistics-filter-toggle" id="statisticsFilterToggle" aria-expanded="false">
+                        <span>Filtrovat pole</span>
+                        <span class="statistics-filter-chevron">▼</span>
+                    </button>
+                    <div class="statistics-filter-body" id="statisticsFilterBody" hidden>
+                        <div class="statistics-filter-row">
+                            <label class="statistics-filter-label" for="statisticsFilterField">Filtrovat podle</label>
+                            <select id="statisticsFilterField" class="statistics-filter-select">
+                                <option value="">— bez filtru —</option>
+                                <option value="section">Sekce</option>
+                                <option value="shelf">Polička v knihovně</option>
+                                <option value="author">Autor</option>
+                                <option value="collection">Kolekce</option>
+                                <option value="privacy">Soukromí sbírky</option>
+                                <option value="favorites">Srdcovky</option>
+                            </select>
+                            <select id="statisticsFilterValue" class="statistics-filter-select" disabled>
+                                <option value="">— vyberte hodnotu —</option>
+                            </select>
+                            <div class="statistics-filter-actions">
+                                <button type="button" class="btn-stat-filter btn-stat-filter--apply" id="statisticsApplyFilter" disabled>Použít filtr</button>
+                                <button type="button" class="btn-stat-filter" id="statisticsClearFilter" style="display:none;">Zrušit filtr</button>
+                            </div>
+                        </div>
+                        <div class="statistics-filter-hint">Tip: nejdřív vyberte typ filtru a potom hodnotu. Podle toho se upraví karty i exportní tabulka.</div>
+                    </div>
+                </div>
+
+                <div class="statistics-cards" id="statisticsCards"></div>
+                <div class="statistics-loans" id="statisticsLoans"></div>
+                <div class="statistics-rooms" id="statisticsRooms"></div>
+
+                <div class="statistics-export-table-wrap" id="statisticsExportTableWrap">
+                    <h3 class="statistics-subtitle">Exportní tabulka (podle filtru)</h3>
+                    <div class="statistics-export-table" id="statisticsExportTable" aria-live="polite"></div>
+                    <div class="statistics-export-actions">
+                        <button type="button" class="btn-export btn-export--inline" id="btnExportPdfStats">Stáhnout PDF</button>
+                        <button type="button" class="btn-export btn-export--inline" id="btnExportCsvStats">Stáhnout CSV</button>
+                    </div>
+                </div>
+            </section>
+            <!-- Tržiště – HTML vloženo inline; na Vercel se vše načítá relativními cestami (./) -->
+            <div class="marketplace-section omni-marketplace" id="marketplaceSection" style="display:none;" aria-label="Tržiště"></div>
+            <template id="marketplaceTemplate">
+                <p class="marketplace-design-banner" aria-hidden="true">Tržiště</p>
+                <div class="marketplace-header">
+                    <h1 class="marketplace-title marketplace-title--welcome">Vítejte v Tržišti! nakupujte, prodávejte, sdílejte recenze, objevujte!</h1>
+                    <div class="marketplace-global-search-wrap">
+                        <label for="marketplaceGlobalSearch" class="sr-only">Hledat knihu v Tržišti</label>
+                        <input type="search" id="marketplaceGlobalSearch" class="marketplace-global-search" placeholder="Hledat knihu v Tržišti" autocomplete="off" />
+                        <span class="marketplace-global-search-icon" aria-hidden="true">&#128269;</span>
+                    </div>
+                </div>
+                <nav class="marketplace-categories-bar" role="tablist" aria-label="Kategorie v Tržišti">
+                    <button type="button" class="marketplace-category-btn active" data-category="books" role="tab" aria-selected="true">
+                        <span class="marketplace-category-icon"><img src="./Ikony do aplikace _ 200px/01_small200px_4.png" alt="" width="22" height="22"></span>
+                        <span>Knihy</span>
+                    </button>
+                    <button type="button" class="marketplace-category-btn" data-category="tools" role="tab" aria-selected="false"><span>Nářadí</span></button>
+                    <button type="button" class="marketplace-category-btn" data-category="clothing" role="tab" aria-selected="false"><span>Oblečení</span></button>
+                </nav>
+                <div class="marketplace-accordion collapsed" id="marketplaceNaProdejAccordion">
+                    <button type="button" class="marketplace-accordion-toggle" id="marketplaceNaProdejToggle" aria-expanded="false">
+                        <span class="marketplace-accordion-title">Na prodej</span>
+                        <span class="marketplace-accordion-chevron">&#9660;</span>
+                    </button>
+                    <div class="marketplace-accordion-body" id="marketplaceNaProdejBody" hidden>
+                        <label for="marketplaceSellSearchInput">Vyhledat knihu ze sbírky</label>
+                        <input type="text" id="marketplaceSellSearchInput" class="marketplace-sell-search-input" placeholder="Název nebo autor…" />
+                        <button type="button" class="marketplace-modal-open-btn" id="btnMarketplaceOpenModalFromSection">Označit knihu na prodej</button>
+                    </div>
+                </div>
+                <!-- Řádek 1: NOVINKY V TRŽIŠTI (zelené akcenty) -->
+                <section class="marketplace-carousel-row marketplace-carousel-row--novinky" aria-labelledby="marketplaceNovinkyHeading">
+                    <div class="marketplace-carousel-row-header">
+                        <span class="marketplace-carousel-row-header-bar" aria-hidden="true"></span>
+                        <h2 class="marketplace-carousel-title" id="marketplaceNovinkyHeading">Novinky v Tržišti</h2>
+                    </div>
+                    <div class="marketplace-carousel-scroll">
+                        <div class="omni-marketplace-cards marketplace-carousel-track" id="marketplaceNovinkyCarousel" role="list">
+                            <article class="marketplace-card marketplace-card--novinka" role="listitem" tabindex="0" data-marketplace-card data-marketplace-status="na-prodej">
+                                <div class="marketplace-card__cover-wrap">
+                                    <span class="marketplace-card__status-label marketplace-card__status-label--left marketplace-card__status-label--novinka">NOVINKA</span>
+                                    <span class="marketplace-card__cover-fallback">&#128218;</span>
+                                </div>
+                                <div class="marketplace-card__body">
+                                    <h3 class="marketplace-card__title">Jedna Noha Hop A Druhá Na Cestě</h3>
+                                    <p class="marketplace-card__author">Terry Pratchett</p>
+                                    <p class="marketplace-card__seller">Prodává: Knihkupectví XY</p>
+                                    <div class="user-bubble">Tuhle knihu jsem četla 3x, je boží.</div>
+                                    <button type="button" class="marketplace-card__msg-owner" data-action="message-owner">Napsat majiteli</button>
+                                </div>
+                            </article>
+                            <article class="marketplace-card marketplace-card--novinka" role="listitem" tabindex="0" data-marketplace-card data-marketplace-status="k-zapujceni">
+                                <div class="marketplace-card__cover-wrap">
+                                    <span class="marketplace-card__status-label marketplace-card__status-label--left marketplace-card__status-label--k-zapujceni">K zapůjčení</span>
+                                    <span class="marketplace-card__cover-fallback">&#128218;</span>
+                                </div>
+                                <div class="marketplace-card__body">
+                                    <h3 class="marketplace-card__title">Hobit</h3>
+                                    <p class="marketplace-card__author">J. R. R. Tolkien</p>
+                                    <p class="marketplace-card__seller">Prodává: Sousedka Jana</p>
+                                    <div class="user-bubble">Doporučuji, skvělý stav.</div>
+                                    <button type="button" class="marketplace-card__msg-owner" data-action="message-owner">Napsat majiteli</button>
+                                </div>
+                            </article>
+                        </div>
+                    </div>
+                </section>
+                <!-- Řádek 2: BESTSELLER (oranžovo-červené akcenty) -->
+                <section class="marketplace-carousel-row marketplace-carousel-row--bestseller" aria-labelledby="marketplaceBestsellerHeading">
+                    <div class="marketplace-carousel-row-header">
+                        <span class="marketplace-carousel-row-header-bar" aria-hidden="true"></span>
+                        <h2 class="marketplace-carousel-title" id="marketplaceBestsellerHeading">Bestseller</h2>
+                    </div>
+                    <div class="marketplace-carousel-scroll">
+                        <div class="omni-marketplace-cards marketplace-carousel-track" id="marketplaceBestsellerCarousel" role="list">
+                            <article class="marketplace-card marketplace-card--bestseller" role="listitem" tabindex="0" data-marketplace-card>
+                                <div class="marketplace-card__cover-wrap">
+                                    <span class="marketplace-card__status-label marketplace-card__status-label--left marketplace-card__status-label--bestseller">2+1</span>
+                                    <span class="marketplace-card__cover-fallback">&#128218;</span>
+                                </div>
+                                <div class="marketplace-card__body">
+                                    <h3 class="marketplace-card__title">Bestseller – brzy více</h3>
+                                    <p class="marketplace-card__author">—</p>
+                                    <p class="marketplace-card__seller">Prodává: —</p>
+                                    <div class="user-bubble">Tipy na bestsellery připravujeme.</div>
+                                    <button type="button" class="marketplace-card__msg-owner" data-action="message-owner">Napsat majiteli</button>
+                                </div>
+                            </article>
+                        </div>
+                    </div>
+                </section>
+                <!-- Řádek 3: CO PRODÁVÁM (moje police – barevný pruh v záhlaví) -->
+                <section class="marketplace-carousel-row marketplace-carousel-row--co-prodavam marketplace-window marketplace-my-shelf-section" id="marketplaceMyShelfSection" aria-labelledby="marketplaceMyShelfHeading">
+                    <div class="marketplace-carousel-row-header">
+                        <span class="marketplace-carousel-row-header-bar" aria-hidden="true"></span>
+                        <h2 class="marketplace-carousel-title" id="marketplaceMyShelfHeading">Co prodávám</h2>
+                    </div>
+                    <p class="marketplace-my-shelf-desc">Karty z rubriky „Na prodej“ v Moje knihovna. Označíte-li knihu jako Na prodej, objeví se zde.</p>
+                    <div class="marketplace-carousel-scroll">
+                        <div class="omni-marketplace-cards marketplace-carousel-track marketplace-my-shelf-grid" id="marketplaceMyShelfContainer" role="list"></div>
+                    </div>
+                </section>
+            </template>
+            <!-- Zprávy (Messenger / Slack styl) – seznam kontaktů a náhled konverzace -->
+            <section class="messages-section" id="messagesSection" style="display:none;" aria-label="Zprávy">
+                <div class="messages-header">
+                    <h1 class="messages-title">Zprávy</h1>
+                    <p class="messages-subtitle">Konverzace s majiteli knih a přáteli z OmniShelf</p>
+                </div>
+                <div class="messages-list" id="messagesList" role="list">
+                    <article class="messages-contact" data-contact-id="1" role="listitem" tabindex="0">
+                        <div class="messages-contact-avatar"><img src="./Ikony do aplikace _ 200px/01_small200px_1.png" alt="" aria-hidden="true"></div>
+                        <div class="messages-contact-body">
+                            <span class="messages-contact-name">Sousedka Jana</span>
+                            <span class="messages-contact-preview">Můžu ji vrátit příští týden.</span>
+                        </div>
+                    </article>
+                    <article class="messages-contact" data-contact-id="2" role="listitem" tabindex="0">
+                        <div class="messages-contact-avatar"><img src="./Ikony do aplikace _ 200px/01_small200px_2.png" alt="" aria-hidden="true"></div>
+                        <div class="messages-contact-body">
+                            <span class="messages-contact-name">Knihomol Petr</span>
+                            <span class="messages-contact-preview">Ta Pratchettovka je skvělá, díky!</span>
+                        </div>
+                    </article>
+                </div>
+            </section>
+            <!-- MODULES/Reading.html – sekce Rozečteno (vložený obsah, bez závislosti na fetch) -->
+            <div id="readingViewWrap" class="reading-view-container" style="display:none;" aria-hidden="true">
+                <section class="reading-view-wrap reading-panel" id="readingViewSection" aria-label="Rozečteno">
+                    <!-- 1. Horní řada: vlevo dotaz + nálada, vpravo Volný dotaz -->
+                    <div class="reading-top-row">
+                        <div class="reading-top-left">
+                            <h2 class="reading-today-title">Co mám rozečtené</h2>
+                            <p class="reading-today-desc">Ahoj, chceš doporučení, co si přečíst právě teď podle své nálady?</p>
+                            <div class="reading-bubbles" role="group" aria-label="Rychlý výběr nálady">
+                                <button type="button" class="reading-bubble" data-mood="cool" aria-label="Odpočinkové">😎</button>
+                                <button type="button" class="reading-bubble" data-mood="zen" aria-label="Klid">🧘‍♂️</button>
+                                <button type="button" class="reading-bubble" data-mood="mind" aria-label="Soustředění">🧠</button>
+                                <button type="button" class="reading-bubble" data-mood="book" aria-label="Čtení">📚</button>
+                                <button type="button" class="reading-bubble" data-mood="star" aria-label="Objev">🌟</button>
+                                <button type="button" class="reading-bubble" data-mood="drama" aria-label="Příběh">🎭</button>
+                            </div>
+                        </div>
+                        <div class="reading-top-right">
+                            <label for="readingAiQueryInput" class="reading-ai-label">Volný dotaz</label>
+                            <input type="text" id="readingAiQueryInput" class="reading-ai-input" placeholder="Např. „Nudím se, chci něco, co mě zabaví…“" autocomplete="off" />
+                            <span class="reading-ai-input-hint">Odeslat: Enter</span>
+                        </div>
+                    </div>
+                    <!-- 2. Střední řada: výběr podle žánru / nálady -->
+                    <p class="reading-middle-intro">Nebo si vyber podle žánru, nebo jen na co máš chuť</p>
+                    <div class="reading-mood-bar-wrap">
+                        <span class="reading-mood-label">Na co máš dnes chuť?</span>
+                        <div class="reading-mood-bar">
+                            <button type="button" class="reading-mood-btn" data-mood="adventure">🚀 Dobrodružství</button>
+                            <button type="button" class="reading-mood-btn" data-mood="melancholy">🌙 Melancholie</button>
+                            <button type="button" class="reading-mood-btn" data-mood="uplift">🔥 Povzbuzení</button>
+                            <button type="button" class="reading-mood-btn" data-mood="mystery">🍀 Záhada</button>
+                        </div>
+                    </div>
+                    <div class="reading-genre-wrap">
+                        <span class="reading-genre-label">Žánrová doporučení</span>
+                        <div class="reading-genre-bar">
+                            <button type="button" class="reading-genre-btn" data-genre="detektivka">🔍 Detektivky</button>
+                            <button type="button" class="reading-genre-btn" data-genre="scifi">🚀 Sci-fi</button>
+                            <button type="button" class="reading-genre-btn" data-genre="romantika">💕 Romantika</button>
+                            <button type="button" class="reading-genre-btn" data-genre="fantasy">⚔️ Fantasy</button>
+                            <button type="button" class="reading-genre-btn" data-genre="thriller">🎬 Thriller</button>
+                        </div>
+                    </div>
+                    <!-- 3. Okno pro odpověď AI -->
+                    <div class="reading-ai-response" id="readingAiResponse" aria-live="polite">
+                        <p class="reading-ai-response-text" id="readingAiResponseText">zde bude odpověď od AI</p>
+                    </div>
+                    <!-- 3b. Karta doporučené knihy (zobrazí se po AI doporučení) -->
+                    <div class="reading-recommended-card-wrap" id="readingRecommendedCardWrap" aria-live="polite"></div>
+                    <!-- 4. Spodní akce -->
+                    <div class="reading-bottom-bar">
+                        <button type="button" class="reading-find-book-btn" id="readingSearchBtn">Zkus mi doporučit něco jiného</button>
+                    </div>
+                </section>
+            </div>
+            <!-- Moduly knihovny: Texty | Upload souborů -->
+            <div class="library-modules-wrap" id="libraryModulesWrap">
+                <nav class="library-module-tabs" role="tablist" aria-label="Způsob přidání do knihovny">
+                    <button type="button" class="library-module-tab active" role="tab" id="libraryTabTexty" aria-selected="true" aria-controls="libraryModuleTexty" data-library-module="texty">Texty</button>
+                    <button type="button" class="library-module-tab" role="tab" id="libraryTabUpload" aria-selected="false" aria-controls="libraryModuleUpload" data-library-module="upload">Upload souborů</button>
+                </nav>
+                <div class="library-modules-status-bar" id="libraryModulesStatusBar" aria-live="polite">
+                    <span class="library-modules-status-text" id="libraryModulesStatusText">Panel nahrávání je zavřený</span>
+                    <button type="button" class="library-modules-open-btn" id="btnOpenLibraryModules">Otevřít nahrávání</button>
+                    <button type="button" class="library-modules-close-btn" id="btnCloseLibraryModules" aria-label="Zavřít panel nahrávání" title="Zavřít" hidden>×</button>
+                </div>
+                <div id="libraryModulesPanelsWrap" hidden>
+                <!-- Modul Texty: ruční přidávání knih -->
+                <section class="library-module library-module-texty" id="libraryModuleTexty" role="tabpanel" aria-labelledby="libraryTabTexty">
+            <form class="text-quick-add-form" id="textQuickAddForm">
+                <div class="text-quick-add-row">
+                    <label for="textQuickTitle" class="upload-card-label upload-card-label-inline">Název</label>
+                    <input type="text" id="textQuickTitle" class="shelf-input upload-inline-input" placeholder="Název knihy" />
+                </div>
+                <div class="text-quick-add-row">
+                    <label for="textQuickAuthor" class="upload-card-label upload-card-label-inline">Autor</label>
+                    <input type="text" id="textQuickAuthor" class="shelf-input upload-inline-input" placeholder="Autor" />
+                </div>
+                <div class="text-quick-add-row">
+                    <label for="textQuickGenre" class="upload-card-label upload-card-label-inline">Žánr</label>
+                    <input type="text" id="textQuickGenre" class="shelf-input upload-inline-input" placeholder="např. Fantasy" />
+                </div>
+                <div class="text-quick-add-row text-quick-add-row--cover">
+                    <label for="textQuickCover" class="upload-card-label upload-card-label-inline">Obálka</label>
+                    <input type="file" id="textQuickCover" accept="image/*" />
+                    <div class="text-quick-cover-preview" id="textQuickCoverPreview" aria-hidden="true"></div>
+                </div>
+                <button type="submit" class="text-quick-add-submit" id="textQuickAddSubmit">Přidat do knihovny</button>
+            </form>
+            <!-- 3. MODULES/LibraryManualAdd.html -->
+            <div class="manual-add-toggle-row">
+                <button type="button" class="btn-manual-add-toggle" id="btnToggleManualAdd">+ Přidat knihu ručně</button>
+            </div>
+            <div class="manual-add-panel" id="manualAddPanel" hidden>
+            <form class="manual-add-form" id="manualAddForm">
+                <div class="manual-add-form-title" data-i18n="addBookManually">Přidat knihu ručně</div>
+                <div class="form-row form-row-five">
+                    <div>
+                        <label for="manualTitle" data-i18n="title">Název</label>
+                        <input type="text" id="manualTitle" data-i18n-placeholder="placeholderTitle" placeholder="Název knihy" />
+                    </div>
+                    <div>
+                        <label for="manualAuthor" data-i18n="author">Autor</label>
+                        <input type="text" id="manualAuthor" data-i18n-placeholder="placeholderAuthor" placeholder="Jméno autora" />
+                    </div>
+                    <div>
+                        <label for="manualLocation" data-i18n="location">Umístění</label>
+                        <input type="text" id="manualLocation" data-i18n-placeholder="placeholderShelf" placeholder="např. Obývák - horní" />
+                    </div>
+                    <div>
+                        <label for="manualPosition" data-i18n="position">Pozice na polici</label>
+                        <input type="text" id="manualPosition" data-i18n-placeholder="placeholderPosition" placeholder="např. vlevo, uprostřed" />
+                    </div>
+                    <div>
+                        <label for="manualEstimatedValue" data-i18n="estimatedValue">Odhadovaná hodnota</label>
+                        <input type="text" id="manualEstimatedValue" data-i18n-placeholder="estimatedValuePlaceholder" placeholder="např. 200 Kč" />
+                    </div>
+                    <div>
+                        <label for="manualOwner" data-i18n="owner">Vlastník</label>
+                        <select id="manualOwner" class="add-item-modal-select"></select>
+                    </div>
+                </div>
+                <div class="form-row form-row-isbn" style="margin-top:12px;display:flex;flex-wrap:wrap;align-items:flex-end;gap:16px;">
+                    <div style="min-width:160px;max-width:200px;">
+                        <label for="manualIsbn" data-i18n="isbnEan">ISBN/EAN</label>
+                        <input type="text" id="manualIsbn" data-i18n-placeholder="placeholderIsbn" placeholder="např. 978-80-123-4567-8" inputmode="numeric" />
+                    </div>
+                    <div style="display:flex;gap:12px;align-items:flex-end;">
+                        <button type="submit" class="btn-add-manually" data-i18n="addManually">Přidat ručně</button>
+                        <button type="button" class="btn-add-wishlist" id="btnAddWishlist">+ Přidat do wishlistu</button>
+                    </div>
+                </div>
+            </form>
+            </div>
+                </section>
+                <!-- Modul Upload souborů: nahrání fotek knihovny -->
+                <section class="library-module library-module-upload" id="libraryModuleUpload" role="tabpanel" aria-labelledby="libraryTabUpload" hidden>
+            <div class="upload-card library-card upload-card-wide" id="uploadCard">
+                <p class="upload-target-hint" id="uploadTargetHint" aria-live="polite">Knihy se přidají do: <strong id="uploadTargetCategory">Tvoje sbírka</strong></p>
+                <div class="upload-inline-row">
+                    <label for="shelfName" class="upload-card-label upload-card-label-inline">Aktuálně skenuji poličku</label>
+                    <input type="text" id="shelfName" class="shelf-input upload-inline-input" data-i18n-placeholder="placeholderShelf" placeholder="např. Obývák - horní" />
+                </div>
+
+                <div class="upload-batch-fields upload-batch-fields-compact" id="uploadBatchFields">
+                    <div class="upload-batch-field">
+                        <label for="batchShelfPosition" class="upload-card-label upload-card-label-inline">Umístění v polici</label>
+                        <input type="text" id="batchShelfPosition" class="shelf-input upload-batch-input" placeholder="např. řada 2, sloupec B (AI doplní)" />
+                    </div>
+                    <div class="upload-batch-field">
+                        <label for="batchCollection" class="upload-card-label upload-card-label-inline">Kolekce</label>
+                        <input type="text" id="batchCollection" class="shelf-input upload-batch-input" placeholder="např. Harry Potter / Discworld…" />
+                    </div>
+                </div>
+
+                <div class="upload-scans-grid" id="uploadScansGrid">
+                    <div class="upload-scan-col">
+                        <div class="upload-subtitle">Skenovat polici</div>
+                        <div class="upload-area upload-area-dashed-green upload-area-compact upload-drop-zone" id="uploadArea">
+                            <button type="button" class="upload-tips-inzone-btn" data-open-tips="1">💡 Tipy a video návod</button>
+                            <div class="upload-icon upload-icon-camera">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                            </div>
+                            <div class="upload-text" id="uploadTextEl">Nahrajte 1 fotku poličky (čitelné hřbety)</div>
+                            <input type="file" id="fileInput" accept="image/*" />
+                        </div>
+                        <div id="imagePreview"></div>
+                        <div id="fileInfo"></div>
+                        <div class="analyze-row">
+                            <button class="analyze-button" id="analyzeButton" disabled>Skenovat polici</button>
+                            <div class="analyze-loading-bar" id="analyzeLoadingBar" aria-hidden="true" aria-live="polite">Analyzuji…</div>
+                        </div>
+                        <div class="message error" id="errorMessage"></div>
+                        <div class="message success" id="successMessage"></div>
+                    </div>
+
+                    <div class="upload-scan-col">
+                        <div class="upload-subtitle">Skenovat detailně (1 kniha)</div>
+                        <div class="upload-area upload-area-dashed-green upload-area-compact upload-drop-zone" id="uploadAreaDetail">
+                            <button type="button" class="upload-tips-inzone-btn" data-open-tips="1">💡 Tipy a video návod</button>
+                            <div class="upload-icon upload-icon-camera">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                            </div>
+                            <div class="upload-text">Nahrajte více fotek jedné knihy (obálka + ISBN)</div>
+                            <input type="file" id="fileInputDetail" accept="image/*" multiple />
+                        </div>
+                        <div id="imagePreviewDetail" class="image-preview-multi"></div>
+                        <div id="fileInfoDetail"></div>
+                        <div class="analyze-row">
+                            <button class="analyze-button" id="analyzeButtonDetail" disabled>Skenovat detailně</button>
+                            <div class="analyze-loading-bar" id="analyzeLoadingBarDetail" aria-hidden="true" aria-live="polite">Analyzuji…</div>
+                        </div>
+                        <div class="message error" id="errorMessageDetail"></div>
+                        <div class="message success" id="successMessageDetail"></div>
+                    </div>
+                </div>
+
+                <!-- Tipy + video: kompaktní modal (otevírá se tlačítkem v drop zóně) -->
+                <div class="upload-tips-modal-overlay" id="uploadTipsModalOverlay" hidden role="dialog" aria-modal="true" aria-label="Tipy a video návod">
+                    <div class="upload-tips-modal">
+                        <div class="upload-tips-modal-top">
+                            <div class="upload-tips-modal-title">💡 Tipy a video návod</div>
+                            <button type="button" class="upload-tips-modal-close" id="uploadTipsModalClose" aria-label="Zavřít">×</button>
+                        </div>
+                        <div class="upload-tips-modal-body">
+                            <p><strong>Bod 1:</strong> Hromadné focení (Police): Foťte tak, aby byl jasně vidět titul a autor. Používejte rozptýlené světlo, ne přímé (odlesky znemožňují AI identifikaci).</p>
+                            <p><strong>Bod 2:</strong> Solitérní focení: U jedné knihy můžete nahrát více fotek (obálka + ISBN kód). AI data spojí.</p>
+                            <p><strong>Varování:</strong> Technická kvalita je klíčová – žádné rozmazané fotky.</p>
+                            <a href="#" class="tips-card-video-btn tips-card-video-btn-compact" id="collectionIntroVideoLink">🎥 Pustit video</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                </section>
+                </div>
+            </div>
+            <!-- Pracovní plocha „Tento sken“ – hned pod skenem police, nad Moje knihovna -->
+            <div id="resultsSectionWrap" style="display: none;">
+            <hr class="section-divider" />
+            <div class="results-section this-scan-accordion collapsed" id="resultsSection">
+                <div class="this-scan-header" id="thisScanHeader">
+                    <h2 class="results-title this-scan-title" data-i18n="thisScan">Tento sken</h2>
+                    <div class="this-scan-header-actions">
+                        <button type="button" class="btn-approve-workspace" id="btnApproveWorkspace">Schválit a přidat do knihovny</button>
+                        <button type="button" class="btn-clear-workspace" id="btnClearWorkspace" data-i18n="clearWorkspace">Vymazat pracovní plochu</button>
+                        <button type="button" class="this-scan-toggle" id="thisScanToggle" aria-label="Rozbalit / Sbalit">
+                            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="this-scan-content" id="thisScanContent">
+                    <p class="this-scan-hint" id="thisScanHint" role="status" aria-live="polite" style="display: none;"></p>
+                    <div class="cards-grid this-scan-cards" id="resultsBody"></div>
+                    <button class="add-book-btn" id="addBookBtn" data-i18n="addBook">+ Přidat položku</button>
+                </div>
+            </div>
+            </div>
+            <!-- 4. MODULES/LibraryGrid.html -->
+            <section class="scan-history" id="scanHistorySection">
+                <!-- Varovná lišta na opozdilce (zobrazí se, když jsou po termínu) -->
+                <div class="borrowed-alarm-bar" id="borrowedAlarmBar" style="display: none;" role="alert">
+                    <span class="borrowed-alarm-text" id="borrowedAlarmText">Pozor, jedna knížka se nám někde zapomněla! Někdo ji má u sebe už moc dlouho…</span>
+                    <button type="button" class="borrowed-alarm-btn" id="borrowedAlarmBtn">Poslat jemné popostrčení</button>
+                </div>
+                <div class="scan-history-header" id="scanHistoryHeader">
+                    <h2 class="scan-history-title" id="scanHistoryTitle" data-i18n="scanHistory">Moje knihovna</h2>
+                    <p class="scan-history-subtitle" id="scanHistorySubtitle" aria-live="polite"></p>
+                    <div class="library-view-toggle" id="libraryViewToggle" role="group" aria-label="Způsob zobrazení knihovny">
+                        <button type="button" class="library-view-btn active" id="libraryViewReality" data-view-mode="reality">Podle reality</button>
+                        <button type="button" class="library-view-btn" id="libraryViewSmart" data-view-mode="smart">Chytré řazení (Žánr/Autor)</button>
+                        <button type="button" class="library-view-btn library-view-btn-help" id="libraryViewSmartHelp" aria-label="Co dělá chytré řazení?" title="Co dělá chytré řazení?">?</button>
+                    </div>
+                    <div class="scan-history-sort-wrap">
+                        <select id="librarySortSelectHeader" class="library-global-sort-select" aria-label="Pokročilé třídění knihovny">
+                            <option value="">Třídění…</option>
+                            <option value="author">Autor A–Z</option>
+                            <option value="author_desc">Autor Z–A</option>
+                            <option value="genre">Žánr</option>
+                            <option value="status">Stav</option>
+                            <option value="privacy">Sdílení</option>
+                        </select>
+                        <span class="library-filter-summary" id="libraryFilterSummaryHeader" aria-live="polite"></span>
+                    </div>
+                    <div class="scan-history-search-wrap">
+                        <button type="button" class="search-toggle-btn" id="searchToggleBtn" aria-label="Vyhledat v knihovně" title="Vyhledat">🔍</button>
+                        <div class="search-field-slide" id="searchFieldSlide">
+                            <input type="search" id="librarySearchInput" class="library-search-input" placeholder="Hledat podle názvu nebo autora…" autocomplete="off" />
+                        </div>
+                    </div>
+                </div>
+                <!-- Banner: Wishlist otevřen pro dárky (v čase narozenin) + Rok narození -->
+                <div class="wishlist-birthday-banner" id="wishlistBirthdayBanner" style="display: none;" role="status" aria-live="polite">
+                    <span class="wishlist-birthday-text">🎂 Wishlist je otevřen pro dárky – rodina (FamilyID) může vidět, co si přeješ.</span>
+                </div>
+                <div class="wishlist-birthyear-row" id="wishlistBirthyearRow" style="display: none;">
+                    <label for="wishlistBirthYearDisplay" class="wishlist-birthyear-label">Rok narození (pro odemknutí Wishlistu rodině v období narozenin)</label>
+                    <input type="number" id="wishlistBirthYearDisplay" class="wishlist-birthyear-input" placeholder="např. 1990" min="1900" max="2030" />
+                    <p class="wishlist-birthday-note" id="wishlistBirthdayNote" style="display: none; margin-top: 8px; font-size: 0.8125rem; color: var(--text-muted);">Tato polička se v čase tvých narozenin otevře rodině.</p>
+                </div>
+                <!-- Panel pro Mám vypůjčeno: kompaktní rozbalovací formulář -->
+                <div class="borrowed-by-me-panel" id="borrowedByMePanel" style="display: none;" aria-label="Mám vypůjčeno">
+                    <div class="borrowed-by-me-status-bar" id="borrowedByMeStatusBar" aria-live="polite">
+                        <span class="borrowed-by-me-status-text" id="borrowedByMeStatusText">Panel „Přidat vypůjčenou knihu“ je zavřený</span>
+                        <button type="button" class="borrowed-by-me-open-btn" id="btnOpenBorrowedByMe">Otevřít</button>
+                        <button type="button" class="borrowed-by-me-close-btn" id="btnCloseBorrowedByMe" aria-label="Zavřít panel" title="Zavřít" hidden>×</button>
+                    </div>
+                    <div class="borrowed-by-me-body" id="borrowedByMeBody" hidden>
+                        <form class="borrowed-by-me-form" id="borrowedByMeForm">
+                            <div class="borrowed-by-me-form-title">Přidat vypůjčenou knihu</div>
+                            <div class="borrowed-by-me-form-row">
+                                <label for="borrowedByMeTitle">Název</label>
+                                <input type="text" id="borrowedByMeTitle" placeholder="Název knihy" />
+                            </div>
+                            <div class="borrowed-by-me-form-row">
+                                <label for="borrowedByMeAuthor">Autor</label>
+                                <input type="text" id="borrowedByMeAuthor" placeholder="Jméno autora" />
+                            </div>
+                            <div class="borrowed-by-me-form-row">
+                                <label for="borrowedByMeFrom">Od koho půjčeno</label>
+                                <input type="text" id="borrowedByMeFrom" placeholder="např. Jana, Městská knihovna" />
+                            </div>
+                            <div class="borrowed-by-me-form-row">
+                                <label for="borrowedByMeReturn">Termín vrácení</label>
+                                <input type="date" id="borrowedByMeReturn" placeholder="dd.mm.rrrr" />
+                            </div>
+                            <div class="borrowed-by-me-form-row">
+                                <label class="borrowed-by-me-toggle-label">
+                                    <input type="checkbox" id="borrowedByMeReading" />
+                                    <span>Právě čtu</span>
+                                </label>
+                            </div>
+                            <div class="borrowed-by-me-form-row">
+                                <label for="borrowedByMeCoverInput">Obálka / fotka</label>
+                                <input type="file" id="borrowedByMeCoverInput" accept="image/*" />
+                            </div>
+                            <div class="borrowed-by-me-form-actions">
+                                <button type="button" class="btn-scan-borrowed" id="btnScanBorrowedByMe">Naskenovat vypůjčenou knihu</button>
+                                <button type="submit" class="btn-add-borrowed" id="btnAddBorrowedByMe">Přidat</button>
+                            </div>
+                            <input type="file" id="borrowedByMeScanInput" accept="image/*" capture="environment" style="display:none;" />
+                        </form>
+                    </div>
+                </div>
+                <!-- Horní panel pro Půjčil/a jsem: vyhledávač + formulář -->
+                <div class="borrowed-top-panel" id="borrowedTopPanel" style="display: none;" aria-label="Půjčit knihu">
+                    <div class="borrowed-panel-inner">
+                        <label for="borrowedSearchInput" class="borrowed-panel-label">Vyhledat knihu ze sbírky (kterou chci půjčit!)</label>
+                        <input type="text" id="borrowedSearchInput" class="borrowed-search-input" placeholder="Název nebo autor…" autocomplete="off" />
+                        <div class="borrowed-search-results" id="borrowedSearchResults" role="listbox" aria-label="Výsledky vyhledávání" style="display: none;"></div>
+                        <div class="borrowed-lend-form" id="borrowedLendForm" style="display: none;">
+                            <div class="borrowed-form-row">
+                                <label for="borrowedToInput">Komu půjčuji?</label>
+                                <input type="text" id="borrowedToInput" class="borrowed-form-input" placeholder="Jméno" />
+                            </div>
+                            <div class="borrowed-form-row">
+                                <label for="borrowedDueInput">Do kdy?</label>
+                                <input type="date" id="borrowedDueInput" class="borrowed-form-input" />
+                            </div>
+                            <button type="button" class="borrowed-submit-btn" id="borrowedSubmitBtn">Označit jako půjčené</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Horní panel pro Na prodej: vyhledat knihu ze sbírky -->
+                <div class="borrowed-top-panel" id="forSaleTopPanel" style="display: none;" aria-label="Na prodej">
+                    <div class="borrowed-panel-inner">
+                        <label for="forSaleSearchInput" class="borrowed-panel-label">Vyhledat knihu ze sbírky (kterou chci prodat)</label>
+                        <input type="text" id="forSaleSearchInput" class="borrowed-search-input" placeholder="Název nebo autor…" autocomplete="off" />
+                        <div class="borrowed-search-results" id="forSaleSearchResults" role="listbox" aria-label="Výsledky vyhledávání" style="display: none;"></div>
+                    </div>
+                </div>
+                <!-- O co mají zájem přátelé: zobrazuje se v Na prodej -->
+                <section class="friends-interests-section" id="friendsInterestsSection" style="display: none;">
+                    <h2>O co mají zájem přátelé</h2>
+                    <div class="friend-demands-grid" id="friendDemandsGrid"></div>
+                </section>
+                <div id="scanHistoryContent" class="scan-history-content-wrap">
+                    <div id="pujceno-container" class="pujceno-container" style="display: none;"></div>
+                    <div id="borrowed-by-me-container" class="borrowed-by-me-container borrowed-shelf" style="display: none;"></div>
+                    <h3 class="policka-vedle-title" id="polickaVedleTitle" style="display: none;" aria-label="Police od vedle">Police od vedle (vypůjčené knížky)</h3>
+                    <div class="empty-state" id="emptyState">
+                        <div class="empty-state-icon">📖</div>
+                        <p data-i18n="scannedBooksAppear">Naskenované knihy se zobrazí zde.</p>
+                    </div>
+                    <div class="books-grid" id="scanHistoryGrid" style="display: none;"></div>
+                    <!-- Okno pro vzkazy a reference od vypůjčitelů (Půjčil/a jsem) -->
+                    <div class="borrowed-messages-panel" id="borrowedMessagesPanel" style="display: none;">
+                        <h3 class="borrowed-messages-title">Vzkazy a reference</h3>
+                        <div class="borrowed-messages-body" id="borrowedMessagesBody">
+                            <p class="borrowed-messages-placeholder">Ahoj Katy, moc děkuji za pučení knihy, byla fenomenální.</p>
+                        </div>
+                        <div class="borrowed-messages-actions">
+                            <button type="button" class="borrowed-msg-btn" id="borrowedAddToRefBtn">přidat k referenci knihy</button>
+                            <button type="button" class="borrowed-msg-btn" id="borrowedThankBtn">poslat poděkování za zprávu</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- Sekce „Přátelé doporučují“ – interaktivní sociální doporučení (zobrazuje se jen ve view friendsHighlights) -->
+            <section class="friends-reco-section" id="friendsRecommendationsSection" style="display: none;">
+                <div class="friends-reco-header">
+                    <h2 class="friends-reco-title">Přátelé doporučují</h2>
+                    <div class="friends-reco-header-actions">
+                        <button type="button" class="friends-reco-tab active" data-friends-tab="search">Hledat</button>
+                        <button type="button" class="friends-reco-tab" data-friends-tab="add">Zadat</button>
+                        <button type="button" class="friends-reco-tab" data-friends-tab="ai">AI online</button>
+                    </div>
+                </div>
+
+                <div class="friends-reco-panel friends-reco-panel--search" id="friendsRecoPanelSearch">
+                    <div class="friends-reco-accordion collapsed" id="friendsRecoAccordion">
+                        <button type="button" class="friends-reco-accordion-toggle" id="friendsRecoAccordionToggle" aria-expanded="false">
+                            <span>🔎 Vyhledávání doporučení</span>
+                            <span class="friends-reco-accordion-chevron">▼</span>
+                        </button>
+                        <div class="friends-reco-accordion-body" id="friendsRecoAccordionBody" hidden>
+                            <div class="friends-reco-filters">
+                                <div class="friends-reco-filter">
+                                    <label for="friendsFilterName">Jméno</label>
+                                    <input type="text" id="friendsFilterName" placeholder="např. Jana B." />
+                                </div>
+                                <div class="friends-reco-filter">
+                                    <label for="friendsFilterTitle">Název knihy</label>
+                                    <input type="text" id="friendsFilterTitle" placeholder="např. Duna" />
+                                </div>
+                                <div class="friends-reco-filter">
+                                    <label for="friendsFilterAuthor">Autor</label>
+                                    <input type="text" id="friendsFilterAuthor" placeholder="např. Frank Herbert" />
+                                </div>
+                                <div class="friends-reco-filter">
+                                    <label for="friendsFilterGenre">Žánr</label>
+                                    <input type="text" id="friendsFilterGenre" placeholder="např. Sci‑fi" />
+                                </div>
+                                <div class="friends-reco-filter">
+                                    <label for="friendsFilterCircle">Okruh lidí</label>
+                                    <select id="friendsFilterCircle">
+                                        <option value="">Všichni</option>
+                                        <option value="friends">Okruh přátel</option>
+                                        <option value="family">Rodina</option>
+                                        <option value="public">Veřejné</option>
+                                    </select>
+                                </div>
+                                <div class="friends-reco-filter">
+                                    <label for="friendsFilterSort">Řazení</label>
+                                    <select id="friendsFilterSort">
+                                        <option value="newest">Nejnovější</option>
+                                        <option value="interesting">Nejzajímavější</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="friends-reco-seed-note" id="friendsRecoSeedNote" hidden>Ukázky doporučení (demo) – přejděte na „Zadat“ a přidejte vlastní.</div>
+                    <div class="friends-reco-grid" id="friendsRecoGrid" aria-live="polite"></div>
+                    <div class="friends-reco-empty" id="friendsRecoEmpty" style="display:none;">
+                        Zatím tu nejsou žádná doporučení. Přepni na „Zadat“ a přidej první vzkaz.
+                    </div>
+                </div>
+
+                <div class="friends-reco-panel friends-reco-panel--add" id="friendsRecoPanelAdd" hidden>
+                    <form class="friends-reco-add-form" id="friendsRecoAddForm">
+                        <div class="friends-reco-add-grid">
+                            <div class="friends-reco-add-field">
+                                <label for="friendsAddFrom">Kdo doporučuje</label>
+                                <input type="text" id="friendsAddFrom" placeholder="např. Martin K." required />
+                            </div>
+                            <div class="friends-reco-add-field">
+                                <label for="friendsAddTitle">Název knihy</label>
+                                <input type="text" id="friendsAddTitle" placeholder="např. Malý princ" required />
+                            </div>
+                            <div class="friends-reco-add-field">
+                                <label for="friendsAddAuthor">Autor</label>
+                                <input type="text" id="friendsAddAuthor" placeholder="např. Antoine de Saint‑Exupéry" />
+                            </div>
+                            <div class="friends-reco-add-field">
+                                <label for="friendsAddGenre">Žánr</label>
+                                <input type="text" id="friendsAddGenre" placeholder="např. Pohádka / filozofie" />
+                            </div>
+                            <div class="friends-reco-add-field">
+                                <label for="friendsAddCircle">Okruh lidí</label>
+                                <select id="friendsAddCircle">
+                                    <option value="friends">Okruh přátel</option>
+                                    <option value="family">Rodina</option>
+                                    <option value="public">Veřejná</option>
+                                </select>
+                            </div>
+                            <div class="friends-reco-add-field">
+                                <label for="friendsAddAvailability">Dostupnost</label>
+                                <select id="friendsAddAvailability">
+                                    <option value="available">Lze zapůjčit</option>
+                                    <option value="unavailable">Teď nezapůjčuji</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="friends-reco-privacy">
+                            <div class="friends-reco-privacy-title">Soukromí recenze</div>
+                            <div class="friends-reco-privacy-seg" role="group" aria-label="Soukromí recenze">
+                                <label class="friends-reco-privacy-opt"><input type="radio" name="friendsPrivacy" value="public"> Veřejná</label>
+                                <label class="friends-reco-privacy-opt"><input type="radio" name="friendsPrivacy" value="friends" checked> Okruh přátel</label>
+                                <label class="friends-reco-privacy-opt"><input type="radio" name="friendsPrivacy" value="family"> Rodina</label>
+                            </div>
+                        </div>
+                        <div class="friends-reco-add-message">
+                            <label for="friendsAddMessage">Bublinový vzkaz (odkaz)</label>
+                            <textarea id="friendsAddMessage" rows="3" placeholder="Krátce a výstižně: proč je to skvělé, pro koho, nálada…"></textarea>
+                        </div>
+                        <div class="friends-reco-add-actions">
+                            <button type="submit" class="friends-reco-add-btn">Přidat doporučení</button>
+                        </div>
+                    </form>
+                    <div class="friends-reco-add-hint">
+                        Tip: Pokud zvolíš „Veřejná“, doporučení se „připíchne“ ke všem stejným knihám (podle ISBN nebo názvu+autora).
+                    </div>
+                </div>
+
+                <div class="friends-reco-panel friends-reco-panel--ai" id="friendsRecoPanelAi" hidden>
+                    <div class="friends-reco-ai-card">
+                        <div class="friends-reco-ai-title">Vyhledat online pomocí AI</div>
+                        <p class="friends-reco-ai-sub">Zadej téma, knihu nebo autora. (Integrace se zapojí v dalším kroku.)</p>
+                        <div class="friends-reco-ai-row">
+                            <input type="text" id="friendsAiQuery" placeholder="např. 'nejlepší sci‑fi pro fanoušky Duny'" />
+                            <button type="button" class="friends-reco-ai-btn" id="friendsAiBtn" disabled>Vyhledat</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script>console.log('Navigace aktivní');</script>
+    <!-- Modál: Co dělá chytré řazení? -->
+    <div class="smart-sort-help-overlay" id="smartSortHelpOverlay" role="dialog" aria-labelledby="smartSortHelpTitle" style="display: none;">
+        <div class="smart-sort-help-modal">
+            <h2 id="smartSortHelpTitle">Co dělá chytré řazení?</h2>
+            <p>AI ti pomůže <strong>virtuálně přeskládat</strong> knihy podle barvy, žánru nebo autora – jen pro inspiraci, <strong>fyzické umístění na polici se nemění</strong>. Můžeš si prohlédnout sbírku v novém pořadí a pak se podle toho inspirovat, jak to udělat v reálu.</p>
+            <button type="button" class="smart-sort-help-close" id="smartSortHelpClose">Zavřít</button>
+        </div>
+    </div>
+    <!-- AI asistent – vyskakovací bublina v pravém dolním rohu (OmniSupport AI) -->
+    <div class="ai-assistant-bubble-wrap" id="aiAssistantBubbleWrap" aria-label="AI asistent">
+        <div class="ai-assistant-bubble" id="aiAssistantBubble">
+            <div class="ai-assistant-bubble-panel" id="aiAssistantBubblePanel">
+                <div class="ai-assistant-bubble-header">
+                    <span class="ai-assistant-bubble-icon" aria-hidden="true">🤖</span>
+                    <h3 class="ai-assistant-bubble-title">OmniSupport AI</h3>
+                </div>
+                <p class="ai-assistant-bubble-greeting" id="aiAssistantBubbleText">Ahoj! Jsem OmniSupport AI. Můžeš se mě zeptat např.: Jak přidám knihu? Jak skenuji poličku? Nebo nahlásit chybu tlačítkem níže.</p>
+                <button type="button" class="ai-assistant-bubble-report" id="aiAssistantBubbleReport">🐛 Nahlásit chybu</button>
+                <div class="ai-assistant-bubble-input-wrap">
+                    <input type="text" class="ai-assistant-bubble-input" id="aiAssistantBubbleInput" placeholder="Zeptejte se na cokoli o aplikaci." autocomplete="off" />
+                    <button type="button" class="ai-assistant-bubble-send" id="aiAssistantBubbleSend">Odeslat</button>
+                </div>
+            </div>
+            <button type="button" class="ai-assistant-bubble-toggle" id="aiAssistantBubbleToggle" aria-label="Zavřít / otevřít asistenta">💬</button>
+        </div>
+    </div>
+    <!-- Modál Tržiště: Prodat duplicitu / Koupit z Wishlistu -->
+    <div class="marketplace-modal-overlay" id="marketplaceModalOverlay" role="dialog" aria-labelledby="marketplaceModalTitle" style="display: none;">
+        <div class="marketplace-modal" id="marketplaceModal">
+            <div class="marketplace-modal-header">
+                <h2 id="marketplaceModalTitle">Tržiště a obchody</h2>
+                <button type="button" class="marketplace-modal-close" id="marketplaceModalClose" aria-label="Zavřít">×</button>
+            </div>
+            <div class="marketplace-modal-body">
+                <div class="marketplace-section">
+                    <h3>Prodat duplicitu</h3>
+                    <p>Označ knihu jako „Na prodej“ a přidej odhadovanou cenu – objeví se v sekci Na prodej.</p>
+                    <button type="button" class="marketplace-btn" id="btnSellDuplicate">Označit knihu na prodej</button>
+                </div>
+                <div class="marketplace-section">
+                    <h3>Koupit z Wishlistu</h3>
+                    <p>Položky z Wishlistu můžeš vyhledat v obchodech jedním klikem.</p>
+                    <button type="button" class="marketplace-btn" id="btnBuyFromWishlist">Otevřít Wishlist v obchodech</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modál detail knihy v Tržišti (rozkliknutí karty: informace, prodávající, Koupit / Domluvit se) -->
+    <div class="marketplace-detail-overlay" id="marketplaceDetailOverlay" role="dialog" aria-labelledby="marketplaceDetailTitle" aria-modal="true" style="display: none;">
+        <div class="marketplace-detail-modal" id="marketplaceDetailModal">
+            <div class="marketplace-detail-header">
+                <h2 id="marketplaceDetailTitle" class="marketplace-detail-title">Detail knihy</h2>
+                <button type="button" class="marketplace-detail-close" id="marketplaceDetailClose" aria-label="Zavřít">×</button>
+            </div>
+            <div class="marketplace-detail-body">
+                <div class="marketplace-detail-cover-wrap" id="marketplaceDetailCover"></div>
+                <div class="marketplace-detail-info">
+                    <h3 id="marketplaceDetailBookTitle"></h3>
+                    <p id="marketplaceDetailAuthor" class="marketplace-detail-author"></p>
+                    <p id="marketplaceDetailStatus" class="marketplace-detail-status" style="display:none;"></p>
+                    <p id="marketplaceDetailPrice" class="marketplace-detail-price" style="display:none;"></p>
+                    <p id="marketplaceDetailBubble" class="marketplace-detail-bubble" style="display:none;" aria-label="Vzkaz majitele"></p>
+                    <p id="marketplaceDetailReviews" class="marketplace-detail-meta">Recenze: zatím bez recenzí.</p>
+                    <p id="marketplaceDetailContent" class="marketplace-detail-meta">Info o obsahu knihy se načte zde.</p>
+                    <p id="marketplaceDetailSeller" class="marketplace-detail-seller">Prodává: —</p>
+                    <p id="marketplaceDetailWhere" class="marketplace-detail-meta">Kde: —</p>
+                </div>
+                <div class="marketplace-detail-actions">
+                    <button type="button" class="marketplace-detail-btn marketplace-detail-btn--buy" id="marketplaceDetailBtnBuy">Koupit – vhodit do košíku</button>
+                    <button type="button" class="marketplace-detail-btn marketplace-detail-btn--contact" id="marketplaceDetailBtnContact">Napsat majiteli</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Kontejner pro modál Upravit knihu – nad ostatními prvky (z-index) -->
+    <div class="edit-book-modal-overlay" id="editBookModalOverlay" role="dialog" aria-modal="true" aria-labelledby="editBookModalTitle" style="display: none;">
+        <div class="edit-book-modal" id="editBookModal">
+            <div class="edit-book-modal-header">
+                <h2 class="edit-book-modal-title" id="editBookModalTitle">Upravit knihu</h2>
+                <button type="button" class="edit-book-modal-close" id="editBookModalClose" aria-label="Zavřít" onclick="typeof closeEditModal === 'function' && closeEditModal();">×</button>
+            </div>
+            <div class="edit-book-modal-body">
+                <div class="edit-book-top">
+                    <div class="edit-book-modal-cover-wrap">
+                        <div class="edit-book-cover-preview" id="editBookCoverPreview">
+                            <span class="edit-book-cover-placeholder">Náhled obálky</span>
+                        </div>
+                        <label class="edit-book-cover-change" id="editBookCoverChangeLabel">
+                            <input type="file" id="editBookCoverInput" accept="image/*" style="display: none;" />
+                            <span class="edit-book-cover-change-text">Změnit obálku</span>
+                        </label>
+                    </div>
+                    <div class="edit-book-basic">
+                        <div class="edit-book-field">
+                            <label for="editBookTitle">Název</label>
+                            <input type="text" id="editBookTitle" placeholder="Název knihy" />
+                        </div>
+                        <div class="edit-book-field">
+                            <label for="editBookAuthor">Autor</label>
+                            <input type="text" id="editBookAuthor" placeholder="Autor" />
+                        </div>
+                        <div class="edit-book-section-title" aria-hidden="true">Stav</div>
+                        <div class="edit-book-field">
+                            <label for="editBookReadingStatus">Status čtení</label>
+                            <select id="editBookReadingStatus">
+                                <option value="unread">Nepřečteno</option>
+                                <option value="reading">Rozečteno</option>
+                                <option value="read">Přečtené</option>
+                            </select>
+                        </div>
+                        <div class="edit-book-field">
+                            <label for="editBookOwnershipStatus">Status vlastnictví</label>
+                            <select id="editBookOwnershipStatus">
+                                <option value="mine">Moje</option>
+                                <option value="borrowed">Půjčeno někomu</option>
+                                <option value="borrowedByMe">Mám vypůjčeno</option>
+                                <option value="forSale">Na prodej</option>
+                                <option value="daruji">Daruji</option>
+                                <option value="vymena">Výměna</option>
+                                <option value="wishlist">Wishlist</option>
+                            </select>
+                        </div>
+                        <div class="edit-book-section-title" aria-hidden="true">Viditelnost</div>
+                        <div class="edit-book-field">
+                            <label for="editBookPrivacy">Soukromí</label>
+                            <select id="editBookPrivacy">
+                                <option value="private">Soukromá</option>
+                                <option value="family">Rodina</option>
+                                <option value="public">Veřejná</option>
+                            </select>
+                        </div>
+                        <div class="edit-book-field edit-book-borrowed-wrap" id="editBookBorrowedWrap" style="display: none;">
+                            <label for="editBookBorrowedTo">Komu</label>
+                            <input type="text" id="editBookBorrowedTo" placeholder="Komu je kniha půjčená" />
+                            <label for="editBookReturnDueDate">Vrátit do</label>
+                            <input type="date" id="editBookReturnDueDate" placeholder="Datum vrácení" />
+                            <label for="editBookBorrowedNote">Stav / Poznámka</label>
+                            <input type="text" id="editBookBorrowedNote" placeholder="např. nová, poškozená" />
+                            <div class="edit-book-return-section" id="editBookReturnSection" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(0,0,0,0.1);">
+                                <label for="editBookReturnStatus">Stav knihy</label>
+                                <select id="editBookReturnStatus" style="width: 100%; padding: 8px; margin-bottom: 12px; border: 1px solid rgba(0,0,0,0.2); border-radius: 6px;">
+                                    <option value="borrowed">Půjčeno</option>
+                                    <option value="returned">Vrácena na místo</option>
+                                </select>
+                                <label for="editBookReturnLocation">Aktuální umístění (Polička/Místnost)</label>
+                                <input type="text" id="editBookReturnLocation" placeholder="např. Ložnice 1" />
+                                <p style="font-size: 0.75rem; color: #666; margin-top: 8px;">Tato informace bude použita pro virtuální mapu.</p>
+                            </div>
+                        </div>
+                        <div class="edit-book-field edit-book-borrowed-by-me-wrap" id="editBookBorrowedByMeWrap" style="display: none;">
+                            <label for="editBookBorrowedFrom">Od koho</label>
+                            <input type="text" id="editBookBorrowedFrom" placeholder="Od koho mám knihu vypůjčenou" />
+                            <label for="editBookReturnDueDateByMe">Vrátit do</label>
+                            <input type="date" id="editBookReturnDueDateByMe" placeholder="Datum vrácení" />
+                        </div>
+                    </div>
+                </div>
+                <div class="edit-book-voice-section">
+                    <button type="button" class="edit-book-voice-btn" id="editBookVoiceBtn" onclick="typeof toggleAudioRecording === 'function' && toggleAudioRecording();" aria-label="Hlasová poznámka">
+                        <span class="edit-book-voice-icon" aria-hidden="true">🎤</span>
+                        <span class="edit-book-voice-label">Hlasová poznámka/recenze</span>
+                    </button>
+                    <div class="edit-book-waveform" id="editBookWaveform" style="display: none;" aria-hidden="true">
+                        <span class="edit-book-waveform-bar"></span>
+                        <span class="edit-book-waveform-bar"></span>
+                        <span class="edit-book-waveform-bar"></span>
+                        <span class="edit-book-waveform-bar"></span>
+                        <span class="edit-book-waveform-bar"></span>
+                        <span class="edit-book-waveform-bar"></span>
+                        <span class="edit-book-waveform-bar"></span>
+                        <span class="edit-book-waveform-bar"></span>
+                    </div>
+                </div>
+                <div class="edit-book-accordion">
+                    <button type="button" class="edit-book-accordion-toggle" id="editBookAccordionToggle" onclick="typeof toggleAccordion === 'function' && toggleAccordion();" aria-expanded="false" aria-controls="editBookAccordionContent">
+                        <span>Více informací</span>
+                        <svg class="edit-book-accordion-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+                    </button>
+                    <div class="edit-book-accordion-content" id="editBookAccordionContent" aria-hidden="true">
+                        <div class="edit-book-modal-fields">
+                            <div class="edit-book-field">
+                                <label for="editBookIsbn">ISBN/EAN</label>
+                                <input type="text" id="editBookIsbn" placeholder="např. 978-80-123-4567-8" inputmode="numeric" />
+                            </div>
+                            <div class="edit-book-field">
+                                <label for="editBookGenre">Žánr</label>
+                                <input type="text" id="editBookGenre" placeholder="Žánr" />
+                            </div>
+                            <div class="edit-book-field">
+                                <label for="editBookYear">Rok vydání</label>
+                                <input type="text" id="editBookYear" placeholder="např. 2020" inputmode="numeric" />
+                            </div>
+                            <div class="edit-book-field">
+                                <label for="editBookEstimatedValue">Odhadovaná hodnota</label>
+                                <input type="text" id="editBookEstimatedValue" placeholder="např. 200 Kč" />
+                            </div>
+                            <div class="edit-book-field edit-book-field-location">
+                                <label for="editBookLocationSelect">Umístění</label>
+                                <select id="editBookLocationSelect" class="edit-book-location-select" aria-label="Vyber poličku">
+                                    <option value="— Bez poličky —">— Bez poličky —</option>
+                                </select>
+                                <div class="edit-book-location-new-wrap" id="editBookLocationNewWrap" style="display: none;">
+                                    <label for="editBookLocationNew">Název nové poličky</label>
+                                    <input type="text" id="editBookLocationNew" placeholder="např. Obývák - horní" />
+                                </div>
+                            </div>
+                            <div class="edit-book-field">
+                                <label for="editBookOwner">Vlastník</label>
+                                <input type="text" id="editBookOwner" placeholder="Vlastník" />
+                            </div>
+                            <div class="edit-book-field">
+                                <label for="editBookPosition">Pozice na polici</label>
+                                <input type="text" id="editBookPosition" placeholder="např. vlevo, uprostřed" />
+                            </div>
+                            <div class="edit-book-field">
+                                <label for="editBookReadingProgress">Progres čtení (%)</label>
+                                <input type="number" id="editBookReadingProgress" min="0" max="100" placeholder="0–100" />
+                            </div>
+                            <div class="edit-book-field edit-book-field-full">
+                                <label for="editBookAiSummary">AI Sumář</label>
+                                <textarea id="editBookAiSummary" rows="8" placeholder="Shrnutí nebo poznámky…"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="edit-book-modal-footer">
+                <button type="button" class="btn-edit-book-save" id="editBookModalSave">Uložit</button>
+                <button type="button" class="btn-expose-marketplace btn-edit-book-marketplace" id="editBookModalExposeMarketplace" title="Vystavit knihu na Tržišti (Na prodej)">🏷️ Vystavit na Tržišti</button>
+                <button type="button" class="btn-share-marketplace btn-edit-book-marketplace" id="editBookModalShareMarketplace" title="Zveřejnit v Tržišti se statusem K zapůjčení">📤 Sdílet v Tržišti</button>
+                <button type="button" class="btn-open-pracovna btn-edit-book-pracovna" id="editBookModalPracovna">📖 Přejít do Pracovny</button>
+            </div>
+        </div>
+    </div>
+    <!-- Modál Historie vypůjčitelů (Půjčila jsem) -->
+    <div class="borrowed-history-overlay" id="borrowedHistoryOverlay" role="dialog" aria-modal="true" aria-labelledby="borrowedHistoryTitle" style="display: none;">
+        <div class="borrowed-history-modal" id="borrowedHistoryModal">
+            <div class="borrowed-history-header">
+                <h2 class="borrowed-history-title" id="borrowedHistoryTitle">Historie vypůjčitelů</h2>
+                <button type="button" class="borrowed-history-close" id="borrowedHistoryClose" aria-label="Zavřít">×</button>
+            </div>
+            <div class="borrowed-history-body" id="borrowedHistoryBody"></div>
+        </div>
+    </div>
+    <!-- Modál AI upomínka (Milá / Důrazná) -->
+    <div class="borrowed-reminder-overlay" id="borrowedReminderOverlay" role="dialog" aria-modal="true" style="display: none;">
+        <div class="borrowed-reminder-modal" id="borrowedReminderModal">
+            <div class="borrowed-reminder-header">
+                <h2 class="borrowed-reminder-title">Upomínka</h2>
+                <button type="button" class="borrowed-reminder-close" id="borrowedReminderClose" aria-label="Zavřít">×</button>
+            </div>
+            <div class="borrowed-reminder-choices" id="borrowedReminderChoices">
+                <button type="button" class="borrowed-reminder-btn" data-tone="friendly">Milá</button>
+                <button type="button" class="borrowed-reminder-btn" data-tone="firm">Důrazná</button>
+            </div>
+            <div class="borrowed-reminder-result" id="borrowedReminderResult" style="display: none;"></div>
+        </div>
+    </div>
+    <!-- Modál Odpovědět / Poslat poděkování (itemChat – použitelné pro Půjčil/a jsem, Fórum, Tržiště, Půjčovna) -->
+    <div class="item-chat-reply-overlay" id="itemChatReplyModalOverlay" role="dialog" aria-modal="true" aria-labelledby="itemChatReplyModalTitle" style="display: none;">
+        <div class="item-chat-reply-modal">
+            <div class="item-chat-reply-header">
+                <h2 class="item-chat-reply-title" id="itemChatReplyModalTitle">Poslat poděkování / Odpovědět</h2>
+                <button type="button" class="item-chat-reply-close" id="itemChatReplyModalClose" aria-label="Zavřít">×</button>
+            </div>
+            <div class="item-chat-reply-body">
+                <label for="itemChatReplyModalText" class="item-chat-reply-label">Vzkaz adresátovi</label>
+                <textarea id="itemChatReplyModalText" class="item-chat-reply-textarea" rows="4" placeholder="Napište vzkaz…"></textarea>
+            </div>
+            <div class="item-chat-reply-footer">
+                <button type="button" class="item-chat-reply-send" id="itemChatReplyModalSend">Odeslat</button>
+            </div>
+        </div>
+    </div>
+    <!-- Modál Ceník (CZK) -->
+    <div class="pricing-modal-overlay" id="pricingModalOverlay" role="dialog" aria-modal="true" aria-labelledby="pricingModalTitle" aria-hidden="true">
+        <div class="pricing-modal" id="pricingModal">
+            <div class="pricing-modal-header">
+                <h2 class="pricing-modal-title" id="pricingModalTitle">Ceník</h2>
+                <button type="button" class="pricing-modal-close" id="pricingModalClose" aria-label="Zavřít">×</button>
+            </div>
+            <div class="pricing-billing-toggle-wrap">
+                <span class="pricing-billing-label">Období:</span>
+                <div class="pricing-billing-toggle" role="group" aria-label="Měsíční nebo roční platba">
+                    <button type="button" class="pricing-billing-btn active" id="pricingBillingMonthly" data-interval="monthly">Měsíčně</button>
+                    <button type="button" class="pricing-billing-btn" id="pricingBillingYearly" data-interval="yearly">Ročně <span class="pricing-billing-badge">−20 %</span></button>
+                </div>
+            </div>
+            <div class="pricing-table-wrap">
+                <table class="pricing-table" id="pricingTable">
+                    <thead>
+                        <tr>
+                            <th>Tarif</th>
+                            <th>Cena</th>
+                            <th>Co získáte</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="pricing-tier-name" data-label="">FREE</td>
+                            <td data-label="Cena"><span class="pricing-price" id="priceFree">0 Kč</span><br><span class="pricing-price-year" id="priceFreeYear">vždy zdarma</span></td>
+                            <td data-label="Co získáte"><span class="pricing-desc">Základní Knihovna, 1 sektor</span></td>
+                            <td class="pricing-cta" data-label=""><button type="button" class="btn-pricing btn-pricing-free" disabled>Aktuální tarif</button></td>
+                        </tr>
+                        <tr>
+                            <td class="pricing-tier-name" data-label="">PRO</td>
+                            <td data-label="Cena"><span class="pricing-price" id="pricePro">149 Kč</span><span class="pricing-price-year" id="priceProSuffix">/měsíc</span><br><span class="pricing-price-year" id="priceProYear" style="display:none;">1 430 Kč/rok</span></td>
+                            <td data-label="Co získáte"><span class="pricing-desc">Všechny sektory (Dílna, Šatník…), neomezené nahrávání, Vizuální mapy</span></td>
+                            <td class="pricing-cta" data-label=""><button type="button" class="btn-pricing btn-pricing-pro" id="btnPricingPro">Předplatit</button></td>
+                        </tr>
+                        <tr>
+                            <td class="pricing-tier-name" data-label="">FAMILY / KIDS</td>
+                            <td data-label="Cena"><span class="pricing-price" id="priceFamily">249 Kč</span><span class="pricing-price-year" id="priceFamilySuffix">/měsíc</span><br><span class="pricing-price-year" id="priceFamilyYear" style="display:none;">2 390 Kč/rok</span></td>
+                            <td data-label="Co získáte"><span class="pricing-desc">Vše z PRO + OmniShelf Kids pro celou rodinu</span></td>
+                            <td class="pricing-cta" data-label=""><button type="button" class="btn-pricing btn-pricing-family" id="btnPricingFamily">Předplatit</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="pricing-upgrade-confirmation" id="pricingUpgradeConfirmation" role="status" aria-live="polite" style="display: none;">
+                Vítejte v Premium! Vaše výhody jsou nyní aktivní.
+            </div>
+        </div>
+    </div>
+    <!-- Modál Tvoje nastavení (globální) -->
+    <div class="settings-modal-overlay" id="settingsModalOverlay" role="dialog" aria-modal="true" aria-labelledby="settingsModalTitle" style="display: none;">
+        <div class="settings-modal wishlist-modal" id="settingsModal">
+            <div class="wishlist-modal-content settings-modal-content">
+                <h3 class="settings-modal-title" id="settingsModalTitle">Tvoje nastavení</h3>
+                <p class="settings-current-tier" id="settingsCurrentTier" aria-live="polite"></p>
+                <div class="settings-modal-body">
+                    <div class="settings-section settings-section-adult">
+                        <p class="settings-section-title">Jak se dnes budeme bavit?</p>
+                        <p class="settings-hint" style="font-size:0.8rem;margin:0 0 8px;color:var(--text-muted);">Tón hlasu AI asistenta a textů v aplikaci.</p>
+                        <select id="settingsVoiceTone" class="settings-input" style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:6px;font-size:0.9rem;">
+                            <option value="friendly">Kamarádsky</option>
+                            <option value="kind">Milý</option>
+                            <option value="funny">Vtipný</option>
+                            <option value="motivating">Motivuje mě</option>
+                            <option value="serious">Seriózní / Vědecký</option>
+                        </select>
+                    </div>
+                    <div class="settings-section settings-section-adult">
+                        <p class="settings-section-title">Narozeniny (pro Wishlist a dárky)</p>
+                        <p class="settings-hint" style="font-size:0.8rem;margin:0 0 8px;color:var(--text-muted);">V období narozenin se Wishlist odemkne rodině (FamilyID), aby věděli, co koupit jako dárek.</p>
+                        <label for="settingsBirthday" class="settings-label">Datum narození (měsíc-den)</label>
+                        <input type="text" id="settingsBirthday" class="settings-input" placeholder="MM-DD např. 12-25" maxlength="5" style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:6px;margin-bottom:8px;font-size:0.9rem;" />
+                        <label for="settingsBirthYear" class="settings-label">Rok narození</label>
+                        <input type="number" id="settingsBirthYear" class="settings-input" placeholder="např. 1990" min="1900" max="2030" style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:6px;font-size:0.9rem;" />
+                    </div>
+                    <div class="settings-section settings-section-adult" id="settingsSectionSpeech">
+                        <p class="settings-section-title">API klíč pro přepis řeči</p>
+                        <input type="password" id="settingsSpeechApiKey" class="settings-input" placeholder="Vložte klíč pro budoucí přepis hlasových poznámek" style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:6px;margin-bottom:4px;font-size:0.9rem;" />
+                        <p class="settings-hint" style="font-size:0.75rem;color:var(--text-muted);margin:0;">Bez klíče se místo přepisu vloží placeholder. Audio se vždy uloží a přehraje.</p>
+                    </div>
+                    <div class="settings-section settings-section-adult" id="settingsSectionOpenAi">
+                        <p class="settings-section-title">OpenAI API klíč (AI sken Knihovna + Vitus)</p>
+                        <input type="password" id="settingsOpenAiKey" class="settings-input" placeholder="Vložte OpenAI klíč pro AI sken (ukládá se jen do localStorage)" style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:6px;margin-bottom:6px;font-size:0.9rem;" />
+                        <div style="display:flex;gap:8px;align-items:center;justify-content:space-between;">
+                            <p class="settings-hint" id="settingsOpenAiKeyHint" style="font-size:0.75rem;color:var(--text-muted);margin:0;">Klíč není nastaven.</p>
+                            <button type="button" class="btn-modal-cancel" id="settingsOpenAiKeyClear" style="padding:6px 10px;border-radius:10px;">Smazat klíč</button>
+                        </div>
+                    </div>
+                    <div class="settings-section settings-section-adult" id="settingsSectionGemini">
+                        <p class="settings-section-title">Gemini API klíč (Google AI Studio) – alternativa k OpenAI</p>
+                        <input type="password" id="settingsGeminiKey" class="settings-input" placeholder="Vložte Gemini klíč (ukládá se jen do localStorage)" style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:6px;margin-bottom:6px;font-size:0.9rem;" />
+                        <div style="display:flex;gap:8px;align-items:center;justify-content:space-between;">
+                            <p class="settings-hint" id="settingsGeminiKeyHint" style="font-size:0.75rem;color:var(--text-muted);margin:0;">Klíč není nastaven.</p>
+                            <button type="button" class="btn-modal-cancel" id="settingsGeminiKeyClear" style="padding:6px 10px;border-radius:10px;">Smazat klíč</button>
+                        </div>
+                    </div>
+                    <div class="settings-section settings-section-adult">
+                        <p class="settings-section-title">Rodina</p>
+                        <p class="settings-family-lock-hint" id="settingsFamilyLockHint" style="display: none;"><span aria-hidden="true">🔒</span> Rodinné sdílení a Kids verze jsou dostupné v tarifu Family.</p>
+                        <div class="settings-family-list" id="settingsFamilyList"></div>
+                        <button type="button" class="btn-add-family-member-settings" id="btnAddFamilyMemberSettings">+ Přidat člena rodiny</button>
+                        <p class="settings-hint" id="settingsFamilyLimitHint" style="font-size:0.75rem;color:var(--text-muted);margin:8px 0 0;"></p>
+                    </div>
+                    <div class="settings-section family-code-section settings-section-adult">
+                        <p class="settings-section-title">Rodinný kód</p>
+                        <p class="settings-hint" style="font-size:0.8rem;margin:0 0 8px;color:var(--text-muted);">Pošli tento kód členům rodiny – po jeho zadání při registraci se připojí k tvé knihovně.</p>
+                        <button type="button" class="btn-copy-family-code" id="btnGenerateFamilyCode">Vygenerovat rodinný kód</button>
+                        <div class="family-code-display" id="familyCodeDisplay" style="display:none;">
+                            <input type="text" id="familyCodeInput" readonly />
+                            <button type="button" class="btn-copy-family-code" id="btnCopyFamilyCode">Kopírovat</button>
+                        </div>
+                    </div>
+                    <div class="settings-section settings-section-adult">
+                        <p class="settings-section-title">Inventura</p>
+                        <button type="button" class="btn-inventory-master" id="btnStartInventory">🔍 Spustit inventuru celého bytu</button>
+                    </div>
+                    <div class="settings-section settings-section-adult" id="settingsPendingApprovalsSection">
+                        <p class="settings-section-title">Knihy ke schválení</p>
+                        <p class="settings-hint" style="font-size:0.8rem;margin:0 0 8px;color:var(--text-muted);">Knihy přidané dětmi – schválené se zařadí do rodinné knihovny, zamítnuté se odstraní.</p>
+                        <div id="settingsPendingApprovalsList"></div>
+                    </div>
+                    <div class="settings-section settings-danger-zone-adult settings-section-adult" id="settingsDangerZoneAdult">
+                        <p class="settings-section-title">Nebezpečná zóna</p>
+                        <button type="button" class="btn-delete-library-settings" id="btnDeleteLibrarySettings">Smazat celou knihovnu</button>
+                        <button type="button" class="btn-delete-account-settings" id="btnDeleteAccountSettings">Zrušit účet</button>
+                    </div>
+                </div>
+                <div class="wishlist-modal-actions settings-modal-footer">
+                    <button type="button" class="btn-logout-settings" id="btnLogoutSettings">Odhlásit se</button>
+                    <button type="button" class="btn-activate-membership" id="btnSettingsActivateMembership">Aktivovat členství</button>
+                    <button type="button" class="btn-modal-submit" id="settingsModalClose" aria-label="Zavřít">Zavřít</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modál Nastavení police (přejmenovat, soukromí, smazat) -->
+    <div class="shelf-settings-modal-overlay" id="shelfSettingsModalOverlay" role="dialog" aria-modal="true" aria-labelledby="shelfSettingsModalTitle" style="display: none;">
+        <div class="shelf-settings-modal" id="shelfSettingsModal">
+            <div class="shelf-settings-modal-header">
+                <h2 class="shelf-settings-modal-title" id="shelfSettingsModalTitle">Nastavení police</h2>
+                <button type="button" class="shelf-settings-modal-close" id="shelfSettingsModalClose" aria-label="Zavřít">×</button>
+            </div>
+            <div class="shelf-settings-modal-body">
+                <div class="shelf-settings-field">
+                    <label for="shelfSettingsName">Název police</label>
+                    <input type="text" id="shelfSettingsName" placeholder="např. Obývák - horní" />
+                </div>
+                <div class="shelf-settings-field">
+                    <label for="shelfSettingsPrivacy">Filtr zobrazení (výchozí)</label>
+                    <select id="shelfSettingsPrivacy">
+                        <option value="all">Všechny knihy</option>
+                        <option value="private">🔒 Soukromá</option>
+                        <option value="family">👥 Rodina</option>
+                        <option value="public">🌐 Veřejná</option>
+                    </select>
+                </div>
+                <div class="shelf-settings-actions">
+                    <button type="button" class="btn-shelf-settings-rename" id="shelfSettingsRename">Přejmenovat</button>
+                    <button type="button" class="btn-shelf-settings-delete" id="shelfSettingsDelete">Smazat polici (knihy → Bez poličky)</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Spodní Tab Bar (mobil): Domů, Knihovna, Vitus, Profil -->
+    <nav class="bottom-tab-bar" id="bottomTabBar" aria-label="Hlavní navigace">
+        <a href="./app.html" class="bottom-tab-item" data-tab="home" aria-label="Domů">
+            <span class="bottom-tab-icon"><img src="./Ikony do aplikace _ 200px/01_small200px.png" alt=""></span>
+            <span class="bottom-tab-label">Domů</span>
+        </a>
+        <a href="./library.html" class="bottom-tab-item" data-tab="library" aria-label="Knihovna">
+            <span class="bottom-tab-icon"><img src="./Ikony do aplikace _ 200px/01_small200px_4.png" alt=""></span>
+            <span class="bottom-tab-label">Knihovna</span>
+        </a>
+        <a href="./vitus.html" class="bottom-tab-item" data-tab="vitus" aria-label="Vitus">
+            <span class="bottom-tab-icon"><img src="./Ikony do aplikace _ 200px/01_small200px_8.png" alt=""></span>
+            <span class="bottom-tab-label">Vitus</span>
+        </a>
+        <button type="button" class="bottom-tab-item" data-tab="profile" aria-label="Profil">
+            <span class="bottom-tab-icon"><img src="./Ikony do aplikace _ 200px/01_small200px_7.png" alt=""></span>
+            <span class="bottom-tab-label">Profil</span>
+        </button>
+    </nav>
+    <script>window.OMNI_CONFIG = window.OMNI_CONFIG || {};</script>
+    <script src="./config.js"></script>
+    <script src="./config.local.js"></script>
+    <script>if (typeof window.OMNI_CONFIG === 'undefined') window.OMNI_CONFIG = {};</script>
+    <script src="./src/core/keys.js"></script>
+    <script src="./js/config/user-state.js"></script>
+    <script>
+        (function () {
+            'use strict';
+            try {
+                // Veřejné sdílení (pokud existuje) nechceme blokovat loginem
+                var qs = String(window.location.search || '');
+                var isPublic = qs.indexOf('public=') >= 0 || qs.indexOf('share=') >= 0;
+                if (isPublic) return;
+                var u = window.OMNI_UserState && typeof window.OMNI_UserState.getCurrentUser === 'function'
+                    ? window.OMNI_UserState.getCurrentUser()
+                    : null;
+                if (!u || u.isLoggedIn !== true) {
+                    var next = '';
+                    try {
+                        var file = (window.location.pathname || '').split('/').pop() || 'app.html';
+                        next = encodeURIComponent(file + (window.location.search || '') + (window.location.hash || ''));
+                    } catch (e2) {}
+                    window.location.href = './login.html' + (next ? ('?next=' + next) : '');
+                }
+            } catch (e) {
+                window.location.href = './login.html';
+            }
+        })();
+    </script>
+    <script src="./js/config/sectors.js"></script>
+    <script src="./src/core/app-state.js"></script>
+    <script src="./src/core/module-switcher.js"></script>
+    <script src="./src/modules/vitus/vitus-logic.js"></script>
+    <script src="./src/modules/vitus/vitus-ai.js"></script>
+    <script src="./src/modules/vitus/vitus-enrich.js"></script>
+    <script src="./src/modules/vitus/vitus-shell.js"></script>
+    <script src="./src/modules/library/text/text-module.js"></script>
+    <script src="./src/modules/library/text/library-text-logic.js"></script>
+    <script src="./src/modules/library/upload/upload-module.js"></script>
+    <script src="./src/modules/library/upload/library-upload-logic.js"></script>
+    <script src="./src/modules/library/upload/visual-map.js"></script>
+    <script src="./src/modules/library/library-logic.js?v=3"></script>
+    <script src="./src/modules/library/friends/friends-recommendations.js"></script>
+    <script src="./src/core/navigation.js?v=3"></script>
+    <script>
+        (function () {
+            var tabBar = document.getElementById('bottomTabBar');
+            var tabItems = tabBar ? tabBar.querySelectorAll('.bottom-tab-item') : [];
+            function setActiveTab(tab) {
+                tabItems.forEach(function (btn) {
+                    var t = btn.getAttribute('data-tab');
+                    btn.classList.toggle('active', t === tab);
+                });
+            }
+            function updateTabFromModule() {
+                var mod = (window.OMNI_AppState && window.OMNI_AppState.getActiveModule) ? window.OMNI_AppState.getActiveModule() : 'library';
+                if (mod === 'vitus') setActiveTab('vitus');
+                else setActiveTab(mod === 'library' ? 'library' : 'home');
+            }
+            tabItems.forEach(function (el) {
+                el.addEventListener('click', function (e) {
+                    var tab = el.getAttribute('data-tab');
+                    if (tab === 'profile') {
+                        e.preventDefault();
+                        var settingsBtn = document.getElementById('btnOpenSettings');
+                        if (settingsBtn) settingsBtn.click();
+                    }
+                    // Domů / Knihovna / Vitus jsou <a href="..."> – necháme proběhnout navigaci
+                });
+            });
+            if (window.OMNI_AppState) document.addEventListener('omni:module-changed', updateTabFromModule);
+            updateTabFromModule();
+        })();
+    </script>
+    <script>
+        (function () {
+            function closeMobileSidebar() {
+                document.body.classList.remove('sidebar-open-mobile');
+                var btn = document.getElementById('btnMobileMenuToggle');
+                if (btn) btn.setAttribute('aria-expanded', 'false');
+            }
+            function openMobileSidebar() {
+                document.body.classList.add('sidebar-open-mobile');
+                var btn = document.getElementById('btnMobileMenuToggle');
+                if (btn) btn.setAttribute('aria-expanded', 'true');
+            }
+            document.addEventListener('DOMContentLoaded', function () {
+                var hamburger = document.getElementById('btnMobileMenuToggle');
+                var closeBtn = document.getElementById('btnSidebarCloseMobile');
+                var backdrop = document.getElementById('sidebarOverlayBackdrop');
+                if (hamburger) hamburger.addEventListener('click', function () {
+                    if (document.body.classList.contains('sidebar-open-mobile')) closeMobileSidebar();
+                    else openMobileSidebar();
+                });
+                if (closeBtn) closeBtn.addEventListener('click', closeMobileSidebar);
+                if (backdrop) backdrop.addEventListener('click', closeMobileSidebar);
+                var sidebar = document.getElementById('sidebar-container');
+                if (sidebar) {
+                    sidebar.querySelectorAll('.sidebar-nav-item, .sidebar-submenu-item, .sidebar-module-btn').forEach(function (el) {
+                        el.addEventListener('click', function () { closeMobileSidebar(); });
+                    });
+                }
+            });
+        })();
+    </script>
+    <script>
+        (function () {
+            function openPricingModal() {
+                refreshPricingModalState();
+                var conf = document.getElementById('pricingUpgradeConfirmation');
+                if (conf) conf.style.display = 'none';
+                var overlay = document.getElementById('pricingModalOverlay');
+                if (overlay) {
+                    overlay.classList.add('is-open');
+                    overlay.setAttribute('aria-hidden', 'false');
+                }
+            }
+            window.openPricingModal = openPricingModal;
+            function closePricingModal() {
+                var overlay = document.getElementById('pricingModalOverlay');
+                if (overlay) {
+                    overlay.classList.remove('is-open');
+                    overlay.setAttribute('aria-hidden', 'true');
+                }
+            }
+            function refreshPricingModalState() {
+                var tier = (typeof window.OMNI_UserState !== 'undefined' && window.OMNI_UserState.getCurrentUser())
+                    ? window.OMNI_UserState.getCurrentUser().tier
+                    : 'free';
+                var btnPro = document.getElementById('btnPricingPro');
+                var btnFamily = document.getElementById('btnPricingFamily');
+                if (btnPro) {
+                    if (tier === 'pro') {
+                        btnPro.textContent = 'Váš aktuální tarif';
+                        btnPro.disabled = true;
+                        btnPro.classList.add('pricing-cta-current');
+                    } else {
+                        btnPro.textContent = 'Předplatit';
+                        btnPro.disabled = false;
+                        btnPro.classList.remove('pricing-cta-current');
+                    }
+                }
+                if (btnFamily) {
+                    if (tier === 'family') {
+                        btnFamily.textContent = 'Váš aktuální tarif';
+                        btnFamily.disabled = true;
+                        btnFamily.classList.add('pricing-cta-current');
+                    } else if (tier === 'pro') {
+                        btnFamily.textContent = 'Přejít na Family (doplatek)';
+                        btnFamily.disabled = false;
+                        btnFamily.classList.remove('pricing-cta-current');
+                    } else {
+                        btnFamily.textContent = 'Předplatit';
+                        btnFamily.disabled = false;
+                        btnFamily.classList.remove('pricing-cta-current');
+                    }
+                }
+            }
+            function setPricingInterval(interval) {
+                var monthly = interval === 'monthly';
+                document.querySelectorAll('.pricing-billing-btn').forEach(function (b) {
+                    b.classList.toggle('active', (b.getAttribute('data-interval') === 'monthly') === monthly);
+                });
+                var suf = document.getElementById('priceProSuffix');
+                var yPro = document.getElementById('priceProYear');
+                var yFamily = document.getElementById('priceFamilyYear');
+                var sufF = document.getElementById('priceFamilySuffix');
+                if (suf) suf.style.display = monthly ? '' : 'none';
+                if (yPro) yPro.style.display = monthly ? 'none' : '';
+                if (sufF) sufF.style.display = monthly ? '' : 'none';
+                if (yFamily) yFamily.style.display = monthly ? 'none' : '';
+                var pricePro = document.getElementById('pricePro');
+                var priceFamily = document.getElementById('priceFamily');
+                if (pricePro) pricePro.textContent = monthly ? '149 Kč' : '1 430 Kč';
+                if (priceFamily) priceFamily.textContent = monthly ? '249 Kč' : '2 390 Kč';
+            }
+            function doUpgrade(tier) {
+                if (typeof window.OMNI_UserState === 'undefined') return;
+                window.OMNI_UserState.setTier(tier);
+                var conf = document.getElementById('pricingUpgradeConfirmation');
+                if (conf) conf.style.display = 'block';
+                refreshPricingModalState();
+                if (window.OMNI_UserState.canAccessKids() && window.location.search.indexOf('mode=kids') !== -1) {
+                    closePricingModal();
+                    document.documentElement.classList.add('viewing-as-child');
+                    document.body.classList.add('viewing-as-child');
+                    document.querySelectorAll('[data-adult-only]').forEach(function (el) { el.style.display = 'none'; });
+                    var btnKids = document.getElementById('btnChildrenLibraryToggle');
+                    if (btnKids) btnKids.click();
+                }
+            }
+            document.addEventListener('DOMContentLoaded', function () {
+                if (window.__omniModeKids && typeof window.OMNI_UserState !== 'undefined') {
+                    if (window.OMNI_UserState.canAccessKids()) {
+                        document.documentElement.classList.add('viewing-as-child');
+                        document.body.classList.add('viewing-as-child');
+                        window.__omniWelcomeMode = 'kids';
+                        document.querySelectorAll('[data-adult-only]').forEach(function (el) { el.style.display = 'none'; });
+                        var btn = document.getElementById('btnChildrenLibraryToggle');
+                        if (btn) setTimeout(function () { btn.click(); }, 0);
+                    } else {
+                        openPricingModal();
+                    }
+                    window.__omniModeKids = false;
+                }
+                var overlay = document.getElementById('pricingModalOverlay');
+                var closeBtn = document.getElementById('pricingModalClose');
+                if (overlay) overlay.addEventListener('click', function (e) { if (e.target === overlay) closePricingModal(); });
+                if (closeBtn) closeBtn.addEventListener('click', closePricingModal);
+                document.getElementById('pricingBillingMonthly') && document.getElementById('pricingBillingMonthly').addEventListener('click', function () { setPricingInterval('monthly'); });
+                document.getElementById('pricingBillingYearly') && document.getElementById('pricingBillingYearly').addEventListener('click', function () { setPricingInterval('yearly'); });
+                var btnPro = document.getElementById('btnPricingPro');
+                var btnFamily = document.getElementById('btnPricingFamily');
+                if (btnPro) btnPro.addEventListener('click', function () {
+                    if (typeof window.OMNI_UserState !== 'undefined' && window.OMNI_UserState.getCurrentUser().tier !== 'pro') doUpgrade('pro');
+                });
+                if (btnFamily) btnFamily.addEventListener('click', function () {
+                    if (typeof window.OMNI_UserState !== 'undefined' && window.OMNI_UserState.getCurrentUser().tier !== 'family') doUpgrade('family');
+                });
+                var btnKids = document.getElementById('btnChildrenLibraryToggle');
+                if (btnKids && typeof window.OMNI_UserState !== 'undefined') {
+                    btnKids.addEventListener('click', function (e) {
+                        if (!window.OMNI_UserState.canAccessKids()) {
+                            e.preventDefault();
+                            e.stopImmediatePropagation();
+                            openPricingModal();
+                        }
+                    }, true);
+                }
+            });
+        })();
+        (function () {
+            function initLibraryModuleTabs() {
+                var wrap = document.getElementById('libraryModulesWrap');
+                if (!wrap) return;
+                var tabs = wrap.querySelectorAll('.library-module-tab');
+                var panels = wrap.querySelectorAll('.library-module');
+                tabs.forEach(function (tab) {
+                    tab.addEventListener('click', function () {
+                        try { if (typeof window.__OMNI_closeUploadTipsModal === 'function') window.__OMNI_closeUploadTipsModal(); } catch (eClose) {}
+                        var mod = tab.getAttribute('data-library-module');
+                        var targetId = mod === 'texty' ? 'libraryModuleTexty' : 'libraryModuleUpload';
+                        // UX: klik na jazýček otevře panel (jinak to vypadá, že se "nic neděje")
+                        try {
+                            if (typeof window.__OMNI_setLibraryModulesOpen === 'function') window.__OMNI_setLibraryModulesOpen(true);
+                        } catch (e0) {}
+                        tabs.forEach(function (t) {
+                            t.classList.toggle('active', t === tab);
+                            t.setAttribute('aria-selected', t === tab ? 'true' : 'false');
+                        });
+                        panels.forEach(function (panel) {
+                            var show = panel.id === targetId;
+                            panel.hidden = !show;
+                        });
+                    });
+                });
+            }
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initLibraryModuleTabs);
+            } else {
+                initLibraryModuleTabs();
+            }
+        })();
+        (function () {
+            document.addEventListener('DOMContentLoaded', function () {
+                var btnLogout = document.getElementById('btnLogoutSettings');
+                if (btnLogout) {
+                    btnLogout.addEventListener('click', function () {
+                        localStorage.removeItem('omnishelf_user_state');
+                        localStorage.removeItem('omnishelf_current_user');
+                        localStorage.removeItem('omnishelf_current_user_role');
+                        localStorage.removeItem('omnishelf_current_user_name');
+                        try { if (typeof window.OMNI_UserState !== 'undefined' && window.OMNI_UserState.setLoggedIn) window.OMNI_UserState.setLoggedIn(false); } catch (e0) {}
+                        try { if (typeof window.OMNI_UserState !== 'undefined' && window.OMNI_UserState.leaveFamily) window.OMNI_UserState.leaveFamily(); } catch (e1) {}
+                        location.href = 'index.html';
+                    });
+                }
+                var btnActivate = document.getElementById('btnSettingsActivateMembership');
+                var settingsOverlay = document.getElementById('settingsModalOverlay');
+                if (btnActivate && settingsOverlay) {
+                    btnActivate.addEventListener('click', function () {
+                        settingsOverlay.style.display = 'none';
+                        if (typeof window.openPricingModal === 'function') window.openPricingModal();
+                    });
+                }
+            });
+        })();
+
+        // UI: Globální sbalitelný panel (Texty + Upload) + tipy v upload zóně
+        (function () {
+            function applyOpen(isOpen) {
+                var wrap = document.getElementById('libraryModulesPanelsWrap');
+                var statusText = document.getElementById('libraryModulesStatusText');
+                var btnOpen = document.getElementById('btnOpenLibraryModules');
+                var btnClose = document.getElementById('btnCloseLibraryModules');
+                if (!wrap || !statusText || !btnOpen || !btnClose) return;
+                wrap.hidden = !isOpen;
+                statusText.textContent = isOpen ? 'Panel nahrávání je otevřen' : 'Panel nahrávání je zavřený';
+                btnOpen.style.display = isOpen ? 'none' : '';
+                btnClose.hidden = !isOpen;
+            }
+
+            function openTipsModal() {
+                var overlay = document.getElementById('uploadTipsModalOverlay');
+                if (!overlay) return;
+                overlay.hidden = false;
+            }
+
+            function closeTipsModal() {
+                var overlay = document.getElementById('uploadTipsModalOverlay');
+                if (!overlay) return;
+                overlay.hidden = true;
+            }
+
+            document.addEventListener('DOMContentLoaded', function () {
+                // default: zavřeno
+                applyOpen(false);
+                closeTipsModal();
+                // expose for tab handler
+                window.__OMNI_setLibraryModulesOpen = applyOpen;
+                window.__OMNI_closeUploadTipsModal = closeTipsModal;
+
+                var btnOpen = document.getElementById('btnOpenLibraryModules');
+                var btnClose = document.getElementById('btnCloseLibraryModules');
+                if (btnOpen) btnOpen.addEventListener('click', function () {
+                    applyOpen(true);
+                    var wrap = document.getElementById('libraryModulesWrap');
+                    if (wrap) wrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                });
+                if (btnClose) btnClose.addEventListener('click', function () {
+                    closeTipsModal();
+                    applyOpen(false);
+                });
+
+                // Při přepnutí sekce knihovny (Půjčovna/Wishlist/Prodej/...) standardně zabal
+                document.addEventListener('library-view-changed', function () {
+                    closeTipsModal();
+                    applyOpen(false);
+                });
+
+                // Tipy: tlačítko je uvnitř drop zóny – nesmí spouštět výběr souboru
+                document.querySelectorAll('[data-open-tips="1"]').forEach(function (btn) {
+                    btn.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        openTipsModal();
+                    });
+                });
+
+                var overlay = document.getElementById('uploadTipsModalOverlay');
+                var closeBtn = document.getElementById('uploadTipsModalClose');
+                if (overlay) {
+                    overlay.addEventListener('click', function (e) {
+                        if (e.target === overlay) closeTipsModal();
+                    });
+                }
+                if (closeBtn) closeBtn.addEventListener('click', function () { closeTipsModal(); });
+                document.addEventListener('keydown', function (e) {
+                    if (e.key === 'Escape') closeTipsModal();
+                });
+            });
+        })();
+    </script>
+    <script>
+        (function () {
+            if (!('serviceWorker' in navigator)) return;
+            window.addEventListener('load', function () {
+                navigator.serviceWorker.register('./service-worker.js', { scope: './' }).then(function (reg) {
+                    if (reg.updated) console.log('OmniShelf: SW updated');
+                }).catch(function (err) {
+                    console.warn('OmniShelf: SW registration failed', err);
+                });
+            });
+        })();
+    </script>
+</body>
+</html>

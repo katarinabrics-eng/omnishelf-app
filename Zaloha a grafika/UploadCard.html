@@ -1,0 +1,83 @@
+<div class="upload-card">
+    <style>
+        .upload-card {
+            background: #ffffff;
+            border-radius: 30px;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .input-group label {
+            font-weight: bold;
+            color: #2d5a27;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+        }
+        .input-group input {
+            padding: 12px 15px;
+            border-radius: 12px;
+            border: 1px solid #e0e0e0;
+            background: #f9f9f9;
+        }
+        .drop-zone {
+            position: relative;
+            border: 2px dashed #A3E635;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: background 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            flex: 1;
+            min-height: 200px;
+        }
+        .drop-zone:hover {
+            background: #f7fee7;
+        }
+        .camera-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+        .btn-analyze {
+            background: #888; /* Šedá jako na screenshotu, dokud nenahrajete */
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 12px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
+
+    <div class="input-group">
+        <label for="shelfName" id="shelfQuestionLabel">Aktuálně skenuji poličku</label>
+        <input type="text" id="shelfName" class="shelf-input" placeholder="např. Obývák - horní" />
+    </div>
+
+    <div class="drop-zone" id="uploadArea">
+        <div class="camera-icon">📷</div>
+        <strong id="uploadTextEl">Nahrajte fotku knihovny</strong>
+        <p style="font-size: 0.9rem; color: #666;" id="uploadBrowseEl">nebo klikněte a vyberte obrázek</p>
+        <input type="file" id="fileInput" accept="image/*" style="position:absolute;opacity:0;width:100%;height:100%;cursor:pointer;top:0;left:0;" />
+    </div>
+    <div id="imagePreview"></div>
+    <div id="fileInfo"></div>
+    <div class="analyze-row">
+        <button class="btn-analyze analyze-button" id="analyzeButton" disabled>Analyzovat</button>
+        <button type="button" class="btn-add-detail-universal" id="btnAddDetailAnalyze" title="Přidat detailně" aria-label="Přidat detailně">✏️➕</button>
+    </div>
+    <div class="message error" id="errorMessage"></div>
+    <div class="message success" id="successMessage"></div>
+</div>

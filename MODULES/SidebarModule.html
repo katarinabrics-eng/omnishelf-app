@@ -1,0 +1,68 @@
+<aside class="sidebar">
+    <div class="sidebar-header">
+        <button type="button" class="btn-back-to-dashboard" id="btnBackToDashboard" style="display:none;"><span class="btn-back-arrow" style="color:#8DD311;">←</span><span class="btn-back-text">zpět na OmniShelf</span></button>
+        <button type="button" class="sidebar-logo" id="sidebarLogo" aria-label="Zpět na Knihovnu">
+            <div class="sidebar-logo-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M8 7h8"/><path d="M8 11h8"/></svg>
+            </div>
+            <div class="sidebar-logo-inner">
+                <div class="sidebar-logo-text" id="sidebarLogoText">OmniShelf AI</div>
+                <div class="sidebar-slogan" id="sidebarSlogan" data-i18n="slogan">Vše, co miluješ, na jedné chytré polici</div>
+            </div>
+        </button>
+    </div>
+    <nav class="sidebar-nav">
+        <div class="sidebar-library-group sidebar-group-expandable" id="sidebarMainLibrary">
+            <button type="button" class="sidebar-nav-item sidebar-nav-toggle" data-module="library" data-has-submenu="1">Moje knihovna</button>
+            <div class="sidebar-submenu" id="librarySubmenu">
+                <button type="button" class="sidebar-submenu-item" data-view="collection" data-i18n="myCollection">Tvoje sbírka</button>
+                <button type="button" class="sidebar-submenu-item active" data-view="currentlyReading" data-i18n="currentlyReading">Rozečteno</button>
+                <button type="button" class="sidebar-submenu-item" data-view="borrowed" data-i18n="borrowed">Půjčil/a jsem</button>
+                <button type="button" class="sidebar-submenu-item" data-view="borrowedByMe" data-i18n="borrowedByMe">Mám vypůjčeno</button>
+                <button type="button" class="sidebar-submenu-item" data-view="wishlist">Wishlist</button>
+                <button type="button" class="sidebar-submenu-item" data-view="forSale">Na prodej</button>
+                <button type="button" class="sidebar-submenu-item" data-view="favorites">Srdcovky</button>
+                <button type="button" class="sidebar-submenu-item" data-view="friendsHighlights" data-i18n="friendsHighlights">Přátelé doporučují</button>
+            </div>
+        </div>
+        <button type="button" class="sidebar-back-to-library" id="btnSidebarBackToLibrary"><span class="sidebar-back-arrow">←</span> zpět na hlavní nástěnku</button>
+        <hr class="sidebar-divider">
+        <div class="sidebar-library-group" id="sidebarChildrenLibrary">
+            <button type="button" class="sidebar-nav-item" data-module="childrenLibrary" id="btnChildrenLibraryToggle"><span class="sidebar-kids-icon" style="color:var(--kids-yellow);">🧸</span> OmniShelf Kids</button>
+        </div>
+        <hr class="sidebar-divider">
+        <div class="sidebar-library-group" id="sidebarPracovna">
+            <button type="button" class="sidebar-nav-item" data-module="pracovna" id="btnPracovnaToggle">Pracovna (Studium)</button>
+        </div>
+        <hr class="sidebar-divider">
+        <div class="sidebar-library-group sidebar-group-expandable" id="sidebarOtherSectors">
+            <button type="button" class="sidebar-nav-item sidebar-nav-toggle" id="btnOtherSectorsToggle">Další sektory (připravujeme)</button>
+            <div class="sidebar-submenu" id="otherSectorsSubmenu">
+                <button type="button" class="sidebar-submenu-item" data-module="visualMap" data-i18n="moduleVisualMap">Vizuální Mapa</button>
+                <button type="button" class="sidebar-submenu-item" data-module="vinyl" data-i18n="moduleVinyl">Hudební sbírka</button>
+                <button type="button" class="sidebar-submenu-item" data-module="warehouse" data-i18n="moduleWarehouse">Sklad</button>
+                <button type="button" class="sidebar-submenu-item" data-module="cardindex" data-i18n="moduleCardindex">Kartotéka</button>
+                <button type="button" class="sidebar-submenu-item" data-module="wardrobe" data-i18n="moduleWardrobe">Šatník</button>
+                <button type="button" class="sidebar-submenu-item" data-module="workshop" data-i18n="moduleWorkshop">Dílna</button>
+                <button type="button" class="sidebar-submenu-item" data-module="winery" data-i18n="moduleWinery">Vinotéka</button>
+                <button type="button" class="sidebar-submenu-item" data-module="pantry" data-i18n="modulePantry">Spíž</button>
+            </div>
+        </div>
+        <hr class="sidebar-divider">
+        <button type="button" class="sidebar-nav-item sidebar-nav-admin-only" data-module="statistics" data-i18n="moduleStatistics">Statistiky</button>
+        <div class="sidebar-rodina-wrap" id="sidebarRodinaWrap">
+            <hr class="sidebar-rodina-divider">
+            <div class="sidebar-rodina-title">RODINA</div>
+            <div id="sidebarRodinaList" class="sidebar-rodina-list"></div>
+        </div>
+        <button type="button" class="sidebar-nav-item sidebar-nav-settings" id="btnOpenSettings" data-open-modal="settings">Nastavení<span class="settings-pending-dot" id="settingsPendingDot" aria-hidden="true"></span></button>
+    </nav>
+    <div class="sidebar-stats" id="sidebarStats">Celkem: 0 položek</div>
+    <div class="sidebar-export">
+        <div class="sidebar-export-title">Export</div>
+        <div class="sidebar-export-btns">
+            <button type="button" class="btn-export" id="btnExportPdf">Stáhnout PDF</button>
+            <button type="button" class="btn-export" id="btnExportCsv">Stáhnout CSV</button>
+        </div>
+    </div>
+</aside>

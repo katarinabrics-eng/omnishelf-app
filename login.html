@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#8DD311">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>OmniShelf | Přihlášení</title>
+    <link rel="icon" href="./assets/img/ikona_kartyknih.png" type="image/png">
+    <link rel="apple-touch-icon" href="./assets/img/ikona_kartyknih.png">
+    <link rel="manifest" href="./manifest.json">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --text: #1d1d1f; --muted: #6b7280; --border: #e5e7eb; --bg: #f5f5f5; --accent: #8DD311; --accent-hover: #7bc00f; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 24px 20px;
+        }
+        .login-container { width: 100%; max-width: 420px; }
+        .login-logo {
+            display: block;
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            object-fit: contain;
+        }
+        .login-box {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 28px 24px 24px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.02);
+        }
+        #auth-title { font-size: 1.35rem; font-weight: 700; margin-bottom: 6px; color: var(--text); }
+        #auth-subtitle { color: var(--muted); font-size: 0.9375rem; line-height: 1.4; margin-bottom: 20px; }
+        .input-group { margin-bottom: 14px; }
+        .input-group input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            font-size: 1rem;
+            font-family: inherit;
+            outline: none;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+        .input-group input:focus { border-color: rgba(141, 211, 17, 0.65); box-shadow: 0 0 0 3px rgba(141, 211, 17, 0.15); }
+        #auth-submit-btn {
+            width: 100%;
+            border: none;
+            border-radius: 14px;
+            padding: 14px 16px;
+            font-weight: 700;
+            font-size: 1rem;
+            font-family: inherit;
+            cursor: pointer;
+            background: var(--accent);
+            color: #0b0b0b;
+            margin-top: 4px;
+        }
+        #auth-submit-btn:hover { background: var(--accent-hover); }
+        #auth-submit-btn:active { transform: scale(0.99); }
+        .auth-error {
+            display: none;
+            margin: 10px 0 2px;
+            color: #b91c1c;
+            font-size: 0.9rem;
+        }
+        .auth-error.visible { display: block; }
+        .auth-toggle { margin-top: 16px; text-align: center; color: var(--muted); font-size: 0.9375rem; }
+        #toggle-link { color: var(--text); font-weight: 600; cursor: pointer; text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 3px; }
+        #toggle-link:hover { color: var(--accent); }
+        .auth-tools { margin-top: 14px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+        .auth-link-btn {
+            border: none;
+            background: transparent;
+            color: var(--muted);
+            font-size: 0.875rem;
+            font-family: inherit;
+            cursor: pointer;
+            padding: 8px 4px;
+            min-height: 44px;
+            display: inline-flex;
+            align-items: center;
+        }
+        .auth-link-btn:hover { text-decoration: underline; color: var(--text); }
+        .admin-dot-btn {
+            width: 36px;
+            height: 36px;
+            min-width: 36px;
+            min-height: 36px;
+            border-radius: 50%;
+            border: 1px solid var(--border);
+            background: rgba(0,0,0,0.04);
+            cursor: pointer;
+            flex: 0 0 auto;
+            opacity: 0.6;
+        }
+        .admin-dot-btn:hover { opacity: 1; background: rgba(141, 211, 17, 0.15); border-color: rgba(141, 211, 17, 0.4); }
+        .register-only { display: none; }
+        body.is-register .register-only { display: block; }
+        body.is-register .login-only { display: none; }
+        .auth-success {
+            display: none;
+            margin: 10px 0 2px;
+            color: #065f46;
+            font-size: 0.9rem;
+        }
+        .auth-success.visible { display: block; }
+        .back-link { margin-top: 20px; text-align: center; }
+        .back-link a { color: var(--muted); text-decoration: none; font-size: 0.9375rem; padding: 8px 12px; display: inline-block; min-height: 44px; line-height: 28px; }
+        .back-link a:hover { color: var(--accent); text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <img src="./Ikony do aplikace _ 200px/01_small200px_4.png" alt="OmniShelf" class="login-logo" width="80" height="80">
+        <div class="login-box">
+            <h2 id="auth-title">Přihlášení do OmniShelf</h2>
+            <p id="auth-subtitle">Vítejte zpět! Prosím, přihlaste se.</p>
+
+            <form id="login-form" autocomplete="on">
+                <div class="input-group register-only">
+                    <input type="text" id="regName" placeholder="Jméno" autocomplete="name">
+                </div>
+                <div class="input-group">
+                    <input type="text" id="username" placeholder="E-mail nebo uživatelské jméno" required autocomplete="username">
+                </div>
+                <div class="input-group">
+                    <input type="password" id="password" placeholder="Heslo" required autocomplete="current-password">
+                </div>
+                <div class="input-group register-only">
+                    <input type="number" id="regAge" placeholder="Věk" min="1" max="120" autocomplete="off">
+                </div>
+                <p id="authError" class="auth-error" role="alert"></p>
+                <p id="authSuccess" class="auth-success" role="status"></p>
+                <button type="submit" id="auth-submit-btn">Vstoupit</button>
+            </form>
+
+            <div class="auth-tools">
+                <button type="button" class="auth-link-btn login-only" id="btnResetPasswordTest">Zapomněli jste heslo? (reset – test)</button>
+                <span class="register-only" style="color:var(--muted);font-size:0.9rem;">Reset hesla je zatím dostupný jen v režimu přihlášení.</span>
+                <button type="button" class="admin-dot-btn" id="btnAdminDot" aria-label="Admin"></button>
+            </div>
+
+            <div class="auth-toggle">
+                <p id="toggle-text">Nemáte ještě účet? <span id="toggle-link">Zaregistrujte se</span></p>
+            </div>
+        </div>
+        <div class="back-link"><a href="./index.html">← Zpět na úvod</a></div>
+    </div>
+    <script src="./js/config/user-state.js"></script>
+    <script src="./login.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,45 @@
+<!-- Sekce Rozečteno – načítá se do #readingViewWrap v main.html; style.css a library-logic.js jsou v hlavním dokumentu. -->
+<section class="reading-view-wrap reading-panel" id="readingViewSection" aria-label="Rozečteno">
+    <div class="reading-today-panel reading-panel-inner">
+        <h2 class="reading-today-title">Co mám rozečteno</h2>
+        <p class="reading-today-desc">Rychlé volby – doporučím knihu podle tvé nálady a historie.</p>
+        <div class="reading-bubbles" role="group" aria-label="Rychlý výběr nálady">
+            <button type="button" class="reading-bubble" data-mood="cool" aria-label="Odpočinkové">😎</button>
+            <button type="button" class="reading-bubble" data-mood="zen" aria-label="Klid">🧘‍♂️</button>
+            <button type="button" class="reading-bubble" data-mood="mind" aria-label="Soustředění">🧠</button>
+            <button type="button" class="reading-bubble" data-mood="book" aria-label="Čtení">📚</button>
+            <button type="button" class="reading-bubble" data-mood="star" aria-label="Objev">🌟</button>
+            <button type="button" class="reading-bubble" data-mood="drama" aria-label="Příběh">🎭</button>
+        </div>
+    </div>
+    <div class="reading-ai-chat-wrap reading-panel-inner">
+        <label for="readingAiQueryInput" class="reading-ai-label">Volný dotaz</label>
+        <input type="text" id="readingAiQueryInput" class="reading-ai-input" placeholder="Nudím se, chci něco, co mě zabaví..." autocomplete="off" />
+    </div>
+    <div class="reading-ai-response reading-panel-inner" id="readingAiResponse" aria-live="polite">
+        <p class="reading-ai-response-text" id="readingAiResponseText"></p>
+    </div>
+    <div class="reading-mood-bar-wrap reading-panel-inner">
+        <span class="reading-mood-label">Na co máš dnes chuť?</span>
+        <div class="reading-mood-bar">
+            <button type="button" class="reading-mood-btn" data-mood="adventure">🚀 Dobrodružství</button>
+            <button type="button" class="reading-mood-btn" data-mood="melancholy">🌙 Melancholie</button>
+            <button type="button" class="reading-mood-btn" data-mood="uplift">🔥 Povzbuzení</button>
+            <button type="button" class="reading-mood-btn" data-mood="mystery">🍀 Záhada</button>
+        </div>
+    </div>
+    <div class="reading-genre-wrap reading-panel-inner">
+        <span class="reading-genre-label">Žánrová doporučení</span>
+        <div class="reading-genre-bar">
+            <button type="button" class="reading-genre-btn" data-genre="detektivka">🔍 Detektivky</button>
+            <button type="button" class="reading-genre-btn" data-genre="scifi">🚀 Sci-fi</button>
+            <button type="button" class="reading-genre-btn" data-genre="romantika">💕 Romantika</button>
+            <button type="button" class="reading-genre-btn" data-genre="fantasy">⚔️ Fantasy</button>
+            <button type="button" class="reading-genre-btn" data-genre="thriller">🎬 Thriller</button>
+        </div>
+    </div>
+    <div class="reading-search-row">
+        <input type="text" id="readingCustomSearchInput" class="reading-search-input" placeholder="Napiš mi vlastními slovy, co hledáš..." autocomplete="off" />
+        <button type="button" class="reading-search-btn" id="readingSearchBtn">Hledat</button>
+    </div>
+</section>

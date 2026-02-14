@@ -1,0 +1,88 @@
+<div class="content-for-collection" id="contentForCollection">
+    <div class="content-for-collection-placeholder" id="contentForCollectionPlaceholder" style="display:none;">
+        <div class="visual-map-upload-wrap" id="visualMapUploadWrap" style="display:none;">
+            <p class="visual-map-intro" data-i18n="visualMapIntro">Nahraj fotky místnosti z různých úhlů. AI z nich poskládá 3D pohled a později tě navede přímo k poličce.</p>
+            <div class="visual-map-upload-area" id="visualMapUploadArea">
+                <input type="file" id="visualMapFileInput" accept="image/*" multiple />
+                <div class="visual-map-upload-inner">
+                    <span class="visual-map-upload-icon">🖼️</span>
+                    <span class="visual-map-upload-text" data-i18n="visualMapUploadText">Přetáhni sem několik fotek místnosti</span>
+                    <span class="visual-map-upload-hint" data-i18n="visualMapUploadHint">nebo klikni a vyber více obrázků</span>
+                </div>
+            </div>
+            <p class="visual-map-status" id="visualMapStatus" data-i18n="visualMapStatusBuilding">AI nyní skládá tvůj pokoj do 3D pohledu…</p>
+            <div class="visual-map-previews" id="visualMapPreviews"></div>
+            <div class="visual-map-shelf-container" id="visualMapShelfContainer" style="display:none;">
+                <img class="visual-map-shelf-image" id="visualMapShelfImage" alt="" />
+                <div class="visual-map-hotspots" id="visualMapHotspots">
+                    <button type="button" class="visual-map-hotspot" id="visualMapHotspotPratchett" title="Pratchett / Zeměplocha" aria-label="Pratchett">📚</button>
+                </div>
+            </div>
+            <div class="visual-map-actions" style="margin-top:16px;">
+                <button type="button" class="btn-ai-presentation" id="btnOpenCollectionPresentation" data-i18n="openCollectionPresentation" style="font-size:0.9rem;">Otevřít AI Prezentaci sbírky</button>
+            </div>
+        </div>
+        <div class="coming-soon-card" id="comingSoonCard">
+            <p class="coming-soon-text" id="comingSoonText">Tato sekce se pro tebe připravuje</p>
+            <div class="coming-soon-actions">
+                <button type="button" class="btn-coming-soon-vote" id="btnComingSoonVote">Chci u toho být!</button>
+                <button type="button" class="btn-coming-soon-ai" id="btnComingSoonAi" data-i18n="designFeatureWithMe">Navrhni se mnou tuto funkci</button>
+            </div>
+            <p class="coming-soon-thanks" id="comingSoonThanks" style="display:none;" data-i18n="thanksForVote">Díky za hlas! Máte to u mě.</p>
+        </div>
+    </div>
+    <div class="content-for-collection-main" id="contentForCollectionMain">
+        <div class="collection-grid-cols">
+            <div class="collection-col-left">
+                <div class="collection-intro" id="collectionIntro">
+                    <p>Vítejte ve svém kreativním prostoru. Zde můžete digitálně zachytit svou fyzickou knihovnu. Aktuálně skenujete poličku: zde se zobrazí název knihovny, kterou právě zpracováváte.</p>
+                    <p>Jak na to? Můžete nahrávat fotky celé knihovny, pokud je dostatečně ostrá pro identifikaci titulů. Pro nejlepší výsledky doporučujeme fotit sekce po cca 20 knihách. Rozptýlené světlo zajistí čitelnost hřbetů; vyhněte se přímým odleskům, které snižují úspěšnost čtení. Chybějící informace můžete kdykoliv ručně doplnit níže ve své knihovně.</p>
+                    <p>🎥 <a href="#" class="collection-intro-video-link" id="collectionIntroVideoLink">Podívejte se na instruktážní video</a>, jak správně fotit, aby vám aplikace pomáhala a ne vás namáhala.</p>
+                </div>
+            </div>
+            <div class="collection-col-right">
+                <div class="library-modules-wrap" id="libraryModulesWrap">
+                    <nav class="library-module-tabs" role="tablist" aria-label="Způsob přidání do knihovny">
+                        <button type="button" class="library-module-tab active" role="tab" id="libraryTabTexty" aria-selected="true" aria-controls="libraryModuleTexty" data-library-module="texty">Texty</button>
+                        <button type="button" class="library-module-tab" role="tab" id="libraryTabUpload" aria-selected="false" aria-controls="libraryModuleUpload" data-library-module="upload">Upload souborů</button>
+                    </nav>
+                    <section class="library-module library-module-texty" id="libraryModuleTexty" role="tabpanel" aria-labelledby="libraryTabTexty">
+                        <div id="library-manual-add-slot"></div>
+                    </section>
+                    <section class="library-module library-module-upload" id="libraryModuleUpload" role="tabpanel" aria-labelledby="libraryTabUpload" hidden>
+                        <div class="current-shelf-banner" id="currentShelfBanner">
+                            <label for="shelfName" id="shelfQuestionLabel" data-i18n="shelfQuestion">Aktuálně skenuji poličku</label>
+                            <input type="text" id="shelfName" class="shelf-input" data-i18n-placeholder="placeholderShelf" placeholder="např. Obývák - horní" />
+                        </div>
+                        <div id="library-upload-slot"></div>
+                    </section>
+                </div>
+            </div>
+        </div>
+        <hr class="section-divider" />
+        <div class="results-section this-scan-accordion collapsed" id="resultsSection">
+            <div class="this-scan-header" id="thisScanHeader">
+                <h2 class="results-title this-scan-title" data-i18n="thisScan">Tento sken</h2>
+                <div class="this-scan-header-actions">
+                    <button type="button" class="btn-clear-workspace" id="btnClearWorkspace" data-i18n="clearWorkspace">Vymazat pracovní plochu</button>
+                    <button type="button" class="this-scan-toggle" id="thisScanToggle" aria-label="Rozbalit / Sbalit">
+                        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+                    </button>
+                </div>
+            </div>
+            <div class="this-scan-content" id="thisScanContent">
+                <div class="cards-grid this-scan-cards" id="resultsBody"></div>
+                <button class="add-book-btn" id="addBookBtn" data-i18n="addBook">+ Přidat položku</button>
+            </div>
+        </div>
+        <hr class="section-divider" />
+        <section class="scan-history">
+            <div class="scan-history-header">
+                <h2 class="scan-history-title" data-i18n="scanHistory">Moje knihovna</h2>
+            </div>
+            <div id="scanHistoryContent">
+                <div id="library-grid-slot"></div>
+            </div>
+        </section>
+    </div>
+</div>

@@ -1,0 +1,135 @@
+<div class="edit-book-modal-overlay" id="editBookModalOverlay" role="dialog" aria-modal="true" aria-labelledby="editBookModalTitle" style="display: none;">
+    <div class="edit-book-modal" id="editBookModal">
+        <div class="edit-book-modal-header">
+            <h2 class="edit-book-modal-title" id="editBookModalTitle">Upravit knihu</h2>
+            <button type="button" class="edit-book-modal-close" id="editBookModalClose" aria-label="Zavřít" onclick="typeof closeEditModal === 'function' && closeEditModal();">×</button>
+        </div>
+        <div class="edit-book-modal-body">
+            <div class="edit-book-top">
+                <div class="edit-book-modal-cover-wrap">
+                    <div class="edit-book-cover-preview" id="editBookCoverPreview">
+                        <span class="edit-book-cover-placeholder">Náhled obálky</span>
+                    </div>
+                    <label class="edit-book-cover-change" id="editBookCoverChangeLabel">
+                        <input type="file" id="editBookCoverInput" accept="image/*" style="display: none;" />
+                        <span class="edit-book-cover-change-text">Změnit obálku</span>
+                    </label>
+                </div>
+                <div class="edit-book-basic">
+                    <div class="edit-book-field">
+                        <label for="editBookTitle">Název</label>
+                        <input type="text" id="editBookTitle" placeholder="Název knihy" />
+                    </div>
+                    <div class="edit-book-field">
+                        <label for="editBookAuthor">Autor</label>
+                        <input type="text" id="editBookAuthor" placeholder="Autor" />
+                    </div>
+                    <div class="edit-book-field">
+                        <label for="editBookReadingStatus">Status čtení</label>
+                        <select id="editBookReadingStatus">
+                            <option value="unread">Nepřečteno</option>
+                            <option value="reading">Rozečteno</option>
+                            <option value="read">Přečtené</option>
+                        </select>
+                    </div>
+                    <div class="edit-book-field">
+                        <label for="editBookOwnershipStatus">Status vlastnictví</label>
+                        <select id="editBookOwnershipStatus">
+                            <option value="mine">Moje</option>
+                            <option value="borrowed">Půjčeno někomu</option>
+                            <option value="borrowedByMe">Mám vypůjčeno</option>
+                            <option value="forSale">Na prodej</option>
+                            <option value="wishlist">Wishlist</option>
+                        </select>
+                    </div>
+                    <div class="edit-book-field">
+                        <label for="editBookPrivacy">Soukromí</label>
+                        <select id="editBookPrivacy">
+                            <option value="private">Soukromá</option>
+                            <option value="family">Rodina</option>
+                            <option value="public">Veřejná</option>
+                        </select>
+                    </div>
+                    <div class="edit-book-field edit-book-borrowed-wrap" id="editBookBorrowedWrap" style="display: none;">
+                        <label for="editBookBorrowedTo">Komu</label>
+                        <input type="text" id="editBookBorrowedTo" placeholder="Komu je kniha půjčená" />
+                        <label for="editBookReturnDueDate">Vrátit do</label>
+                        <input type="date" id="editBookReturnDueDate" placeholder="Datum vrácení" />
+                    </div>
+                    <div class="edit-book-field edit-book-borrowed-by-me-wrap" id="editBookBorrowedByMeWrap" style="display: none;">
+                        <label for="editBookBorrowedFrom">Od koho</label>
+                        <input type="text" id="editBookBorrowedFrom" placeholder="Od koho mám knihu vypůjčenou" />
+                        <label for="editBookReturnDueDateByMe">Vrátit do</label>
+                        <input type="date" id="editBookReturnDueDateByMe" placeholder="Datum vrácení" />
+                    </div>
+                </div>
+            </div>
+            <div class="edit-book-voice-section">
+                <button type="button" class="edit-book-voice-btn" id="editBookVoiceBtn" onclick="typeof toggleAudioRecording === 'function' && toggleAudioRecording();" aria-label="Hlasová poznámka">
+                    <span class="edit-book-voice-icon" aria-hidden="true">🎤</span>
+                    <span class="edit-book-voice-label">Hlasová poznámka/recenze</span>
+                </button>
+                <div class="edit-book-waveform" id="editBookWaveform" style="display: none;" aria-hidden="true">
+                    <span class="edit-book-waveform-bar"></span>
+                    <span class="edit-book-waveform-bar"></span>
+                    <span class="edit-book-waveform-bar"></span>
+                    <span class="edit-book-waveform-bar"></span>
+                    <span class="edit-book-waveform-bar"></span>
+                    <span class="edit-book-waveform-bar"></span>
+                    <span class="edit-book-waveform-bar"></span>
+                    <span class="edit-book-waveform-bar"></span>
+                </div>
+            </div>
+            <div class="edit-book-accordion">
+                <button type="button" class="edit-book-accordion-toggle" id="editBookAccordionToggle" onclick="typeof toggleAccordion === 'function' && toggleAccordion();" aria-expanded="false" aria-controls="editBookAccordionContent">
+                    <span>Více informací</span>
+                    <svg class="edit-book-accordion-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+                </button>
+                <div class="edit-book-accordion-content" id="editBookAccordionContent" aria-hidden="true">
+                    <div class="edit-book-modal-fields">
+                        <div class="edit-book-field">
+                            <label for="editBookIsbn">ISBN/EAN</label>
+                            <input type="text" id="editBookIsbn" placeholder="např. 978-80-123-4567-8" inputmode="numeric" />
+                        </div>
+                        <div class="edit-book-field">
+                            <label for="editBookGenre">Žánr</label>
+                            <input type="text" id="editBookGenre" placeholder="Žánr" />
+                        </div>
+                        <div class="edit-book-field">
+                            <label for="editBookYear">Rok vydání</label>
+                            <input type="text" id="editBookYear" placeholder="např. 2020" inputmode="numeric" />
+                        </div>
+                        <div class="edit-book-field">
+                            <label for="editBookEstimatedValue">Odhadovaná hodnota</label>
+                            <input type="text" id="editBookEstimatedValue" placeholder="např. 200 Kč" />
+                        </div>
+                        <div class="edit-book-field">
+                            <label for="editBookLocation">Umístění</label>
+                            <input type="text" id="editBookLocation" placeholder="např. Obývák - horní" />
+                        </div>
+                        <div class="edit-book-field">
+                            <label for="editBookOwner">Vlastník</label>
+                            <input type="text" id="editBookOwner" placeholder="Vlastník" />
+                        </div>
+                        <div class="edit-book-field">
+                            <label for="editBookPosition">Pozice na polici</label>
+                            <input type="text" id="editBookPosition" placeholder="např. vlevo, uprostřed" />
+                        </div>
+                        <div class="edit-book-field">
+                            <label for="editBookReadingProgress">Progres čtení (%)</label>
+                            <input type="number" id="editBookReadingProgress" min="0" max="100" placeholder="0–100" />
+                        </div>
+                        <div class="edit-book-field edit-book-field-full">
+                            <label for="editBookAiSummary">AI Sumář</label>
+                            <textarea id="editBookAiSummary" rows="8" placeholder="Shrnutí nebo poznámky…"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="edit-book-modal-footer">
+            <button type="button" class="btn-edit-book-save" id="editBookModalSave">Uložit</button>
+            <button type="button" class="btn-open-pracovna btn-edit-book-pracovna" id="editBookModalPracovna">📖 Přejít do Pracovny</button>
+        </div>
+    </div>
+</div>

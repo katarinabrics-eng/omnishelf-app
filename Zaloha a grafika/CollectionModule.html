@@ -1,0 +1,136 @@
+<div class="content-for-collection" id="contentForCollection">
+            <div class="content-for-collection-placeholder" id="contentForCollectionPlaceholder" style="display:none;">
+                <div class="visual-map-upload-wrap" id="visualMapUploadWrap" style="display:none;">
+                    <p class="visual-map-intro" data-i18n="visualMapIntro">Nahraj fotky místnosti z různých úhlů. AI z nich poskládá 3D pohled a později tě navede přímo k poličce.</p>
+                    <div class="visual-map-upload-area" id="visualMapUploadArea">
+                        <input type="file" id="visualMapFileInput" accept="image/*" multiple />
+                        <div class="visual-map-upload-inner">
+                            <span class="visual-map-upload-icon">🖼️</span>
+                            <span class="visual-map-upload-text" data-i18n="visualMapUploadText">Přetáhni sem několik fotek místnosti</span>
+                            <span class="visual-map-upload-hint" data-i18n="visualMapUploadHint">nebo klikni a vyber více obrázků</span>
+                        </div>
+                    </div>
+                    <p class="visual-map-status" id="visualMapStatus" data-i18n="visualMapStatusBuilding">AI nyní skládá tvůj pokoj do 3D pohledu…</p>
+                    <div class="visual-map-previews" id="visualMapPreviews"></div>
+                    <div class="visual-map-shelf-container" id="visualMapShelfContainer" style="display:none;">
+                        <img class="visual-map-shelf-image" id="visualMapShelfImage" alt="" />
+                        <div class="visual-map-hotspots" id="visualMapHotspots">
+                            <button type="button" class="visual-map-hotspot" id="visualMapHotspotPratchett" title="Pratchett / Zeměplocha" aria-label="Pratchett">📚</button>
+                        </div>
+                    </div>
+                    <div class="visual-map-actions" style="margin-top:16px;">
+                        <button type="button" class="btn-ai-presentation" id="btnOpenCollectionPresentation" data-i18n="openCollectionPresentation" style="font-size:0.9rem;">Otevřít AI Prezentaci sbírky</button>
+                    </div>
+                </div>
+                <div class="coming-soon-card" id="comingSoonCard">
+                    <p class="coming-soon-text" id="comingSoonText">Tato sekce se pro tebe připravuje</p>
+                    <div class="coming-soon-actions">
+                        <button type="button" class="btn-coming-soon-vote" id="btnComingSoonVote">Chci u toho být!</button>
+                        <button type="button" class="btn-coming-soon-ai" id="btnComingSoonAi" data-i18n="designFeatureWithMe">Navrhni se mnou tuto funkci</button>
+                    </div>
+                    <p class="coming-soon-thanks" id="comingSoonThanks" style="display:none;" data-i18n="thanksForVote">Díky za hlas! Máte to u mě.</p>
+                </div>
+            </div>
+            <div class="content-for-collection-main" id="contentForCollectionMain">
+            <div class="collection-grid-cols">
+                <div class="collection-col-left">
+                    <div class="collection-intro" id="collectionIntro">
+                        <p>Vítejte ve svém kreativním prostoru. Zde můžete digitálně zachytit svou fyzickou knihovnu. Aktuálně skenujete poličku: zde se zobrazí název knihovny, kterou právě zpracováváte.</p>
+                        <p>Jak na to? Můžete nahrávat fotky celé knihovny, pokud je dostatečně ostrá pro identifikaci titulů. Pro nejlepší výsledky doporučujeme fotit sekce po cca 20 knihách. Rozptýlené světlo zajistí čitelnost hřbetů; vyhněte se přímým odleskům, které snižují úspěšnost čtení. Chybějící informace můžete kdykoliv ručně doplnit níže ve své knihovně.</p>
+                        <p>🎥 <a href="#" class="collection-intro-video-link" id="collectionIntroVideoLink">Podívejte se na instruktážní video</a>, jak správně fotit, aby vám aplikace pomáhala a ne vás namáhala.</p>
+                    </div>
+                </div>
+                <div class="collection-col-right">
+                    <div class="current-shelf-banner" id="currentShelfBanner">
+                        <label for="shelfName" id="shelfQuestionLabel" data-i18n="shelfQuestion">Aktuálně skenuji poličku</label>
+                        <input type="text" id="shelfName" class="shelf-input" data-i18n-placeholder="placeholderShelf" placeholder="např. Obývák - horní" />
+                    </div>
+                    <section class="upload-section" id="uploadSection">
+            <div class="upload-section-title" data-i18n="uploadSectionTitle">Nahrát obrázek</div>
+            <div class="upload-area" id="uploadArea">
+                <div class="upload-icon">📷</div>
+                <div class="upload-text" id="uploadTextEl">Přetáhněte obrázek sem</div>
+                <div class="upload-browse" id="uploadBrowseEl">nebo klikněte pro výběr</div>
+                <input type="file" id="fileInput" accept="image/*" />
+            </div>
+            <div id="imagePreview"></div>
+            <div id="fileInfo"></div>
+            <div class="analyze-row">
+            <button class="analyze-button" id="analyzeButton" data-i18n="analyze" disabled>Analyzovat</button>
+            <button type="button" class="btn-add-detail-universal" id="btnAddDetailAnalyze" title="Přidat detailně" aria-label="Přidat detailně">✏️➕</button>
+            </div>
+            <div class="message error" id="errorMessage"></div>
+            <div class="message success" id="successMessage"></div>
+        </section>
+                </div>
+            </div>
+            <hr class="section-divider" />
+        <div class="results-section this-scan-accordion collapsed" id="resultsSection">
+            <div class="this-scan-header" id="thisScanHeader">
+                <h2 class="results-title this-scan-title" data-i18n="thisScan">Tento sken</h2>
+                <div class="this-scan-header-actions">
+                    <button type="button" class="btn-clear-workspace" id="btnClearWorkspace" data-i18n="clearWorkspace">Vymazat pracovní plochu</button>
+                    <button type="button" class="this-scan-toggle" id="thisScanToggle" aria-label="Rozbalit / Sbalit">
+                        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+                    </button>
+                </div>
+            </div>
+            <div class="this-scan-content" id="thisScanContent">
+                <div class="cards-grid this-scan-cards" id="resultsBody"></div>
+                <button class="add-book-btn" id="addBookBtn" data-i18n="addBook">+ Přidat položku</button>
+            </div>
+        </div>
+        <hr class="section-divider" />
+        <section class="scan-history">
+            <div class="scan-history-header">
+                <h2 class="scan-history-title" data-i18n="scanHistory">Moje knihovna</h2>
+            </div>
+            <div id="scanHistoryContent">
+                <div class="empty-state" id="emptyState">
+                    <div class="empty-state-icon">📖</div>
+                    <p data-i18n="scannedBooksAppear">Naskenované knihy se zobrazí zde.</p>
+                </div>
+                <div class="books-grid" id="scanHistoryGrid" style="display: none;"></div>
+            </div>
+            <form class="manual-add-form" id="manualAddForm">
+                <div class="manual-add-form-title" data-i18n="addBookManually">Přidat knihu ručně</div>
+                <div class="form-row form-row-five">
+                    <div>
+                        <label for="manualTitle" data-i18n="title">Název</label>
+                        <input type="text" id="manualTitle" data-i18n-placeholder="placeholderTitle" placeholder="Název knihy" />
+                    </div>
+                    <div>
+                        <label for="manualAuthor" data-i18n="author">Autor</label>
+                        <input type="text" id="manualAuthor" data-i18n-placeholder="placeholderAuthor" placeholder="Jméno autora" />
+                    </div>
+                    <div>
+                        <label for="manualLocation" data-i18n="location">Umístění</label>
+                        <input type="text" id="manualLocation" data-i18n-placeholder="placeholderShelf" placeholder="např. Obývák - horní" />
+                    </div>
+                    <div>
+                        <label for="manualPosition" data-i18n="position">Pozice na polici</label>
+                        <input type="text" id="manualPosition" data-i18n-placeholder="placeholderPosition" placeholder="např. vlevo, uprostřed" />
+                    </div>
+                    <div>
+                        <label for="manualEstimatedValue" data-i18n="estimatedValue">Odhadovaná hodnota</label>
+                        <input type="text" id="manualEstimatedValue" data-i18n-placeholder="estimatedValuePlaceholder" placeholder="např. 200 Kč" />
+                    </div>
+                    <div>
+                        <label for="manualOwner" data-i18n="owner">Vlastník</label>
+                        <select id="manualOwner" class="add-item-modal-select"></select>
+                    </div>
+                </div>
+                <div class="form-row form-row-isbn" style="margin-top:12px;display:flex;flex-wrap:wrap;align-items:flex-end;gap:16px;">
+                    <div style="min-width:160px;max-width:200px;">
+                        <label for="manualIsbn" data-i18n="isbnEan">ISBN/EAN</label>
+                        <input type="text" id="manualIsbn" data-i18n-placeholder="placeholderIsbn" placeholder="např. 978-80-123-4567-8" inputmode="numeric" />
+                    </div>
+                    <div style="display:flex;gap:12px;align-items:flex-end;">
+                        <button type="submit" class="btn-add-manually" data-i18n="addManually">Přidat ručně</button>
+                        <button type="button" class="btn-add-wishlist" id="btnAddWishlist">+ Přidat do wishlistu</button>
+                    </div>
+                </div>
+            </form>
+        </section>
+            </div>
+        </div>

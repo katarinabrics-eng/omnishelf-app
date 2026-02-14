@@ -1,0 +1,291 @@
+/**
+ * OmniShelf – ceník (pricing modal) v CZK.
+ * Responzivní tabulky a modal, čistý moderní vzhled.
+ */
+/* --- Overlay a kontejner modalu --- */
+.pricing-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10050;
+    padding: 16px;
+    box-sizing: border-box;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.25s ease, visibility 0.25s ease;
+}
+.pricing-modal-overlay.is-open {
+    opacity: 1;
+    visibility: visible;
+}
+.pricing-modal {
+    background: #fff;
+    border-radius: 20px;
+    max-width: 520px;
+    width: 100%;
+    max-height: calc(100vh - 32px);
+    overflow-y: auto;
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.12);
+    position: relative;
+    transform: scale(0.96);
+    transition: transform 0.25s ease;
+}
+.pricing-modal-overlay.is-open .pricing-modal {
+    transform: scale(1);
+}
+/* --- Hlavička --- */
+.pricing-modal-header {
+    padding: 24px 24px 16px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+.pricing-modal-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1d1d1f;
+    margin: 0;
+}
+.pricing-modal-close {
+    width: 36px;
+    height: 36px;
+    border: none;
+    background: #f3f4f6;
+    border-radius: 10px;
+    font-size: 1.25rem;
+    line-height: 1;
+    color: #6b7280;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s, color 0.2s;
+}
+.pricing-modal-close:hover {
+    background: #e5e7eb;
+    color: #1d1d1f;
+}
+/* --- Toggle Měsíčně / Ročně --- */
+.pricing-billing-toggle-wrap {
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+.pricing-billing-label {
+    font-size: 0.875rem;
+    color: #6b7280;
+    font-weight: 500;
+}
+.pricing-billing-toggle {
+    display: flex;
+    background: #f3f4f6;
+    border-radius: 12px;
+    padding: 4px;
+    gap: 2px;
+}
+.pricing-billing-toggle button {
+    padding: 8px 16px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: #6b7280;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.2s, color 0.2s;
+}
+.pricing-billing-toggle button.active {
+    background: #fff;
+    color: #1d1d1f;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+.pricing-billing-toggle button:not(.active):hover {
+    color: #1d1d1f;
+}
+.pricing-billing-badge {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #059669;
+    background: rgba(5, 150, 105, 0.12);
+    padding: 2px 8px;
+    border-radius: 6px;
+    margin-left: 4px;
+}
+/* --- Tabulka tarifů (karty na mobilu) --- */
+.pricing-table-wrap {
+    padding: 0 24px 24px;
+}
+.pricing-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9375rem;
+}
+.pricing-table th,
+.pricing-table td {
+    padding: 14px 12px;
+    text-align: left;
+    border-bottom: 1px solid #f3f4f6;
+    vertical-align: top;
+}
+.pricing-table th {
+    font-weight: 600;
+    color: #1d1d1f;
+    font-size: 0.8125rem;
+}
+.pricing-table td:first-child {
+    font-weight: 500;
+    color: #1d1d1f;
+}
+.pricing-table .pricing-tier-name {
+    font-weight: 700;
+    font-size: 1rem;
+}
+.pricing-table .pricing-price {
+    font-weight: 700;
+    color: #1d1d1f;
+    white-space: nowrap;
+}
+.pricing-table .pricing-price-year {
+    font-size: 0.8125rem;
+    color: #6b7280;
+    font-weight: 500;
+}
+.pricing-table .pricing-desc {
+    color: #6b7280;
+    font-size: 0.8125rem;
+    line-height: 1.45;
+    margin-top: 2px;
+}
+.pricing-table .pricing-cta {
+    padding-top: 8px;
+}
+.pricing-table .btn-pricing {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.2s, transform 0.05s;
+}
+.pricing-table .btn-pricing:active {
+    transform: scale(0.98);
+}
+.pricing-table .btn-pricing-free {
+    background: #f3f4f6;
+    color: #6b7280;
+    cursor: default;
+}
+.pricing-table .btn-pricing-pro {
+    background: #1d1d1f;
+    color: #fff;
+}
+.pricing-table .btn-pricing-pro:hover {
+    background: #000;
+}
+.pricing-table .btn-pricing-family {
+    background: #8DD311;
+    color: #1d1d1f;
+}
+.pricing-table .btn-pricing-family:hover {
+    background: #7bc00f;
+}
+.pricing-table .btn-pricing.pricing-cta-current {
+    background: #e5e7eb;
+    color: #4b5563;
+    cursor: default;
+}
+.pricing-table .btn-pricing.pricing-cta-current:hover {
+    background: #e5e7eb;
+}
+.pricing-upgrade-confirmation {
+    margin: 0 24px 24px;
+    padding: 14px 18px;
+    background: rgba(141, 211, 17, 0.18);
+    border: 1px solid #8DD311;
+    border-radius: 12px;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: #1d1d1f;
+    text-align: center;
+}
+/* --- Responzivní: karty místo tabulky na malých obrazovkách --- */
+@media (max-width: 640px) {
+    .pricing-table-wrap {
+        padding: 0 16px 20px;
+    }
+    .pricing-modal-header {
+        padding: 20px 16px 12px;
+    }
+    .pricing-billing-toggle-wrap {
+        padding: 12px 16px;
+    }
+    .pricing-table,
+    .pricing-table thead,
+    .pricing-table tbody,
+    .pricing-table th,
+    .pricing-table td,
+    .pricing-table tr {
+        display: block;
+    }
+    .pricing-table thead {
+        display: none;
+    }
+    .pricing-table tr {
+        border: 1px solid #e5e7eb;
+        border-radius: 14px;
+        margin-bottom: 12px;
+        padding: 16px;
+        background: #fafafa;
+    }
+    .pricing-table td {
+        border: none;
+        padding: 6px 0;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 8px;
+    }
+    .pricing-table td::before {
+        content: attr(data-label);
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: #6b7280;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+        flex-basis: 100%;
+    }
+    .pricing-table td:first-child {
+        padding-top: 0;
+    }
+    .pricing-table td:first-child::before {
+        display: none;
+    }
+    .pricing-table .pricing-tier-name {
+        font-size: 1.0625rem;
+        margin-bottom: 4px;
+    }
+    .pricing-table .pricing-cta {
+        flex-basis: 100%;
+        padding-top: 12px;
+        margin-top: 8px;
+        border-top: 1px solid #eee;
+    }
+    .pricing-table .pricing-cta .btn-pricing {
+        width: 100%;
+        text-align: center;
+    }
+}

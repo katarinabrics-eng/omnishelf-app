@@ -1,0 +1,10 @@
+## Secrets / local config (DO NOT COMMIT)
+config.js
+config.local.js
+*.local.js
+
+## OS / editor noise
+.DS_Store
+.vscode/
+.idea/
+

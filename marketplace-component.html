@@ -1,0 +1,112 @@
+<!-- Fragment pro vložení do #marketplaceSection – pouze HTML Tržiště -->
+<p class="marketplace-design-banner" aria-hidden="true">DEBUG: VERZE DESIGNU PODLE POZNÁMEK</p>
+<div class="marketplace-header">
+    <h1 class="marketplace-title">Vítejte v Tržišti!</h1>
+    <p class="marketplace-subtitle">nakupujte, prodávejte, sdílejte recenze, objevujte!</p>
+    <div class="marketplace-global-search-wrap">
+        <label for="marketplaceGlobalSearch" class="sr-only">Hledat knihu v Tržišti</label>
+        <input type="search" id="marketplaceGlobalSearch" class="marketplace-global-search" placeholder="Hledat knihu v Tržišti" autocomplete="off" />
+        <span class="marketplace-global-search-icon" aria-hidden="true">🔍</span>
+    </div>
+</div>
+<nav class="marketplace-categories-bar" role="tablist" aria-label="Kategorie v Tržišti">
+    <button type="button" class="marketplace-category-btn active" data-category="books" role="tab" aria-selected="true">
+        <img src="Ikony do aplikace _ 200px/01_small200px_4.png" alt="" class="marketplace-category-icon" aria-hidden="true">
+        <span>Knihy</span>
+    </button>
+    <button type="button" class="marketplace-category-btn" data-category="tools" role="tab" aria-selected="false">
+        <img src="Ikony do aplikace _ 200px/01_small200px_5.png" alt="" class="marketplace-category-icon" aria-hidden="true">
+        <span>Nářadí</span>
+    </button>
+    <button type="button" class="marketplace-category-btn" data-category="clothing" role="tab" aria-selected="false">
+        <img src="Ikony do aplikace _ 200px/01_small200px_13.png" alt="" class="marketplace-category-icon" aria-hidden="true">
+        <span>Oblečení</span>
+    </button>
+</nav>
+<div class="marketplace-accordion collapsed" id="marketplaceNaProdejAccordion">
+    <button type="button" class="marketplace-accordion-toggle" id="marketplaceNaProdejToggle" aria-expanded="false">
+        <span class="marketplace-accordion-title">Na prodej</span>
+        <span class="marketplace-accordion-desc">Přidej knihu k prodeji a spravujte svůj virtuální stánek</span>
+        <span class="marketplace-accordion-chevron">▼</span>
+    </button>
+    <div class="marketplace-accordion-body" id="marketplaceNaProdejBody" hidden>
+        <nav class="marketplace-tabs" role="tablist" aria-label="Zdroje v Tržišti">
+            <button type="button" class="marketplace-tab active" role="tab" data-marketplace-tab="novinky" aria-selected="true">NOVINKY</button>
+            <button type="button" class="marketplace-tab" role="tab" data-marketplace-tab="friends" aria-selected="false">Od přátel</button>
+            <button type="button" class="marketplace-tab" role="tab" data-marketplace-tab="shops" aria-selected="false">Obchody</button>
+            <button type="button" class="marketplace-tab" role="tab" data-marketplace-tab="public" aria-selected="false">Veřejné od lidí z OmniShelf</button>
+        </nav>
+        <p class="marketplace-accordion-hint">Zde se zobrazí jen novinky podle zvolené záložky (od přátel, obchody, veřejné od lidí z OmniShelf).</p>
+        <div class="marketplace-sell-search-wrap">
+            <label for="marketplaceSellSearchInput" class="marketplace-sell-search-label">Vyhledat knihu ze sbírky (kterou chci prodat)</label>
+            <input type="text" id="marketplaceSellSearchInput" class="marketplace-sell-search-input" placeholder="Název nebo autor…" autocomplete="off" />
+            <button type="button" class="marketplace-modal-open-btn" id="btnMarketplaceOpenModalFromSection" title="Označit knihu na prodej">Označit knihu na prodej</button>
+        </div>
+    </div>
+</div>
+<section class="marketplace-window" aria-labelledby="marketplaceNovinkyHeading">
+    <div class="marketplace-window-header">
+        <h2 class="marketplace-window-title" id="marketplaceNovinkyHeading">Novinky v Tržišti</h2>
+        <div class="marketplace-window-actions">
+            <select class="marketplace-sort-select" id="marketplaceNovinkySort" aria-label="Řadit">
+                <option value="">Řadit / Rozbalit –</option>
+            </select>
+        </div>
+    </div>
+    <div class="omni-marketplace-cards" id="marketplaceNovinkyCarousel" role="list">
+        <article class="marketplace-card marketplace-card--novinka marketplace-card--in-wishlist" role="listitem" tabindex="0" data-marketplace-card data-marketplace-status="na-prodej" data-owner-id="1" title="Kliknutím zobrazíte detail knihy">
+            <div class="marketplace-card__cover-wrap" aria-hidden="true">
+                <span class="marketplace-card__status-label marketplace-card__status-label--na-prodej">Na prodej</span>
+                <span class="marketplace-card__cover-fallback">📖</span>
+            </div>
+            <div class="marketplace-card__body">
+                <h3 class="marketplace-card__title">Jedna Noha Hop A Druhá Na Cestě</h3>
+                <p class="marketplace-card__author">Terry Pratchett</p>
+                <p class="marketplace-card__seller marketplace-card__seller--store">Prodává: Knihkupectví XY</p>
+                <div class="user-bubble" aria-label="Vzkaz prodávajícího">Tuhle knihu jsem četla 3x, je boží.</div>
+                <button type="button" class="marketplace-card__msg-owner" data-action="message-owner" aria-label="Napsat majiteli">Napsat majiteli</button>
+                <span class="marketplace-card__wishlist-label" aria-label="Na wishlistu" title="Na wishlistu">♥</span>
+            </div>
+        </article>
+        <article class="marketplace-card marketplace-card--novinka" role="listitem" tabindex="0" data-marketplace-card data-marketplace-status="k-zapujceni" data-owner-id="2" title="Kliknutím zobrazíte detail">
+            <div class="marketplace-card__cover-wrap" aria-hidden="true">
+                <span class="marketplace-card__status-label marketplace-card__status-label--k-zapujceni">K zapůjčení</span>
+                <span class="marketplace-card__cover-fallback">📖</span>
+            </div>
+            <div class="marketplace-card__body">
+                <h3 class="marketplace-card__title">Hobit</h3>
+                <p class="marketplace-card__author">J. R. R. Tolkien</p>
+                <p class="marketplace-card__seller marketplace-card__seller--friend">Prodává: Sousedka Jana</p>
+                <div class="user-bubble" aria-label="Vzkaz prodávajícího">Doporučuji, skvělý stav.</div>
+                <button type="button" class="marketplace-card__msg-owner" data-action="message-owner" aria-label="Napsat majiteli">Napsat majiteli</button>
+            </div>
+        </article>
+        <div class="marketplace-cards-placeholder" id="marketplaceNovinkyPlaceholder" style="display:none;">Karty knih (novinky) se načtou zde.</div>
+    </div>
+</section>
+<section class="marketplace-window" aria-labelledby="marketplaceBestsellerHeading">
+    <div class="marketplace-window-header">
+        <h2 class="marketplace-window-title" id="marketplaceBestsellerHeading">Bestseller</h2>
+        <div class="marketplace-window-actions">
+            <select class="marketplace-sort-select" id="marketplaceBestsellerSort" aria-label="Řadit">
+                <option value="">Řadit / Rozbalit –</option>
+            </select>
+        </div>
+    </div>
+    <div class="omni-marketplace-cards" id="marketplaceBestsellerCarousel" role="list">
+        <div class="marketplace-cards-placeholder" id="marketplaceBestsellerPlaceholder">Karty knih (bestseller) se načtou zde.</div>
+    </div>
+</section>
+<section class="marketplace-window" aria-labelledby="marketplaceCoProdavamHeading">
+    <div class="marketplace-window-header">
+        <h2 class="marketplace-window-title" id="marketplaceCoProdavamHeading">Co prodávám</h2>
+        <div class="marketplace-window-actions">
+            <select class="marketplace-sort-select" id="marketplaceCoProdavamSort" aria-label="Řadit">
+                <option value="">Řadit / Rozbalit –</option>
+            </select>
+        </div>
+    </div>
+    <div class="omni-marketplace-cards" id="marketplaceCoProdavamCarousel" role="list">
+        <div class="marketplace-cards-placeholder" id="marketplaceCoProdavamPlaceholder">Zatím nic neprodáváte. Přidejte knihu k prodeji v akordeonu „Na prodej“.</div>
+    </div>
+</section>

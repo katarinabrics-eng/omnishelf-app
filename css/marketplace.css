@@ -1,0 +1,493 @@
+/**
+ * marketplace.css – styly pouze pro modul Tržiště (izolované od Knihovny)
+ * Načítá se v main.html při použití Tržiště.
+ */
+
+/* Zobrazení sekce při aktivním modulu Tržiště */
+body.module-marketplace #marketplaceSection { display: block !important; }
+body.module-marketplace #topBar,
+body.module-marketplace #readingViewWrap,
+body.module-marketplace #libraryModulesWrap,
+body.module-marketplace #scanHistorySection,
+body.module-marketplace #resultsSectionWrap,
+body.module-marketplace #friendsRecommendationsSection {
+    display: none !important;
+}
+/* Při aktivním Tržišti sbalit Moje knihovna a skrýt její submenu */
+body.module-marketplace #sidebarMainLibrary #librarySubmenu { display: none !important; }
+body.module-marketplace #sidebarMainLibrary .sidebar-section-title { margin-bottom: 0; }
+/* Tržiště jako aktivní položka – jasně zelené tlačítko */
+body.module-marketplace #btnMarketplace.sidebar-nav-item.active {
+    background: #8DD311 !important;
+    color: #000 !important;
+    font-weight: 600;
+}
+
+/* Sekce Tržiště – pozadí a kontejner */
+#marketplaceSection.marketplace-section,
+#marketplaceSection.omni-marketplace {
+    padding: 1.5rem 0 3rem;
+    max-width: 100%;
+    background: #f0f0f0 !important;
+    min-height: 60vh;
+}
+body.module-marketplace .main-content { background: #f0f0f0 !important; }
+
+/* Interaktivní prvky */
+.marketplace-card, .marketplace-tab, .marketplace-category-btn, .marketplace-accordion-toggle {
+    cursor: pointer;
+}
+
+/* Banner (debug / verifikace) */
+#marketplaceSection.omni-marketplace .marketplace-design-banner {
+    margin: 0 0 1rem 0;
+    padding: 0.75rem 1rem;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1d1d1f;
+    background: rgba(141, 211, 17, 0.25);
+    border-left: 4px solid #8DD311;
+    border-radius: 0 8px 8px 0;
+}
+
+/* Header – jeden řádek nadpisu + vyhledávání */
+.marketplace-header {
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+    justify-content: space-between;
+}
+.marketplace-title { margin: 0; font-size: 1.5rem; font-weight: 700; }
+.marketplace-title--welcome {
+    font-size: 1.35rem;
+    line-height: 1.35;
+    flex: 1;
+    min-width: 0;
+}
+.marketplace-subtitle { margin: 0; font-size: 0.9375rem; color: var(--text-muted); }
+.marketplace-global-search-wrap { position: relative; flex-shrink: 0; }
+.marketplace-global-search {
+    padding: 0.5rem 0.75rem 0.5rem 2.25rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 0.9375rem;
+    min-width: 220px;
+}
+.marketplace-global-search-icon { position: absolute; left: 0.6rem; top: 50%; transform: translateY(-50%); pointer-events: none; font-size: 1rem; }
+
+/* Kategorie */
+.marketplace-categories-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--border-soft);
+}
+.marketplace-category-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: #fff;
+    font-family: inherit;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--text);
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+}
+.marketplace-category-btn:hover { background: rgba(141, 211, 17, 0.08); border-color: var(--accent-lime); }
+.marketplace-category-btn.active { background: var(--accent-lime); border-color: var(--accent-lime); color: #000; font-weight: 600; }
+.marketplace-category-icon { width: 22px; height: 22px; object-fit: contain; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; }
+.marketplace-category-icon img { width: 22px; height: 22px; object-fit: contain; }
+
+/* Tři horizontální řádky (carousely) + barevné pruhy v záhlaví */
+.marketplace-carousel-row {
+    margin-bottom: 2.5rem;
+}
+.marketplace-carousel-row-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+.marketplace-carousel-row-header-bar {
+    width: 4px;
+    height: 1.5rem;
+    border-radius: 2px;
+    flex-shrink: 0;
+}
+.marketplace-carousel-row--novinky .marketplace-carousel-row-header-bar { background: #059669; }
+.marketplace-carousel-row--bestseller .marketplace-carousel-row-header-bar { background: #ea580c; }
+.marketplace-carousel-row--co-prodavam .marketplace-carousel-row-header-bar { background: #64748b; }
+.marketplace-carousel-title {
+    margin: 0;
+    font-size: 1.125rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: #1d1d1f;
+}
+.marketplace-carousel-row--novinky .marketplace-carousel-title { color: #059669; }
+.marketplace-carousel-row--bestseller .marketplace-carousel-title { color: #b91c1c; }
+.marketplace-carousel-row--co-prodavam .marketplace-carousel-title { color: #475569; }
+.marketplace-carousel-scroll {
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 0.5rem;
+}
+.marketplace-carousel-scroll::-webkit-scrollbar { height: 8px; }
+.marketplace-carousel-scroll::-webkit-scrollbar-track { background: rgba(0,0,0,0.06); border-radius: 4px; }
+.marketplace-carousel-scroll::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.2); border-radius: 4px; }
+.marketplace-carousel-track {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 1.25rem;
+    min-height: 80px;
+}
+.marketplace-my-shelf-desc {
+    margin: 0 0 0.75rem 0;
+    font-size: 0.875rem;
+    color: var(--text-muted);
+}
+
+/* Akordeon Na prodej */
+.marketplace-accordion { border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 2rem; }
+.marketplace-accordion:not(.collapsed) .marketplace-accordion-chevron { transform: rotate(180deg); }
+.marketplace-accordion-toggle {
+    width: 100%;
+    padding: 1rem 1.25rem;
+    text-align: left;
+    background: rgba(0,0,0,0.02);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 1rem;
+    font-family: inherit;
+}
+.marketplace-accordion-title { font-weight: 600; font-size: 1rem; }
+.marketplace-accordion-desc { width: 100%; font-size: 0.875rem; color: var(--text-muted); order: 3; }
+.marketplace-accordion-chevron { margin-left: auto; transition: transform 0.2s; font-size: 0.75rem; }
+.marketplace-accordion-body { padding: 1rem 1.25rem; border-top: 1px solid var(--border); }
+.marketplace-tabs { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
+.marketplace-tab {
+    padding: 0.4rem 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: #fff;
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-family: inherit;
+}
+.marketplace-tab:hover { background: rgba(0,0,0,0.04); }
+.marketplace-tab.active { background: var(--accent-lime); color: #000; border-color: var(--accent-lime); font-weight: 600; }
+.marketplace-sell-search-wrap { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem; }
+.marketplace-sell-search-label { font-size: 0.875rem; color: var(--text-muted); display: block; width: 100%; }
+.marketplace-sell-search-input {
+    flex: 1;
+    min-width: 200px;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 0.9375rem;
+}
+.marketplace-modal-open-btn { padding: 0.5rem 1rem; background: var(--accent-lime); color: #000; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-family: inherit; font-size: 0.875rem; }
+.marketplace-modal-open-btn:hover { background: #7bc00f; }
+.marketplace-accordion-hint { margin: 0 0 1rem 0; font-size: 0.8125rem; color: var(--text-muted); }
+
+/* Okna (Novinky, Bestseller, Co prodávám) */
+.marketplace-window { margin-bottom: 2rem; }
+.marketplace-window-header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem; margin-bottom: 0.75rem; }
+.marketplace-window-title { margin: 0; font-size: 1.125rem; font-weight: 600; }
+.marketplace-my-shelf-empty {
+    margin: 0;
+    padding: 1.25rem 1rem;
+    font-size: 0.9375rem;
+    color: var(--text-muted);
+    background: #fff;
+    border: 1px dashed var(--border);
+    border-radius: 12px;
+    text-align: center;
+    line-height: 1.5;
+    min-width: 100%;
+    flex: 0 0 100%;
+    box-sizing: border-box;
+}
+.marketplace-sort-select { padding: 0.35rem 0.6rem; border: 1px solid var(--border); border-radius: 8px; font-size: 0.875rem; font-family: inherit; }
+.marketplace-cards-carousel,
+#marketplaceSection.omni-marketplace .omni-marketplace-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    min-height: 80px;
+}
+#marketplaceSection.omni-marketplace .omni-marketplace-cards { gap: 1.5rem; }
+.marketplace-cards-placeholder { color: var(--text-muted); font-size: 0.875rem; padding: 1rem; }
+
+/* Karty – identický styl jako Knihovna: bílá, 15px radius, jemný stín, dostatečný padding */
+.marketplace-card,
+#marketplaceSection.omni-marketplace .marketplace-card {
+    width: 300px;
+    min-width: 260px;
+    max-width: 100%;
+    border-radius: 15px;
+    overflow: hidden;
+    border: none;
+    background: #ffffff;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04);
+    position: relative;
+    cursor: pointer;
+    transition: box-shadow 0.2s, transform 0.15s;
+}
+.marketplace-card:hover,
+#marketplaceSection.omni-marketplace .marketplace-card:hover {
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
+}
+.marketplace-card--novinka, .marketplace-card--bestseller, .marketplace-card--from-friends,
+.marketplace-card--my-selling, .marketplace-card--wishlist { background: #fff; }
+/* Jemné barevné odlišení karet podle statusu (prodej = červená, výměna = modrá) */
+.marketplace-card[data-marketplace-status="na-prodej"] .marketplace-card__body,
+.marketplace-card.marketplace-card--my-shelf[data-marketplace-status="na-prodej"] .marketplace-card__body {
+    border-left: 3px solid rgba(185, 28, 28, 0.4);
+}
+.marketplace-card[data-marketplace-status="vymena"] .marketplace-card__body,
+.marketplace-card.marketplace-card--my-shelf[data-marketplace-status="vymena"] .marketplace-card__body {
+    border-left: 3px solid rgba(37, 99, 235, 0.5);
+}
+.marketplace-card[data-marketplace-status="daruji"] .marketplace-card__body {
+    border-left: 3px solid rgba(124, 58, 237, 0.4);
+}
+.marketplace-card--novinka .marketplace-card__body { border-left: 3px solid rgba(5, 150, 105, 0.35); }
+.marketplace-card--bestseller .marketplace-card__body { border-left: 3px solid rgba(234, 88, 12, 0.35); }
+
+/* Štítek statusu v rohu fotky */
+#marketplaceSection.omni-marketplace .marketplace-card__cover-wrap,
+.marketplace-card__cover-wrap {
+    position: relative;
+    aspect-ratio: 3/4;
+    background: var(--border-soft);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    overflow: hidden;
+}
+.marketplace-card__cover-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.marketplace-card__cover-fallback { opacity: 0.7; }
+/* Štítky v levém horním rohu fotky (NOVINKA, 2+1, NA PRODEJ) */
+#marketplaceSection.omni-marketplace .marketplace-card__status-label,
+.marketplace-card__status-label {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    padding: 0.35rem 0.6rem;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #fff;
+    z-index: 1;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+}
+.marketplace-card__status-label--left,
+#marketplaceSection.omni-marketplace .marketplace-card__status-label--left {
+    left: 8px;
+    right: auto;
+}
+#marketplaceSection.omni-marketplace .marketplace-card__status-label--na-prodej { background: #b91c1c; color: #fff; }
+#marketplaceSection.omni-marketplace .marketplace-card__status-label--k-zapujceni { background: #16a34a; }
+#marketplaceSection.omni-marketplace .marketplace-card__status-label--daruji { background: #1d4ed8; }
+#marketplaceSection.omni-marketplace .marketplace-card__status-label--vymena { background: #2563eb; color: #fff; }
+#marketplaceSection.omni-marketplace .marketplace-card__status-label--novinka { background: #059669; color: #fff; }
+#marketplaceSection.omni-marketplace .marketplace-card__status-label--bestseller { background: #ea580c; color: #fff; }
+#marketplaceSection.omni-marketplace .marketplace-card__status-label--moje { background: #475569; color: #fff; }
+
+/* Tlačítko Napsat majiteli – sekundární (outline) styl, příprava na Messenger */
+.marketplace-card__msg-owner {
+    display: block;
+    width: 100%;
+    margin-top: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #1d4ed8;
+    background: transparent;
+    border: 2px solid #1d4ed8;
+    border-radius: 10px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+.marketplace-card__msg-owner:hover {
+    background: rgba(29, 78, 216, 0.08);
+    color: #0c3a9e;
+    border-color: #0c3a9e;
+}
+.marketplace-card__msg-owner:active {
+    background: rgba(29, 78, 216, 0.12);
+}
+
+/* Bublina .user-bubble – The Soul Factor: osobní doporučení, kurzíva/hand-written, jemně barevné pozadí */
+#marketplaceSection.omni-marketplace .user-bubble,
+.marketplace-card .user-bubble {
+    margin-top: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: linear-gradient(135deg, #f7fde8 0%, #fefce8 100%);
+    border: 1px solid rgba(141, 211, 17, 0.3);
+    border-radius: 12px;
+    border-left: 4px solid #8DD311;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    color: #1d1d1f;
+    font-style: italic;
+    font-family: "Caveat", "Comic Sans MS", "Segoe Script", Georgia, cursive;
+}
+
+/* Tělo karty – dostatečný padding jako v Knihovně */
+.marketplace-card__body,
+#marketplaceSection.omni-marketplace .marketplace-card__body { padding: 1rem 1rem; }
+.marketplace-card__title,
+#marketplaceSection.omni-marketplace .marketplace-card__title { margin: 0 0 0.25rem 0; font-size: 1rem; font-weight: 600; line-height: 1.25; }
+.marketplace-card__author,
+#marketplaceSection.omni-marketplace .marketplace-card__author { margin: 0; font-size: 0.875rem; color: var(--text-muted); }
+.marketplace-card__status { margin: 0.25rem 0 0 0; font-size: 0.75rem; font-weight: 600; color: var(--text-secondary); }
+.marketplace-card__status[data-status="na-prodej"] { color: #059669; }
+.marketplace-card__status[data-status="k-zapujceni"] { color: #1d4ed8; }
+.marketplace-card__status[data-status="daruji"] { color: #7c3aed; }
+.marketplace-card__seller { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.35rem; font-weight: 500; }
+.marketplace-card__seller--friend { color: #1d4ed8; }
+.marketplace-card__seller--store { color: #059669; }
+.marketplace-card__seller--omni { color: #7c3aed; }
+.marketplace-card__wishlist-label {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    color: #ec4899;
+    display: none;
+}
+.marketplace-card--in-wishlist .marketplace-card__wishlist-label { display: inline; }
+.marketplace-card__price-row { display: flex; align-items: center; flex-wrap: wrap; gap: 0.35rem 0.5rem; margin-top: 0.25rem; font-size: 0.8125rem; }
+.marketplace-card__price { font-weight: 700; color: var(--text); }
+.marketplace-card__story-bubble { margin-top: 0.6rem; padding: 0.5rem 0.6rem; background: rgba(141, 211, 17, 0.14); border-radius: 10px; border-left: 3px solid var(--accent-lime); }
+.marketplace-card__story-text { font-size: 0.8125rem; color: var(--text); line-height: 1.4; margin: 0; font-style: italic; }
+.marketplace-card__badge { font-size: 0.65rem; font-weight: 600; }
+.marketplace-card--novinka .marketplace-card__badge { color: var(--accent-lime); }
+
+/* Modál Tržiště (Prodat / Koupit z Wishlistu) */
+.marketplace-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9998;
+    background: rgba(0, 0, 0, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    box-sizing: border-box;
+}
+.marketplace-modal {
+    background: var(--surface-elevated);
+    border-radius: 12px;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.25);
+    max-width: 440px;
+    width: 100%;
+    overflow: hidden;
+}
+.marketplace-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+}
+.marketplace-modal-header h2 { margin: 0; font-size: 1.125rem; font-weight: 600; }
+.marketplace-modal-close {
+    width: 36px; height: 36px; padding: 0; border: none; background: transparent;
+    font-size: 1.5rem; cursor: pointer; border-radius: 8px;
+}
+.marketplace-modal-close:hover { background: rgba(0, 0, 0, 0.06); }
+.marketplace-modal-body { padding: 20px; }
+.marketplace-modal-body .marketplace-section { margin-bottom: 20px; }
+.marketplace-modal-body .marketplace-section:last-child { margin-bottom: 0; }
+.marketplace-modal-body .marketplace-section h3 { margin: 0 0 8px 0; font-size: 1rem; }
+.marketplace-modal-body .marketplace-section p { margin: 0 0 12px 0; font-size: 0.875rem; color: var(--text-secondary); }
+.marketplace-btn {
+    padding: 10px 18px;
+    background: var(--accent-lime);
+    color: #000;
+    border: 1px solid #000;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.9375rem;
+}
+.marketplace-btn:hover { background: #b8e00e; }
+
+/* Modál detail knihy (rozkliknutí karty) */
+.marketplace-detail-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9998;
+    background: rgba(0, 0, 0, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    box-sizing: border-box;
+}
+.marketplace-detail-modal {
+    background: var(--surface-elevated);
+    border-radius: 12px;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.25);
+    max-width: 480px;
+    width: 100%;
+    overflow: hidden;
+}
+.marketplace-detail-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+}
+.marketplace-detail-title { margin: 0; font-size: 1.125rem; font-weight: 600; }
+.marketplace-detail-close {
+    width: 36px; height: 36px; padding: 0; border: none; background: transparent;
+    font-size: 1.5rem; cursor: pointer; border-radius: 8px;
+}
+.marketplace-detail-close:hover { background: rgba(0, 0, 0, 0.06); }
+.marketplace-detail-body { padding: 20px; }
+.marketplace-detail-cover-wrap {
+    width: 120px; height: 180px; margin-bottom: 1rem;
+    background: var(--border); border-radius: 8px;
+    display: flex; align-items: center; justify-content: center; font-size: 3rem;
+}
+.marketplace-detail-info { margin-bottom: 1.25rem; }
+.marketplace-detail-info h3 { margin: 0 0 0.25rem 0; font-size: 1.125rem; }
+.marketplace-detail-author { margin: 0; font-size: 0.9375rem; color: var(--text-muted); }
+.marketplace-detail-meta { margin: 0.5rem 0 0 0; font-size: 0.875rem; color: var(--text-secondary); }
+.marketplace-detail-seller { margin: 0.5rem 0 0 0; font-size: 0.875rem; font-weight: 600; }
+.marketplace-detail-status { margin: 0.35rem 0 0 0; font-size: 0.875rem; font-weight: 600; color: #059669; }
+.marketplace-detail-bubble {
+    margin: 0.5rem 0 0 0; padding: 0.5rem 0.75rem; font-size: 0.875rem; color: #1d1d1f;
+    background: rgba(0,0,0,0.06); border-radius: 10px; border-left: 3px solid #8DD311;
+}
+.marketplace-detail-actions { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+.marketplace-detail-btn {
+    padding: 10px 18px; border-radius: 8px; font-weight: 600; cursor: pointer; font-family: inherit; font-size: 0.9375rem;
+}
+.marketplace-detail-btn--buy { background: var(--accent-lime); color: #000; border: none; }
+.marketplace-detail-btn--buy:hover { background: #7bc00f; }
+.marketplace-detail-btn--contact { background: #fff; color: var(--text); border: 1px solid var(--border); }
+.marketplace-detail-btn--contact:hover { background: rgba(0,0,0,0.04); }
