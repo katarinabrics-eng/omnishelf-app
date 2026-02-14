@@ -518,11 +518,6 @@
         var loadingBar = document.getElementById('analyzeLoadingBar');
         var file = getSelectedFile();
 
-        var openaiKey = ctx.getOpenAiKey ? ctx.getOpenAiKey() : '';
-        if (!openaiKey || (openaiKey.trim && !openaiKey.trim())) {
-            if (ctx.showError) ctx.showError('Chybí OpenAI API klíč. Použijte process.env.OPENAI_API_KEY, nebo nastavte v „Nastavení“, případně lokálně v config.js (necommitovat).', errorMessage);
-            return;
-        }
         if (!file) {
             if (ctx.showError) ctx.showError('Nejprve vyberte obrázek.', errorMessage);
             return;
@@ -556,21 +551,23 @@
         fileToBase64ForAi(file, DEFAULT_AI_MAX_WIDTH).then(function (base64Image) {
             // Obrázek je vždy JPEG (komprese v fileToBase64ForAi) – nepoužívat file.type.
             var imageUrl = 'data:image/jpeg;base64,' + base64Image;
-            return fetch('https://api.openai.com/v1/chat/completions', {
+            var body = {
+                model: 'gpt-4o',
+                messages: [{
+                    role: 'user',
+                    content: [
+                        { type: 'text', text: prompt },
+                        { type: 'image_url', image_url: { url: imageUrl } }
+                    ]
+                }],
+                max_tokens: 1500
+            };
+            var fetcher = (global.OMNI_Keys && global.OMNI_Keys.openAiFetch) ? global.OMNI_Keys.openAiFetch(body) : fetch('https://api.openai.com/v1/chat/completions', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + openaiKey },
-                body: JSON.stringify({
-                    model: 'gpt-4o',
-                    messages: [{
-                        role: 'user',
-                        content: [
-                            { type: 'text', text: prompt },
-                            { type: 'image_url', image_url: { url: imageUrl } }
-                        ]
-                    }],
-                    max_tokens: 1500
-                })
+                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + (ctx.getOpenAiKey ? ctx.getOpenAiKey() : '') },
+                body: JSON.stringify(body)
             });
+            return fetcher;
         }).then(function (response) {
             if (!response.ok) return response.json().then(function (err) { throw new Error(err.error && err.error.message || response.statusText); });
             return response.json();
@@ -666,7 +663,9 @@
 
         var openaiKey = ctx.getOpenAiKey ? ctx.getOpenAiKey() : '';
         var geminiKey = ctx.getGeminiKey ? ctx.getGeminiKey() : '';
-        if ((!openaiKey || (openaiKey.trim && !openaiKey.trim())) && (!geminiKey || (geminiKey.trim && !geminiKey.trim()))) {
+        var hasKey = (openaiKey && (openaiKey.trim ? openaiKey.trim() : openaiKey)) || (geminiKey && (geminiKey.trim ? geminiKey.trim() : geminiKey));
+        var hasProxy = global.OMNI_Keys && global.OMNI_Keys.openAiFetch;
+        if (!hasKey && !hasProxy) {
             if (ctx.showError) ctx.showError('Chybí AI klíč. Nastav v „Nastavení“ OpenAI API klíč nebo Gemini API klíč.', errorMessage);
             return;
         }
@@ -728,20 +727,23 @@
 
         // Připrav více fotek v jednom requestu (vždy JPEG base64)
         Promise.all(files.slice(0, 3).map(function (f) { return fileToBase64ForAi(f, DEFAULT_AI_MAX_WIDTH); })).then(function (base64List) {
-            if (openaiKey && (openaiKey.trim ? openaiKey.trim() : openaiKey)) {
+            var useOpenAi = (openaiKey && (openaiKey.trim ? openaiKey.trim() : openaiKey)) || hasProxy;
+            if (useOpenAi) {
                 var content = [{ type: 'text', text: prompt }];
                 base64List.forEach(function (b64) {
                     content.push({ type: 'image_url', image_url: { url: 'data:image/jpeg;base64,' + b64 } });
                 });
-                return fetch('https://api.openai.com/v1/chat/completions', {
+                var body = {
+                    model: 'gpt-4o',
+                    messages: [{ role: 'user', content: content }],
+                    max_tokens: 1200
+                };
+                var fetcher = hasProxy ? global.OMNI_Keys.openAiFetch(body) : fetch('https://api.openai.com/v1/chat/completions', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + openaiKey },
-                    body: JSON.stringify({
-                        model: 'gpt-4o',
-                        messages: [{ role: 'user', content: content }],
-                        max_tokens: 1200
-                    })
-                }).then(function (response) {
+                    body: JSON.stringify(body)
+                });
+                return fetcher.then(function (response) {
                     if (!response.ok) return response.json().then(function (err) { throw new Error(err.error && err.error.message || response.statusText); });
                     return response.json();
                 }).then(function (data) {

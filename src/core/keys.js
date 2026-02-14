@@ -46,7 +46,7 @@
     }
 
     function hasOpenAiKey() {
-        return !!getOpenAiKey();
+        return !!getOpenAiKey() || !!(global.OMNI_Keys && global.OMNI_Keys.openAiFetch);
     }
 
     function getGeminiKey() {
@@ -67,6 +67,20 @@
     }
 
     function clearGeminiKey() { return setGeminiKey(''); }
+    function openAiFetch(body, fetchOpts) {
+        var key = getOpenAiKey();
+        var url = 'https://api.openai.com/v1/chat/completions';
+        var headers = { 'Content-Type': 'application/json' };
+        if (key) {
+            headers['Authorization'] = 'Bearer ' + key;
+        } else {
+            url = (typeof global.location !== 'undefined' ? (global.location.origin || '') : '') + '/api/openai';
+        }
+        var opts = { method: 'POST', headers: headers, body: JSON.stringify(body) };
+        if (fetchOpts && fetchOpts.signal) opts.signal = fetchOpts.signal;
+        return fetch(url, opts);
+    }
+
     function hasGeminiKey() { return !!getGeminiKey(); }
 
     // Optional UI binding (Settings modal)
@@ -124,7 +138,7 @@
             gemClear.addEventListener('click', function () {
                 if (gemInput) gemInput.value = '';
                 clearGeminiKey();
-                if (gemHint) gemHint.textContent = 'Klíč odstraněn.';
+               
             });
         }
     }
@@ -141,5 +155,7 @@
     global.OMNI_Keys.setGeminiKey = setGeminiKey;
     global.OMNI_Keys.clearGeminiKey = clearGeminiKey;
     global.OMNI_Keys.hasGeminiKey = hasGeminiKey;
+    global.OMNI_Keys.openAiFetch = openAiFetch; 
 })(typeof window !== 'undefined' ? window : this);
+
 

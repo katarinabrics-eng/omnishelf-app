@@ -1352,7 +1352,8 @@
     function requestReadingSummaryUpToPage(bookId, pageNum, title, author, resultEl, btnEl) {
         if (!resultEl || !btnEl) return;
         var openaiKey = getOpenAiKey();
-        if (!openaiKey || (openaiKey.trim && !openaiKey.trim())) {
+        var hasProxy = global.OMNI_Keys && global.OMNI_Keys.openAiFetch;
+        if ((!openaiKey || (openaiKey.trim && !openaiKey.trim())) && !hasProxy) {
             resultEl.textContent = 'Pro výtah je potřeba nastavit OpenAI API klíč (Nastavení aplikace).';
             resultEl.classList.add('has-text', 'is-message');
             resultEl.style.display = 'block';
@@ -1365,18 +1366,20 @@
         resultEl.style.display = 'block';
         var systemPrompt = 'Jsi vstřícný asistent pro čtenáře. Pravidlo: NESMÍŠ prozradit nic, co se v knize odehrává PO stránce, kterou uživatel zadal. Výtah smí obsahovat pouze děj a události DO A VČETNĚ této stránky. Odpovídej stručně, bodově, v češtině.';
         var userPrompt = 'Kniha: „' + (title || 'Bez názvu') + '“, autor: ' + (author || 'neznámý') + '.\nUživatel dočetl do stránky ' + pageNum + '. Napiš krátký výtah nejdůležitějších bodů a událostí děje POUZE do stránky ' + pageNum + ' (včetně). Nic za touto stránkou neprozrazuj.';
-        fetch('https://api.openai.com/v1/chat/completions', {
+        var body = {
+            model: 'gpt-4o',
+            messages: [
+                { role: 'system', content: systemPrompt },
+                { role: 'user', content: userPrompt }
+            ],
+            max_tokens: 600
+        };
+        var fetcher = hasProxy ? global.OMNI_Keys.openAiFetch(body) : fetch('https://api.openai.com/v1/chat/completions', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + openaiKey },
-            body: JSON.stringify({
-                model: 'gpt-4o',
-                messages: [
-                    { role: 'system', content: systemPrompt },
-                    { role: 'user', content: userPrompt }
-                ],
-                max_tokens: 600
-            })
-        }).then(function (response) {
+            body: JSON.stringify(body)
+        });
+        fetcher.then(function (response) {
             if (!response.ok) return response.json().then(function (err) { throw new Error(err.error && err.error.message || response.statusText); });
             return response.json();
         }).then(function (data) {
@@ -5224,24 +5227,27 @@
                 // 2) Pro AI pošli optimalizovanou base64 (levnější payload)
                 fileToBase64(file).then(function (base64) {
                     var openaiKey = getOpenAiKey();
-                    if (!base64 || !openaiKey) {
+                    var hasProxy = global.OMNI_Keys && global.OMNI_Keys.openAiFetch;
+                    if (!base64 || (!openaiKey && !hasProxy)) {
                         if (borrowedByMeTitle) borrowedByMeTitle.placeholder = 'Naskenuj obálku – vyplň ručně';
                         return;
                     }
-                    return fetch('https://api.openai.com/v1/chat/completions', {
+                    var body = {
+                        model: 'gpt-4o',
+                        max_tokens: 1024,
+                        messages: [
+                            { role: 'user', content: [
+                                { type: 'text', text: AI_ANALYZE_PROMPT },
+                                { type: 'image_url', image_url: { url: 'data:image/jpeg;base64,' + base64 } }
+                            ]}
+                        ]
+                    };
+                    var fetcher = hasProxy ? global.OMNI_Keys.openAiFetch(body) : fetch('https://api.openai.com/v1/chat/completions', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + openaiKey },
-                        body: JSON.stringify({
-                            model: 'gpt-4o',
-                            max_tokens: 1024,
-                            messages: [
-                                { role: 'user', content: [
-                                    { type: 'text', text: AI_ANALYZE_PROMPT },
-                                    { type: 'image_url', image_url: { url: 'data:image/jpeg;base64,' + base64 } }
-                                ]}
-                            ]
-                        })
-                    }).then(function (r) { return r.json(); }).then(function (data) {
+                        body: JSON.stringify(body)
+                    });
+                    return fetcher.then(function (r) { return r.json(); }).then(function (data) {
                         var txt = (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) ? data.choices[0].message.content : '';
                         var json = txt.replace(/```json?\s*/g, '').replace(/```\s*$/g, '').trim();
                         var parsed = { books: [] };
@@ -5317,19 +5323,22 @@
                 ? 'Napiš krátkou DŮRAZNOU upomínku (1–2 věty) pro vrácení knihy. Kniha: „' + title + '“, půjčeno: ' + to + ', vrátit do: ' + dateStr + '. Buď stručně a rozhodně. Česky.'
                 : 'Napiš krátkou MILOU upomínku (1–2 věty) pro vrácení knihy. Kniha: „' + title + '“, půjčeno: ' + to + ', vrátit do: ' + dateStr + '. Vlídný tón. Česky.';
             var openaiKey = getOpenAiKey();
-            if (!openaiKey || (openaiKey.trim && !openaiKey.trim())) {
+            var hasProxy = global.OMNI_Keys && global.OMNI_Keys.openAiFetch;
+            if ((!openaiKey || (openaiKey.trim && !openaiKey.trim())) && !hasProxy) {
                 resultEl.textContent = 'Pro generování upomínky nastav v Nastavení OpenAI API klíč.';
                 return;
             }
-            fetch('https://api.openai.com/v1/chat/completions', {
+            var body = {
+                model: 'gpt-4o',
+                messages: [{ role: 'user', content: prompt }],
+                max_tokens: 150
+            };
+            var fetcher = hasProxy ? global.OMNI_Keys.openAiFetch(body) : fetch('https://api.openai.com/v1/chat/completions', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + openaiKey },
-                body: JSON.stringify({
-                    model: 'gpt-4o',
-                    messages: [{ role: 'user', content: prompt }],
-                    max_tokens: 150
-                })
-            }).then(function (r) { return r.ok ? r.json() : r.json().then(function (e) { throw new Error(e.error && e.error.message || r.statusText); }); })
+                body: JSON.stringify(body)
+            });
+            fetcher.then(function (r) { return r.ok ? r.json() : r.json().then(function (e) { throw new Error(e.error && e.error.message || r.statusText); }); })
               .then(function (data) {
                 var text = (data.choices[0] && data.choices[0].message && data.choices[0].message.content) ? data.choices[0].message.content.trim() : '';
                 resultEl.textContent = text || 'Nepodařilo se vygenerovat upomínku.';

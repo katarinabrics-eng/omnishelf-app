@@ -103,7 +103,8 @@
 
     async function scan(input) {
         var key = safeTrim(getOpenAiKey());
-        if (!key) throw new Error('missing_openai_key');
+        var hasProxy = global.OMNI_Keys && global.OMNI_Keys.openAiFetch;
+        if (!key && !hasProxy) throw new Error('missing_openai_key');
 
         var files = toFileArray(input).filter(Boolean);
         if (!files.length) throw new Error('missing_file');
@@ -164,28 +165,25 @@
             timeoutId = global.setTimeout(function () { controller.abort(); }, timeoutMs);
         }
 
-        var fetchOpts = {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + key
-            },
-            body: JSON.stringify({
-                model: 'gpt-4o',
-                max_tokens: 600,
-                messages: [
-                    {
-                        role: 'user',
-                        content: contentParts
-                    }
-                ]
-            })
+        var body = {
+            model: 'gpt-4o',
+            max_tokens: 600,
+            messages: [{ role: 'user', content: contentParts }]
         };
-        if (controller && controller.signal) fetchOpts.signal = controller.signal;
-
+        var fetchOpts = controller && controller.signal ? { signal: controller.signal } : undefined;
         var resp;
         try {
-            resp = await fetch('https://api.openai.com/v1/chat/completions', fetchOpts);
+            if (hasProxy) {
+                resp = await global.OMNI_Keys.openAiFetch(body, fetchOpts);
+            } else {
+                var directOpts = {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + key },
+                    body: JSON.stringify(body)
+                };
+                if (controller && controller.signal) directOpts.signal = controller.signal;
+                resp = await fetch('https://api.openai.com/v1/chat/completions', directOpts);
+            }
         } catch (fetchErr) {
             if (timeoutId) global.clearTimeout(timeoutId);
             if (fetchErr && fetchErr.name === 'AbortError') throw new Error('timeout_analýza_trvala_příliš_dlouho');

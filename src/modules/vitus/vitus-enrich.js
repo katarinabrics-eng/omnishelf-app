@@ -25,7 +25,7 @@
     }
 
     function isEnabled() {
-        return !!getOpenAiKey() || !!getGeminiKey();
+        return !!getOpenAiKey() || !!getGeminiKey() || !!(global.OMNI_Keys && global.OMNI_Keys.openAiFetch);
     }
 
     function stripJsonFences(txt) {
@@ -52,7 +52,8 @@
     async function enrichMed(medLike) {
         var openaiKey = getOpenAiKey();
         var geminiKey = getGeminiKey();
-        if (!openaiKey && !geminiKey) throw new Error('missing_ai_key');
+        var hasProxy = global.OMNI_Keys && global.OMNI_Keys.openAiFetch;
+        if (!openaiKey && !geminiKey && !hasProxy) throw new Error('missing_ai_key');
 
         var name = safeTrim(medLike && medLike.name);
         var type = safeTrim(medLike && medLike.type);
@@ -67,8 +68,8 @@
             'Název: "' + name + '".' + (type ? (' Forma: "' + type + '".') : '') +
             ' Pokud si nejsi jistá, napiš to do warning/notes a category dej Jiné.';
 
-        // Prefer OpenAI (pokud je), jinak Gemini
-        if (!openaiKey && geminiKey) {
+        // Prefer OpenAI (pokud je klíč nebo proxy), jinak Gemini
+        if (!openaiKey && !hasProxy && geminiKey) {
             var schema = {
                 type: 'object',
                 properties: {
@@ -126,21 +127,21 @@
             };
         }
 
-        var resp = await fetch('https://api.openai.com/v1/chat/completions', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + openaiKey
-            },
-            body: JSON.stringify({
-                model: 'gpt-4o',
-                max_tokens: 500,
-                messages: [
-                    { role: 'system', content: systemPrompt },
-                    { role: 'user', content: userPrompt }
-                ]
-            })
-        });
+        var body = {
+            model: 'gpt-4o',
+            max_tokens: 500,
+            messages: [
+                { role: 'system', content: systemPrompt },
+                { role: 'user', content: userPrompt }
+            ]
+        };
+        var resp = hasProxy
+            ? await global.OMNI_Keys.openAiFetch(body)
+            : await fetch('https://api.openai.com/v1/chat/completions', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + openaiKey },
+                body: JSON.stringify(body)
+            });
 
         var data = await resp.json().catch(function () { return null; });
         if (!resp.ok) {
