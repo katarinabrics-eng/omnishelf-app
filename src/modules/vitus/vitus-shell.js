@@ -1062,6 +1062,156 @@
         };
     }
 
+    var DOSE_VIEW_STATE = { mode: 'day', date: null };
+
+    function getMedColor(medId, medIndex) {
+        var palette = ['#5C8A6A', '#8B7355', '#6B8E9E', '#9E6B7A', '#7A8E6B', '#8E7A6B', '#6B7A8E'];
+        var idx = medIndex >= 0 ? medIndex % palette.length : 0;
+        return palette[idx];
+    }
+
+    function renderDoseView(body) {
+        if (!body) return;
+        var logic = getLogic();
+        if (!logic) {
+            body.innerHTML = '<p class="vitus-muted">Chybí logika Vitusu.</p>';
+            return;
+        }
+        var today = new Date();
+        var d = DOSE_VIEW_STATE.date || new Date(today.getTime());
+        var dateStr = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+        var slots = logic.getDoseSlotsForDay(dateStr) || [];
+        var activeCures = logic.listActiveCures() || [];
+        var archive = logic.listArchive() || [];
+        var medColorMap = {};
+        var idx = 0;
+        activeCures.forEach(function (a) {
+            (a.cure.medIds || []).forEach(function (mid) {
+                if (medColorMap[mid] === undefined) medColorMap[mid] = getMedColor(mid, idx++);
+            });
+        });
+
+        var prevDate = new Date(d.getTime());
+        prevDate.setDate(prevDate.getDate() - 1);
+        var nextDate = new Date(d.getTime());
+        nextDate.setDate(nextDate.getDate() + 1);
+        var prevStr = prevDate.getFullYear() + '-' + String(prevDate.getMonth() + 1).padStart(2, '0') + '-' + String(prevDate.getDate()).padStart(2, '0');
+        var nextStr = nextDate.getFullYear() + '-' + String(nextDate.getMonth() + 1).padStart(2, '0') + '-' + String(nextDate.getDate()).padStart(2, '0');
+        var isToday = dateStr === (today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0'));
+
+        var slotsHtml = slots.length
+            ? slots.map(function (s) {
+                var col = medColorMap[s.medId] || '#5C8A6A';
+                return ''
+                    + '<div class="vitus-dose-slot" data-med-id="' + escapeHtml(s.medId) + '" data-date="' + escapeHtml(s.date) + '" data-time="' + escapeHtml(s.time) + '">'
+                    + '  <span class="vitus-dose-color" style="background:' + escapeHtml(col) + '"></span>'
+                    + '  <span class="vitus-dose-time">' + escapeHtml(s.time) + '</span>'
+                    + '  <span class="vitus-dose-name">' + escapeHtml(s.medName) + '</span>'
+                    + '  <label class="vitus-dose-check">'
+                    + '    <input type="checkbox" class="vitus-dose-checkbox" ' + (s.taken ? 'checked' : '') + ' /> Užito'
+                    + '  </label>'
+                    + '</div>';
+            }).join('')
+            : '<p class="vitus-empty">Žádná dávka na tento den. Přidejte aktivní kúru s léky v sekci Léky.</p>';
+
+        var legendHtml = Object.keys(medColorMap).length ? activeCures.map(function (a) {
+            return (a.cure.medIds || []).map(function (mid) {
+                var m = getMedById(mid);
+                if (!m) return '';
+                return '<span class="vitus-dose-legend-item" style="--med-color:' + escapeHtml(medColorMap[mid] || '#5C8A6A') + '" data-med-id="' + escapeHtml(mid) + '" data-cure-id="' + escapeHtml(a.cure.id) + '">'
+                    + escapeHtml(m.name) + ' <button type="button" class="vitus-dose-legend-edit" title="Upravit časy dávkování">čas</button></span>';
+            }).join('');
+        }).join('') : '';
+
+        var archiveHtml = archive.length
+            ? '<section class="vitus-dose-archive">'
+                + '<h4 class="vitus-dose-section-title">Historie / Archiv</h4>'
+                + '<div class="vitus-dose-archive-list">'
+                + archive.slice(0, 10).map(function (e) {
+                    var adh = e.adherence || {};
+                    var adhText = (adh.total > 0) ? (' | Poctivost: ' + (adh.taken || 0) + '/' + adh.total) : '';
+                    return '<div class="vitus-dose-archive-item">'
+                        + '<span class="vitus-dose-archive-name">' + escapeHtml(e.cure && e.cure.name || 'Kúra') + '</span>'
+                        + '<span class="vitus-dose-archive-meta">Ukončeno ' + escapeHtml(e.archivedAt || '') + ' – ' + (e.reason === 'tablets_zero' ? 'tabletky došly' : 'konec kúry') + adhText + '</span>'
+                        + '</div>';
+                }).join('')
+                + '</div></section>'
+            : '';
+
+        body.innerHTML = ''
+            + '<div class="vitus-dose-view">'
+            + '  <div class="vitus-dose-nav">'
+            + '    <button type="button" class="vitus-btn vitus-btn--ghost vitus-dose-nav-btn" id="vitusDosePrev" data-date="' + escapeHtml(prevStr) + '">← Předchozí</button>'
+            + '    <span class="vitus-dose-date">' + (isToday ? 'Dnes' : '') + ' ' + escapeHtml(dateStr) + '</span>'
+            + '    <button type="button" class="vitus-btn vitus-btn--ghost vitus-dose-nav-btn" id="vitusDoseNext" data-date="' + escapeHtml(nextStr) + '">Další →</button>'
+            + '  </div>'
+            + '  <div class="vitus-dose-slots" id="vitusDoseSlots">'
+            + slotsHtml
+            + '  </div>'
+            + (legendHtml ? '<div class="vitus-dose-legend"><h4 class="vitus-dose-legend-title">Léky</h4><div class="vitus-dose-legend-items">' + legendHtml + '</div></div>' : '')
+            + archiveHtml
+            + '</div>';
+
+        body.querySelectorAll('.vitus-dose-checkbox').forEach(function (cb) {
+            cb.addEventListener('change', function () {
+                if (!this.checked) return;
+                var slot = this.closest('.vitus-dose-slot');
+                if (!slot) return;
+                var medId = slot.getAttribute('data-med-id');
+                var date = slot.getAttribute('data-date');
+                var time = slot.getAttribute('data-time');
+                if (medId && date && time) logic.markDoseTaken(medId, date, time);
+                if (typeof refreshMedsView === 'function') refreshMedsView();
+                renderDoseView(body);
+            });
+        });
+
+        body.querySelectorAll('.vitus-dose-nav-btn').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                var dt = this.getAttribute('data-date');
+                if (dt) {
+                    var parts = dt.split('-');
+                    DOSE_VIEW_STATE.date = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+                    renderDoseView(body);
+                }
+            });
+        });
+
+        body.querySelectorAll('.vitus-dose-legend-edit').forEach(function (btn) {
+            btn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                var item = this.closest('.vitus-dose-legend-item');
+                if (!item) return;
+                var medId = item.getAttribute('data-med-id');
+                var cureId = item.getAttribute('data-cure-id');
+                var m = getMedById(medId);
+                if (!m || !cureId) return;
+                var active = (logic.listActiveCures() || []).find(function (x) { return x.cure.id === cureId; });
+                var cure = active ? active.cure : null;
+                var current = (cure && logic.getMedSchedule) ? logic.getMedSchedule(cure, medId) : ['08:00', '20:00'];
+                var raw = prompt('Časy dávkování oddělené čárkou (např. 08:00, 12:00, 20:00):', current.join(', '));
+                if (raw == null) return;
+                var times = String(raw || '').split(/[,\s]+/).map(function (t) { return t.trim(); }).filter(Boolean);
+                if (times.length && logic.setCureSchedule) {
+                    logic.setCureSchedule(cureId, medId, times);
+                    renderDoseView(body);
+                }
+            });
+        });
+    }
+
+    function runDoseMissedCheck() {
+        var logic = getLogic();
+        if (!logic || typeof logic.getDoseSlotsForDay !== 'function') return;
+        var yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        var ys = yesterday.getFullYear() + '-' + String(yesterday.getMonth() + 1).padStart(2, '0') + '-' + String(yesterday.getDate()).padStart(2, '0');
+        var slots = logic.getDoseSlotsForDay(ys) || [];
+        slots.forEach(function (s) {
+            if (!s.taken) logic.recordMissedDose(s.medId, s.medName, s.date, s.time);
+        });
+    }
+
     function setView(view) {
         view = String(view || '').trim() || 'meds';
         var title = $('vitusViewTitle');
@@ -1072,7 +1222,15 @@
         var content = '';
         if (view === 'dose') {
             t = 'Dávkování';
-            content = '<p class="vitus-muted">Zde bude plán dávkování, upozornění a historie.</p>';
+            refreshMedsView = function () {
+                renderDoseView(body);
+            };
+            renderDoseView(body);
+            title.textContent = t;
+            document.querySelectorAll('.vitus-nav-item').forEach(function (b) {
+                b.classList.toggle('active', b.getAttribute('data-vitus-view') === view);
+            });
+            return;
         } else if (view === 'herbalist') {
             t = 'Bába Kořenářka';
             content = '<p class="vitus-muted">Zde budou bylinkové recepty, rady a “AI kořenářka”.</p>';
@@ -1107,6 +1265,8 @@
 
         // default
         setView('meds');
+
+        runDoseMissedCheck();
 
         // uvítací text (požadavek)
         var welcome = $('vitusWelcomeText');

@@ -8,7 +8,7 @@
     'use strict';
 
     var STORAGE_KEY = 'omnishelf_vitus_data';
-    var VERSION = 1;
+    var VERSION = 2;
 
     function nowIsoDate() {
         // YYYY-MM-DD
@@ -74,12 +74,14 @@
         c = c || {};
         var start = String(c.start || '').trim();
         var end = String(c.end || '').trim();
+        var schedule = (c.schedule && typeof c.schedule === 'object') ? c.schedule : {};
         return {
             id: String(c.id || uid('cure')),
             name: String(c.name || '').trim(),
             start: start,
             end: end,
-            medIds: Array.isArray(c.medIds) ? c.medIds.map(function (x) { return String(x || ''); }).filter(Boolean) : []
+            medIds: Array.isArray(c.medIds) ? c.medIds.map(function (x) { return String(x || ''); }).filter(Boolean) : [],
+            schedule: schedule
         };
     }
 
@@ -88,7 +90,10 @@
             version: VERSION,
             updatedAt: nowIsoDate(),
             meds: [],
-            cures: []
+            cures: [],
+            doseLogs: {},
+            doseMissed: [],
+            archive: []
         };
     }
 
@@ -109,11 +114,17 @@
 
         var meds = Array.isArray(parsed.meds) ? parsed.meds.map(normalizeMed) : [];
         var cures = Array.isArray(parsed.cures) ? parsed.cures.map(normalizeCure) : [];
+        var doseLogs = (parsed.doseLogs && typeof parsed.doseLogs === 'object') ? parsed.doseLogs : {};
+        var doseMissed = Array.isArray(parsed.doseMissed) ? parsed.doseMissed : [];
+        var archive = Array.isArray(parsed.archive) ? parsed.archive : [];
         state = {
             version: VERSION,
             updatedAt: nowIsoDate(),
             meds: meds,
-            cures: cures
+            cures: cures,
+            doseLogs: doseLogs,
+            doseMissed: doseMissed,
+            archive: archive
         };
         return state;
     }
@@ -266,8 +277,216 @@
         return map;
     }
 
+    var DEFAULT_TIMES = ['08:00', '20:00'];
+
+    function getMedSchedule(cure, medId) {
+        var s = cure.schedule && cure.schedule[medId];
+        return Array.isArray(s) && s.length ? s : DEFAULT_TIMES;
+    }
+
+    function setCureSchedule(cureId, medId, times) {
+        cureId = String(cureId || '');
+        medId = String(medId || '');
+        if (!medId) return { ok: false };
+        times = Array.isArray(times) ? times.filter(function (t) { return String(t || '').trim(); }) : DEFAULT_TIMES;
+        var st = getState();
+        for (var i = 0; i < st.cures.length; i++) {
+            if (st.cures[i].id !== cureId) continue;
+            if (!st.cures[i].schedule) st.cures[i].schedule = {};
+            st.cures[i].schedule[medId] = times;
+            save();
+            return { ok: true };
+        }
+        return { ok: false };
+    }
+
+    function doseLogKey(date, medId, time) {
+        return String(date || '') + '::' + String(medId || '') + '::' + String(time || '');
+    }
+
+    function getDoseSlotsForDay(date) {
+        date = String(date || nowIsoDate()).trim();
+        var today = nowIsoDate();
+        var st = getState();
+        var slots = [];
+        var active = listActiveCures();
+        active.forEach(function (a) {
+            var c = a.cure;
+            var s = parseIsoDate(c.start);
+            var e = parseIsoDate(c.end);
+            if (!s || !e) return;
+            var d = parseIsoDate(date);
+            if (!d) return;
+            s = toMidnight(s);
+            e = toMidnight(e);
+            d = toMidnight(d);
+            if (d < s || d > e) return;
+            (c.medIds || []).forEach(function (mid) {
+                var m = null;
+                for (var j = 0; j < st.meds.length; j++) {
+                    if (st.meds[j].id === mid) { m = st.meds[j]; break; }
+                }
+                if (!m || (m.remainingQuantity !== undefined && m.remainingQuantity <= 0)) return;
+                var times = getMedSchedule(c, mid);
+                times.forEach(function (tm) {
+                    var key = doseLogKey(date, mid, tm);
+                    var taken = st.doseLogs[key] === true;
+                    slots.push({
+                        medId: mid,
+                        medName: m.name,
+                        cureId: c.id,
+                        cureName: c.name,
+                        date: date,
+                        time: tm,
+                        key: key,
+                        taken: taken
+                    });
+                });
+            });
+        });
+        slots.sort(function (x, y) {
+            var t = (x.time || '').localeCompare(y.time || '');
+            return t !== 0 ? t : (x.medName || '').localeCompare(y.medName || '');
+        });
+        return slots;
+    }
+
+    function markDoseTaken(medId, date, time) {
+        medId = String(medId || '');
+        date = String(date || nowIsoDate()).trim();
+        time = String(time || '').trim();
+        if (!medId || !date || !time) return { ok: false };
+        var st = getState();
+        st.doseLogs[doseLogKey(date, medId, time)] = true;
+        takeDose(medId);
+        save();
+        return { ok: true };
+    }
+
+    function recordMissedDose(medId, medName, date, time) {
+        medId = String(medId || '');
+        medName = String(medName || '').trim();
+        date = String(date || '').trim();
+        time = String(time || '').trim();
+        if (!medId || !date) return;
+        var st = getState();
+        st.doseMissed = st.doseMissed || [];
+        var already = st.doseMissed.some(function (x) { return x.medId === medId && x.date === date && x.time === time; });
+        if (already) return;
+        st.doseMissed.push({
+            medId: medId,
+            medName: medName,
+            date: date,
+            time: time,
+            recordedAt: nowIsoDate()
+        });
+        save();
+    }
+
+    function getMissedDoses() {
+        return (getState().doseMissed || []).slice();
+    }
+
+    function clearMissedDoses() {
+        getState().doseMissed = [];
+        save();
+    }
+
+    function getMissedDosesReport() {
+        var missed = getMissedDoses();
+        if (!missed.length) return '';
+        var lines = missed.map(function (x) {
+            return '- ' + (x.medName || x.medId) + ': ' + x.date + ' ' + (x.time || '') + ' (vynecháno)';
+        });
+        return 'Zaznamenané vynechané dávky:\n' + lines.join('\n');
+    }
+
+    function archiveCure(cureId, reason, doseHistory, adherence) {
+        cureId = String(cureId || '');
+        var st = getState();
+        var cure = null;
+        for (var i = 0; i < st.cures.length; i++) {
+            if (st.cures[i].id === cureId) { cure = st.cures[i]; break; }
+        }
+        if (!cure) return { ok: false };
+        var meds = (cure.medIds || []).map(function (mid) {
+            for (var j = 0; j < st.meds.length; j++) if (st.meds[j].id === mid) return st.meds[j];
+            return null;
+        }).filter(Boolean);
+        var entry = {
+            id: 'arch_' + cureId + '_' + Date.now(),
+            archivedAt: nowIsoDate(),
+            reason: String(reason || 'cycle_end'),
+            cure: JSON.parse(JSON.stringify(cure)),
+            meds: meds.map(function (m) { return JSON.parse(JSON.stringify(m)); }),
+            doseHistory: Array.isArray(doseHistory) ? doseHistory : [],
+            adherence: adherence || {}
+        };
+        st.archive = st.archive || [];
+        st.archive.unshift(entry);
+        st.cures = st.cures.filter(function (c) { return c.id !== cureId; });
+        save();
+        return { ok: true, entry: entry };
+    }
+
+    function listArchive() {
+        return (getState().archive || []).slice();
+    }
+
+    function runAutoArchive() {
+        var today = toMidnight(new Date());
+        var st = getState();
+        var toArchive = [];
+        st.cures.forEach(function (c) {
+            var e = parseIsoDate(c.end);
+            if (!e) return;
+            e = toMidnight(e);
+            if (today > e) toArchive.push({ id: c.id, reason: 'cycle_end' });
+        });
+        st.meds.forEach(function (m) {
+            if (Number(m.remainingQuantity || 0) <= 0) {
+                st.cures.forEach(function (c) {
+                    if ((c.medIds || []).indexOf(m.id) >= 0) {
+                        if (!toArchive.some(function (a) { return a.id === c.id; })) {
+                            toArchive.push({ id: c.id, reason: 'tablets_zero' });
+                        }
+                    }
+                });
+            }
+        });
+        var preload = toArchive.map(function (a) {
+            var c = st.cures.find(function (x) { return x.id === a.id; });
+            var history = [];
+            var total = 0;
+            var taken = 0;
+            if (c) {
+                var s = parseIsoDate(c.start);
+                var e2 = parseIsoDate(c.end);
+                if (s && e2) {
+                    var d = new Date(s.getTime());
+                    while (d <= e2) {
+                        var ds = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+                        (c.medIds || []).forEach(function (mid) {
+                            var times = getMedSchedule(c, mid);
+                            times.forEach(function (tm) {
+                                total++;
+                                var key = doseLogKey(ds, mid, tm);
+                                if (st.doseLogs && st.doseLogs[key] === true) { taken++; history.push({ date: ds, medId: mid, time: tm, taken: true }); }
+                            });
+                        });
+                        d.setDate(d.getDate() + 1);
+                    }
+                }
+            }
+            return { id: a.id, reason: a.reason, history: history, adherence: { total: total, taken: taken } };
+        });
+        preload.forEach(function (p) { archiveCure(p.id, p.reason, p.history, p.adherence); });
+        return preload.map(function (p) { return p.id; });
+    }
+
     // init
     load();
+    runAutoArchive();
 
     global.OMNI_VitusLogic = {
         load: load,
@@ -281,7 +500,18 @@
         upsertCure: upsertCure,
         deleteCure: deleteCure,
         listActiveCures: listActiveCures,
-        groupMedsByCategory: groupMedsByCategory
+        groupMedsByCategory: groupMedsByCategory,
+        getMedSchedule: getMedSchedule,
+        setCureSchedule: setCureSchedule,
+        getDoseSlotsForDay: getDoseSlotsForDay,
+        markDoseTaken: markDoseTaken,
+        recordMissedDose: recordMissedDose,
+        getMissedDoses: getMissedDoses,
+        clearMissedDoses: clearMissedDoses,
+        getMissedDosesReport: getMissedDosesReport,
+        archiveCure: archiveCure,
+        listArchive: listArchive,
+        runAutoArchive: runAutoArchive
     };
 })(typeof window !== 'undefined' ? window : this);
 
