@@ -75,14 +75,58 @@
         var start = String(c.start || '').trim();
         var end = String(c.end || '').trim();
         var schedule = (c.schedule && typeof c.schedule === 'object') ? c.schedule : {};
+        var type = String(c.cureType || c.type || 'custom').toLowerCase();
+        if (['longterm', 'monthly', 'weekly', 'custom'].indexOf(type) < 0) type = 'custom';
         return {
             id: String(c.id || uid('cure')),
             name: String(c.name || '').trim(),
             start: start,
             end: end,
+            cureType: type,
+            cureDays: typeof c.cureDays === 'number' && isFinite(c.cureDays) ? Math.max(1, c.cureDays) : null,
             medIds: Array.isArray(c.medIds) ? c.medIds.map(function (x) { return String(x || ''); }).filter(Boolean) : [],
             schedule: schedule
         };
+    }
+
+    function addDaysToIso(iso, days) {
+        var d = parseIsoDate(iso);
+        if (!d) return '';
+        d.setDate(d.getDate() + Math.floor(days));
+        return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+    }
+
+    function calculateEndFromType(start, cureType, cureDays) {
+        if (!start) return '';
+        var days = 0;
+        if (cureType === 'longterm') days = 365;
+        else if (cureType === 'monthly') days = 30;
+        else if (cureType === 'weekly') days = 7;
+        else if (cureType === 'custom' && typeof cureDays === 'number' && cureDays > 0) days = cureDays;
+        if (days <= 0) return '';
+        return addDaysToIso(start, days);
+    }
+
+    function calculateEndFromPills(medIds, start, dosesPerDay) {
+        dosesPerDay = Number(dosesPerDay);
+        if (!isFinite(dosesPerDay) || dosesPerDay <= 0) dosesPerDay = 1;
+        var st = getState();
+        var minDays = null;
+        (medIds || []).forEach(function (mid) {
+            for (var i = 0; i < st.meds.length; i++) {
+                if (st.meds[i].id !== mid) continue;
+                var m = st.meds[i];
+                var rem = Number(m.remainingQuantity || 0);
+                var dose = (m.dosage && m.dosage.amount) ? Number(m.dosage.amount) : 1;
+                if (!isFinite(dose) || dose <= 0) dose = 1;
+                var dosesTotal = rem / dose;
+                var days = Math.floor(dosesTotal / dosesPerDay);
+                if (days >= 0 && (minDays === null || days < minDays)) minDays = days;
+                break;
+            }
+        });
+        if (minDays === null || minDays < 1) return '';
+        return addDaysToIso(start, Math.max(0, minDays - 1));
     }
 
     function makeEmpty() {
@@ -491,6 +535,8 @@
     global.OMNI_VitusLogic = {
         load: load,
         save: save,
+        calculateEndFromType: calculateEndFromType,
+        calculateEndFromPills: calculateEndFromPills,
         getState: getState,
         listMeds: listMeds,
         upsertMed: upsertMed,

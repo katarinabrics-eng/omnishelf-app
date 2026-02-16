@@ -229,15 +229,36 @@
             + '    <section class="vitus-card vitus-card--wide">'
             + '  <div class="vitus-card-head">'
             + '    <div class="vitus-card-title">Léčebné kúry</div>'
-            + '    <div class="vitus-card-sub">Aktivní kúry mají odpočet do konce.</div>'
+            + '    <div class="vitus-card-sub">Aktivní kúry mají odpočet do konce a zobrazují se v Dávkování.</div>'
             + '  </div>'
             + '  <div class="vitus-cures-grid">'
             + '    <form class="vitus-form" id="vitusAddCureForm" autocomplete="off">'
             + '      <div class="vitus-form-row">'
-            + '        <div class="vitus-field">'
+            + '        <div class="vitus-field vitus-field--full">'
             + '          <label class="vitus-label" for="vitusCureName">Název kúry</label>'
             + '          <input class="vitus-input" id="vitusCureName" required placeholder="např. 14 dní – imunita" />'
             + '        </div>'
+            + '      </div>'
+            + '      <div class="vitus-form-row vitus-form-row--cure-type">'
+            + '        <div class="vitus-field">'
+            + '          <label class="vitus-label" for="vitusCureType">Typ kúry</label>'
+            + '          <select class="vitus-input vitus-select" id="vitusCureType">'
+            + '            <option value="custom">Vlastní (ručně zadat)</option>'
+            + '            <option value="weekly">Týdenní (7 dní)</option>'
+            + '            <option value="monthly">Měsíční (30 dní)</option>'
+            + '            <option value="longterm">Dlouhodobá (1 rok)</option>'
+            + '          </select>'
+            + '        </div>'
+            + '        <div class="vitus-field vitus-field--custom-days" id="vitusCureCustomDaysWrap" style="display:none;">'
+            + '          <label class="vitus-label" for="vitusCureDays">Počet dní</label>'
+            + '          <input class="vitus-input" id="vitusCureDays" type="number" min="1" placeholder="14" />'
+            + '        </div>'
+            + '        <div class="vitus-field vitus-field--doses-per-day" id="vitusCureDosesPerDayWrap">'
+            + '          <label class="vitus-label" for="vitusCureDosesPerDay" title="Pro výpočet konce z tablet">Dávky denně</label>'
+            + '          <input class="vitus-input" id="vitusCureDosesPerDay" type="number" min="1" value="1" title="Kolikrát denně berete léky (pro auto-výpočet)" />'
+            + '        </div>'
+            + '      </div>'
+            + '      <div class="vitus-form-row">'
             + '        <div class="vitus-field">'
             + '          <label class="vitus-label" for="vitusCureStart">Start</label>'
             + '          <input class="vitus-input" id="vitusCureStart" type="date" required />'
@@ -246,13 +267,18 @@
             + '          <label class="vitus-label" for="vitusCureEnd">Konec</label>'
             + '          <input class="vitus-input" id="vitusCureEnd" type="date" required />'
             + '        </div>'
+            + '        <div class="vitus-field vitus-field--calc">'
+            + '          <label class="vitus-label">&nbsp;</label>'
+            + '          <button type="button" class="vitus-btn vitus-btn--ghost" id="vitusCureCalcEnd" title="Vypočítat konec z typu kúry nebo z tablet">Vypočítat konec</button>'
+            + '        </div>'
             + '      </div>'
             + '      <div class="vitus-form-row">'
             + '        <div class="vitus-field vitus-field--full">'
-            + '          <label class="vitus-label">Přiřazené léky</label>'
+            + '          <label class="vitus-label">Přiřazené léky (měsíčně/denně beru tyto)</label>'
             + '          <div class="vitus-checkboxes" id="vitusCureMeds"></div>'
             + '        </div>'
             + '      </div>'
+            + '      <p class="vitus-disclaimer">Při nejasnostech se poraďte s lékařem. Vitus není náhrada lékaře – jen pomáhá nezapomenout.</p>'
             + '      <div class="vitus-actions">'
             + '        <button type="submit" class="vitus-btn vitus-btn--primary">Přidat kúru</button>'
             + '        <span class="vitus-form-hint" id="vitusCureFormHint"></span>'
@@ -495,11 +521,12 @@
                 + '    <div class="vitus-actions">'
                 + '      <button type="submit" class="vitus-btn vitus-btn--primary">Uložit</button>'
                 + '      <button type="button" class="vitus-btn vitus-btn--dose" id="vitusModalTakeDose">Užít dávku</button>'
+                + '      <button type="button" class="vitus-btn vitus-btn--ghost" id="vitusModalAddToCure" title="Přidá lék do nové kúry a otevře formulář">Přidat do kúry</button>'
                 + '      <button type="button" class="vitus-btn vitus-btn--ghost" id="vitusModalEnrich" title="' + escapeHtml(enrichTitle) + '"' + enrichDisabledAttr + '>Dohledat info o léku</button>'
                 + '      <button type="button" class="vitus-btn vitus-btn--ghost" id="vitusModalDelete">Smazat</button>'
                 + '      <span class="vitus-form-hint" id="vitusModalHint"></span>'
                 + '    </div>'
-                + '    <div class="vitus-ai-disclaimer">Informace jsou generovány AI a mají informativní charakter. Vždy konzultuj s lékařem.</div>'
+                + '    <div class="vitus-ai-disclaimer">Informace jsou generovány AI a mají informativní charakter. Při nejasnostech se poraďte s lékařem – Vitus není náhrada lékaře, jen pomáhá nezapomenout.</div>'
                 + '  </form>'
                 + '</div>';
 
@@ -519,7 +546,9 @@
             if (overlay) overlay.hidden = true;
         }
 
-        function renderCureMeds() {
+        var pendingAddToCure = null;
+
+        function renderCureMeds(preSelectIds) {
             var box = $('vitusCureMeds');
             if (!box) return;
             var meds = logic.listMeds();
@@ -527,13 +556,34 @@
                 box.innerHTML = '<div class="vitus-muted">Nejdřív přidejte léky do Apatyky.</div>';
                 return;
             }
+            preSelectIds = preSelectIds || (pendingAddToCure ? [pendingAddToCure.medId] : []);
             box.innerHTML = meds.map(function (m) {
+                var checked = preSelectIds.indexOf(m.id) >= 0 ? ' checked' : '';
                 return ''
                     + '<label class="vitus-checkbox">'
-                    + '  <input type="checkbox" value="' + escapeHtml(m.id) + '" />'
+                    + '  <input type="checkbox" value="' + escapeHtml(m.id) + '"' + checked + ' />'
                     + '  <span>' + escapeHtml(m.name) + '</span>'
                     + '</label>';
             }).join('');
+            pendingAddToCure = null;
+        }
+
+        function openCureFormWithMed(med) {
+            if (!med) return;
+            closeMedModal();
+            var acc = $('vitusAddAccordion');
+            if (acc) acc.open = true;
+            var nameEl = $('vitusCureName');
+            if (nameEl) nameEl.value = 'Kúra – ' + (med.name || '');
+            var startEl = $('vitusCureStart');
+            if (startEl) {
+                var t = new Date();
+                startEl.value = t.getFullYear() + '-' + String(t.getMonth() + 1).padStart(2, '0') + '-' + String(t.getDate()).padStart(2, '0');
+            }
+            pendingAddToCure = { medId: med.id, medName: med.name };
+            renderCureMeds([med.id]);
+            var form = $('vitusAddCureForm');
+            if (form) form.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
 
         function renderActiveCures() {
@@ -541,18 +591,20 @@
             if (!wrap) return;
             var active = logic.listActiveCures();
             if (!active.length) {
-                wrap.innerHTML = '<div class="vitus-empty">Žádná aktivní kúra. Přidejte si jednu.</div>';
+                wrap.innerHTML = '<div class="vitus-empty">Žádná aktivní kúra. Přidejte si jednu (léky → Přidat do kúry).</div>';
                 return;
             }
+            var typeLabels = { longterm: 'Dlouhodobá', monthly: 'Měsíční', weekly: 'Týdenní', custom: 'Vlastní' };
             wrap.innerHTML = active.map(function (x) {
                 var c = x.cure;
                 var medsById = {};
                 logic.listMeds().forEach(function (m) { medsById[m.id] = m; });
                 var medNames = (c.medIds || []).map(function (id) { return medsById[id] ? medsById[id].name : ''; }).filter(Boolean);
+                var typeLabel = typeLabels[c.cureType] || typeLabels.custom;
                 return ''
                     + '<div class="vitus-cure-card" data-cure-id="' + escapeHtml(c.id) + '">'
                     + '  <div class="vitus-cure-top">'
-                    + '    <div class="vitus-cure-name">' + escapeHtml(c.name) + '</div>'
+                    + '    <div class="vitus-cure-name">' + escapeHtml(c.name) + ' <span class="vitus-cure-type-badge">' + escapeHtml(typeLabel) + '</span></div>'
                     + '    <div class="vitus-cure-days">' + escapeHtml(String(x.daysLeft)) + ' dní</div>'
                     + '  </div>'
                     + '  <div class="vitus-cure-meta">'
@@ -875,6 +927,44 @@
 
             var cureForm = $('vitusAddCureForm');
             var cureHint = $('vitusCureFormHint');
+            var cureTypeEl = $('vitusCureType');
+            var customDaysWrap = $('vitusCureCustomDaysWrap');
+            if (cureTypeEl && customDaysWrap) {
+                function toggleCustomDays() {
+                    customDaysWrap.style.display = (cureTypeEl.value === 'custom') ? '' : 'none';
+                }
+                cureTypeEl.addEventListener('change', toggleCustomDays);
+                toggleCustomDays();
+            }
+            var startEl = $('vitusCureStart');
+            if (startEl && !startEl.value) {
+                var today = new Date();
+                startEl.value = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
+            }
+            var calcBtn = $('vitusCureCalcEnd');
+            if (calcBtn) {
+                calcBtn.addEventListener('click', function () {
+                    var start = ($('vitusCureStart') || {}).value;
+                    var type = ($('vitusCureType') || {}).value || 'custom';
+                    var daysInput = $('vitusCureDays');
+                    var cureDays = daysInput ? parseInt(daysInput.value, 10) : 0;
+                    var dosesPerDay = parseInt(($('vitusCureDosesPerDay') || {}).value || '1', 10) || 1;
+                    var medsBox = $('vitusCureMeds');
+                    var selected = [];
+                    if (medsBox) {
+                        medsBox.querySelectorAll('input[type="checkbox"]:checked').forEach(function (cb) { selected.push(cb.value); });
+                    }
+                    var end = '';
+                    if (selected.length && start) {
+                        end = logic.calculateEndFromPills && logic.calculateEndFromPills(selected, start, dosesPerDay);
+                    }
+                    if (!end && start) {
+                        end = logic.calculateEndFromType && logic.calculateEndFromType(start, type, cureDays);
+                    }
+                    var endEl = $('vitusCureEnd');
+                    if (endEl && end) endEl.value = end;
+                });
+            }
             if (cureForm) {
                 cureForm.addEventListener('submit', function (e) {
                     e.preventDefault();
@@ -882,20 +972,24 @@
                     var name = $('vitusCureName') && $('vitusCureName').value;
                     var start = $('vitusCureStart') && $('vitusCureStart').value;
                     var end = $('vitusCureEnd') && $('vitusCureEnd').value;
+                    var type = ($('vitusCureType') || {}).value || 'custom';
+                    var cureDays = parseInt(($('vitusCureDays') || {}).value || '0', 10) || null;
                     var medsBox = $('vitusCureMeds');
                     var selected = [];
                     if (medsBox) {
-                        medsBox.querySelectorAll('input[type="checkbox"]').forEach(function (cb) {
-                            if (cb.checked) selected.push(cb.value);
-                        });
+                        medsBox.querySelectorAll('input[type="checkbox"]:checked').forEach(function (cb) { selected.push(cb.value); });
                     }
-                    var res = logic.upsertCure({ name: name, start: start, end: end, medIds: selected });
+                    var res = logic.upsertCure({ name: name, start: start, end: end, cureType: type, cureDays: cureDays, medIds: selected });
                     if (!res.ok) {
                         if (cureHint) cureHint.textContent = res.message || 'Nelze uložit.';
                         return;
                     }
                     try { cureForm.reset(); } catch (e0) {}
-                    if (cureHint) cureHint.textContent = 'Uloženo.';
+                    if (startEl && !startEl.value) {
+                        var t = new Date();
+                        startEl.value = t.getFullYear() + '-' + String(t.getMonth() + 1).padStart(2, '0') + '-' + String(t.getDate()).padStart(2, '0');
+                    }
+                    if (cureHint) cureHint.textContent = 'Uloženo. Kúra se zobrazí v Dávkování.';
                     renderActiveCures();
                 });
             }
@@ -988,6 +1082,12 @@
                     logic.takeDose(id);
                     openMedModal(id);
                     renderShelves();
+                }
+                if (e.target.id === 'vitusModalAddToCure') {
+                    var idA = $('vitusEditMedId') && $('vitusEditMedId').value;
+                    if (!idA) return;
+                    var medA = getMedById(idA);
+                    if (medA) openCureFormWithMed(medA);
                 }
                 if (e.target.id === 'vitusModalEnrich') {
                     var idE = $('vitusEditMedId') && $('vitusEditMedId').value;
@@ -1140,8 +1240,8 @@
 
         body.innerHTML = ''
             + '<div class="vitus-dose-view">'
+            + '  <p class="vitus-disclaimer vitus-dose-disclaimer">Vitus není náhrada lékaře – jen pomáhá nezapomenout. Při nejasnostech se poraďte s odborníkem.</p>'
             + '  <div class="vitus-dose-nav">'
-            + '    <button type="button" class="vitus-btn vitus-btn--ghost vitus-dose-nav-btn" id="vitusDosePrev" data-date="' + escapeHtml(prevStr) + '">← Předchozí</button>'
             + '    <span class="vitus-dose-date">' + (isToday ? 'Dnes' : '') + ' ' + escapeHtml(dateStr) + '</span>'
             + '    <button type="button" class="vitus-btn vitus-btn--ghost vitus-dose-nav-btn" id="vitusDoseNext" data-date="' + escapeHtml(nextStr) + '">Další →</button>'
             + '  </div>'

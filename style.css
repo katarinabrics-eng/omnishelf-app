@@ -9662,6 +9662,7 @@
 
         .vitus-form { padding: 14px 16px 16px; }
         .vitus-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+        .vitus-form-row--cure-type { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: flex-end; }
         .vitus-form-row--inline { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; margin-bottom: 8px; }
         .vitus-form-row--inline.vitus-form-row--full { display: flex; }
         .vitus-field { display: flex; flex-direction: column; gap: 6px; }
@@ -9692,6 +9693,13 @@
         .vitus-select { cursor: pointer; }
         .vitus-actions { display: flex; align-items: center; gap: 10px; margin-top: 6px; }
         .vitus-form-hint { font-size: 0.85rem; color: var(--text-secondary); font-weight: 700; }
+        .vitus-disclaimer {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin: 10px 0 12px;
+            line-height: 1.4;
+        }
 
         .vitus-btn {
             border-radius: 12px;
@@ -9824,6 +9832,15 @@
         .vitus-cure-name { font-weight: 1000; }
         .vitus-cure-days { font-weight: 1000; color: #2F6F4E; }
         .vitus-cure-meta { margin-top: 6px; display: flex; flex-wrap: wrap; gap: 6px; color: var(--text-secondary); font-weight: 700; font-size: 0.86rem; }
+        .vitus-cure-type-badge {
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 999px;
+            background: rgba(92, 138, 106, 0.12);
+            color: #2F3A2E;
+        }
+        .vitus-dose-disclaimer { margin-bottom: 12px; }
 
         .vitus-empty { color: var(--text-secondary); font-weight: 700; padding: 10px 0; }
 
