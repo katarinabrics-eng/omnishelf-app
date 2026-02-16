@@ -1,6 +1,6 @@
 /**
- * OmniShelf – uživatelský stav, tarif (tier) a rodinná synchronizace.
- * Použití: kontrola přístupu k OmniShelf Kids, zobrazení ceníku, sdílení knihovny pod FamilyID.
+ * Omshelf – uživatelský stav, tarif (tier) a rodinná synchronizace.
+ * Použití: kontrola přístupu k Omshelf Kids, zobrazení ceníku, sdílení knihovny pod FamilyID.
  */
 (function (global) {
     'use strict';
@@ -40,7 +40,7 @@
         return currentUser.tier === 'pro' || currentUser.tier === 'family';
     }
 
-    /** Může uživatel otevřít OmniShelf Kids (potřeba PRO nebo FAMILY). */
+    /** Může uživatel otevřít Omshelf Kids (potřeba PRO nebo FAMILY). */
     function canAccessKids() {
         return isPremium();
     }

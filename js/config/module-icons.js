@@ -1,5 +1,5 @@
 /**
- * OmniShelf – mapování modulů na číselné ikony (složka Ikony do aplikace _ 200px).
+ * Omshelf – mapování modulů na číselné ikony (složka Ikony do aplikace _ 200px).
  * Formát souborů: 01_small200px.png (Domů), 01_small200px_[číslo].png
  */
 (function (global) {

@@ -1,4 +1,4 @@
-# OmniShelf – Architektura refaktoringu
+# Omshelf – Architektura refaktoringu
 
 ## Checkpoint 0 – Stav před end-to-end refaktorem
 

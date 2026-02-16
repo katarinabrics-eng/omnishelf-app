@@ -1,4 +1,4 @@
-# Struktura kódu OmniShelf
+# Struktura kódu Omshelf
 
 ## HTML stránky
 - **index.html** – zelená LP (landing) se sektory, vstupní brána pro celý svět
@@ -20,7 +20,7 @@
 - **modules/vitus/** – vitus-logic.js, vitus-ai.js, vitus-enrich.js, vitus-shell.js
 
 ## PWA
-- **manifest.json** – název „OmniShelf“, start_url ./app.html (PWA ikona otevře přímo aplikaci)
+- **manifest.json** – název „Omshelf“, start_url ./app.html (PWA ikona otevře přímo aplikaci)
 - **service-worker.js** – offline cache
 - Meta tagy pro Apple: apple-touch-icon, mobile-web-app-capable
 

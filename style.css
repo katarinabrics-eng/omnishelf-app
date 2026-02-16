@@ -427,7 +427,7 @@
         #btnPracovnaToggle::after { display: none !important; }
 
         /* Pravidla sidebaru: Moje knihovna = jemné podbarvení + limetkový okraj vlevo (jako Tvoje sbírka).
-           Pracovna a moduly mimo knihovnu = sytá limetka (Limo). OmniShelf Kids = pastelová žlutá. */
+           Pracovna a moduly mimo knihovnu = sytá limetka (Limo). Omshelf Kids = pastelová žlutá. */
         .sidebar-submenu-item {
             display: flex;
             align-items: center;
@@ -481,7 +481,7 @@
             font-weight: 600;
             border-radius: 999px;
         }
-        /* OmniShelf Kids – specifická pastelová žlutá jako na screenu */
+        /* Omshelf Kids – specifická pastelová žlutá jako na screenu */
         .sidebar-library-group#sidebarChildrenLibrary .sidebar-nav-item {
             background: var(--kids-bg);
             color: #000;
@@ -496,7 +496,7 @@
             background: var(--kids-bg-active);
             color: #000;
         }
-        /* OmniShelf Kids tema – zlatá/žlutá místo zelené */
+        /* Omshelf Kids tema – zlatá/žlutá místo zelené */
         body.kids-theme .sidebar-nav-item.active,
         body.kids-theme .sidebar-submenu-item.active { background: var(--kids-yellow); color: #000; }
         body.kids-theme #sidebarMainLibrary.expanded #librarySubmenu { background: #fefce8; }
@@ -7963,7 +7963,7 @@
         .settings-modal-body { padding: 20px; }
         .settings-modal-intro { margin: 0; font-size: 0.9375rem; color: var(--text-muted); }
 
-        /* Téma OmniShelf Kids – nastavení veselejší */
+        /* Téma Omshelf Kids – nastavení veselejší */
         body.viewing-as-child .settings-modal-overlay { background: rgba(0, 0, 0, 0.4); }
         body.viewing-as-child .settings-modal {
             background: var(--kids-bg, #FEF9C3);
@@ -9383,7 +9383,7 @@
         .family-code-display input { flex: 1; padding: 10px 12px; font-family: monospace; font-size: 0.85rem; }
         .btn-copy-family-code { padding: 10px 16px; white-space: nowrap; border: 1px solid var(--btn-primary); background: transparent; color: var(--text); border-radius: var(--radius-sm); cursor: pointer; font-weight: 500; }
         .btn-copy-family-code:hover { background: rgba(0,0,0,0.04); }
-        /* OmniShelfKids: čisté pozadí, barvy jen u ikon a knih */
+        /* OmshelfKids: čisté pozadí, barvy jen u ikon a knih */
         .viewing-as-child .dashboard { background: #F9F9F9; min-height: 100vh; }
         .viewing-as-child .main-content { background: transparent; }
         .viewing-as-child .item-card-clean { background: #fff; box-shadow: 0 2px 12px rgba(0,0,0,0.06); border: 1px solid var(--border); }

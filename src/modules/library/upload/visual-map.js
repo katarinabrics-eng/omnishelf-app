@@ -1,5 +1,5 @@
 /**
- * OmniShelf – příprava na vizuální mapy (AI navigace v prostoru).
+ * Omshelf – příprava na vizuální mapy (AI navigace v prostoru).
  * Stub pro budoucí funkce: nahrání fotek místnosti, 3D/panorama, hotspoty na poličky.
  * Sektory: visualMap, workshop, wardrobe, pantry (místnosti).
  */
@@ -34,7 +34,7 @@
             data[sectorId] = { images: images, updatedAt: new Date().toISOString() };
             localStorage.setItem(VISUAL_MAP_STORAGE_KEY, JSON.stringify(data));
         } catch (e) {
-            console.warn('OmniShelf VisualMap: save failed', e);
+            console.warn('Omshelf VisualMap: save failed', e);
         }
     }
 

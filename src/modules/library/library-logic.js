@@ -706,7 +706,7 @@
             localStorage.setItem(key, JSON.stringify(payload));
             return true;
         } catch (e) {
-            console.warn('OmniShelf: could not save to localStorage', e);
+            console.warn('Omshelf: could not save to localStorage', e);
             if (typeof window !== 'undefined') {
                 window.__OMNI_lastSaveOk = false;
                 window.__OMNI_lastSaveWasQuota = isQuotaExceededError(e);
@@ -730,11 +730,11 @@
             if (bookOptional.is_favorite || bookOptional.isFavorite) tagy.push('Srdcovka');
             if ((String(bookOptional.ownershipStatus || '').toLowerCase().replace(/\s/g, '')) === 'forsale') tagy.push('Na predaj');
             if (tagy.length === 0) tagy.push('—');
-            console.log('OmniShelf: Ukladám knihu [' + nazov + '] so statusom [' + status + '] a tagmi [' + tagy.join(', ') + ']');
+            console.log('Omshelf: Ukladám knihu [' + nazov + '] so statusom [' + status + '] a tagmi [' + tagy.join(', ') + ']');
             var hasCover = (bookOptional.coverImage || bookOptional.image || '').toString().trim();
-            if (hasCover && hasCover.indexOf('data:image') === 0) console.log('OmniShelf: Ukladám aj obálku knihy [' + nazov + '] do localStorage.');
+            if (hasCover && hasCover.indexOf('data:image') === 0) console.log('Omshelf: Ukladám aj obálku knihy [' + nazov + '] do localStorage.');
         } else {
-            console.log('OmniShelf: Ukladám knihovnu, počet kníh: ' + (library && library.length) + '.');
+            console.log('Omshelf: Ukladám knihovnu, počet kníh: ' + (library && library.length) + '.');
         }
         return saveLibrary();
     }
@@ -778,9 +778,9 @@
                         var legacyData = JSON.parse(legacyRaw);
                         localStorage.setItem(key, legacyRaw);
                         raw = legacyRaw;
-                        console.log('OmniShelf: Migrována stará data do uživatelsky specifického úložiště');
+                        console.log('Omshelf: Migrována stará data do uživatelsky specifického úložiště');
                     } catch (e) {
-                        console.warn('OmniShelf: Chyba při migraci starých dat', e);
+                        console.warn('Omshelf: Chyba při migraci starých dat', e);
                     }
                 } else {
                     // Zkus ještě úložiště pod legacy_admin (knihy mohly zmizet po přihlášení pod jiným profilem)
@@ -793,7 +793,7 @@
                                 localStorage.setItem(CURRENT_USER_KEY, 'legacy_admin');
                                 raw = legacyUserRaw;
                                 key = legacyUserKey;
-                                console.log('OmniShelf: Obnovena knihovna z profilu legacy_admin (počet knih: ' + parsed.library.length + ').');
+                                console.log('Omshelf: Obnovena knihovna z profilu legacy_admin (počet knih: ' + parsed.library.length + ').');
                             }
                         } catch (e2) {}
                     }
@@ -840,9 +840,9 @@
             if (data.currentProfileId) currentProfileId = data.currentProfileId;
             ensureBookIds();
             library.forEach(migrateBookToNewFields);
-            console.log('OmniShelf: Načítaná knihovna, počet kníh: ' + library.length + '. Labely a tagy sa zobrazia na kartách.');
+            console.log('Omshelf: Načítaná knihovna, počet kníh: ' + library.length + '. Labely a tagy sa zobrazia na kartách.');
         } catch (e) {
-            console.warn('OmniShelf: could not load from localStorage', e);
+            console.warn('Omshelf: could not load from localStorage', e);
         }
     }
 
@@ -879,7 +879,7 @@
             return Promise.resolve(false);
         }
 
-        console.warn('OmniShelf: Nouzová migrace obálek – zmenšuji ' + candidates.length + ' obálek (>100KB).');
+        console.warn('Omshelf: Nouzová migrace obálek – zmenšuji ' + candidates.length + ' obálek (>100KB).');
 
         var idx = 0;
         var anySaved = false;
@@ -896,13 +896,13 @@
             return window.OMNI_LibraryUploadLogic.compressImageDataUrlToJpegDataUrl(String(book.image), 300, 0.6).then(function (out) {
                 book.image = out;
                 var afterBytes = estimateDataUrlBytes(String(out || ''));
-                console.log('OmniShelf: Cover downsize ' + idx + '/' + candidates.length + ' — ' + beforeBytes + 'B → ' + afterBytes + 'B');
+                console.log('Omshelf: Cover downsize ' + idx + '/' + candidates.length + ' — ' + beforeBytes + 'B → ' + afterBytes + 'B');
                 var ok = saveLibrary();
                 if (ok) anySaved = true;
                 // Pokud stále quota, pokračuj zmenšovat další
                 return step();
             }).catch(function (e) {
-                console.warn('OmniShelf: Cover downsize selhal', e);
+                console.warn('Omshelf: Cover downsize selhal', e);
                 return step();
             });
         }
@@ -3720,7 +3720,7 @@
         }
         if (aiAssistantBubbleReport) aiAssistantBubbleReport.addEventListener('click', function () {
             if (typeof window.OMNI_reportError === 'function') window.OMNI_reportError();
-            else window.open('mailto:support@omnishelf.app?subject=OmniShelf - nahlášení chyby', '_blank');
+            else window.open('mailto:support@omnishelf.app?subject=Omshelf - nahlášení chyby', '_blank');
         });
         if (aiAssistantBubbleSend && aiAssistantBubbleInput) aiAssistantBubbleSend.addEventListener('click', function () {
             var q = (aiAssistantBubbleInput.value || '').trim();
@@ -5206,7 +5206,7 @@
                 // Povinná komprese do localStorage: JPEG 300px / 0.6
                 compressImageFileToJpegDataUrl(file, 300, 0.6).then(function (out) {
                     setPendingLoanCover(out || '');
-                    try { console.log('OmniShelf: borrowedByMe cover bytes=' + estimateDataUrlBytes(String(out || ''))); } catch (e2) {}
+                    try { console.log('Omshelf: borrowedByMe cover bytes=' + estimateDataUrlBytes(String(out || ''))); } catch (e2) {}
                 }).catch(function () {
                     // fallback: i tak radši nic než obří dataURL
                     setPendingLoanCover('');
@@ -5435,7 +5435,7 @@
             });
         }
 
-        // Statistiky: filtry + export (aktuální funkční OmniShelf)
+        // Statistiky: filtry + export (aktuální funkční Omshelf)
         (function () {
             var STAT_FILTER_KEY = 'omnishelf_statistics_filter_v1';
             function getStatsState() {
@@ -5699,7 +5699,7 @@
                 var rows = Array.isArray(items) ? items : [];
                 if (!rows.length) { alert('Žádná data k exportu.'); return; }
                 var html = '<html><head><meta charset="utf-8"><style>body{font-family:sans-serif;padding:20px;}h1{font-size:18px;margin:0 0 12px;}table{border-collapse:collapse;width:100%;}th,td{border:1px solid #ddd;padding:8px;text-align:left;font-size:12px;}th{background:#f3f4f6;}</style></head><body>';
-                html += '<h1>' + escapeHtml(title || 'OmniShelf – Export') + '</h1>';
+                html += '<h1>' + escapeHtml(title || 'Omshelf – Export') + '</h1>';
                 html += '<table><tr><th>Název</th><th>Autor</th><th>Sekce</th><th>Polička</th><th>Přidáno</th></tr>';
                 rows.forEach(function (b) {
                     var t = escapeHtml((b && b.title) ? String(b.title).trim() : '');
@@ -5903,7 +5903,7 @@
                     if (!isStatsActive()) return;
                     var items = computeStatsFilteredItems();
                     if (kind === 'csv') exportCsvFromItems(items, 'omnishelf-statistiky');
-                    else exportPdfFromItems(items, 'OmniShelf – Statistiky (podle filtru)');
+                    else exportPdfFromItems(items, 'Omshelf – Statistiky (podle filtru)');
                 }
                 if (dom.exportPdfSidebar) dom.exportPdfSidebar.addEventListener('click', function () { onExport('pdf'); });
                 if (dom.exportCsvSidebar) dom.exportCsvSidebar.addEventListener('click', function () { onExport('csv'); });

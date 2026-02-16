@@ -14,7 +14,7 @@ Soubory **index.html**, **app.html**, **login.html** musí být v **kořenu proj
 
 3. Po změně nastavení: **Deployments** → **Redeploy** (nebo nový push).
 
-## Co je v app.html (skutečný OmniShelf)
+## Co je v app.html (skutečný Omshelf)
 
 - **Hlavní navigace:** Knihovna, Vitus, Šatník (Soon), Workshop (Soon), Pantry (Soon)
 - **Moje knihovna:** Tvoje sbírka, Rozečteno, Půjčil/a jsem, Na prodej, Srdcovky, Přátelé doporučují
@@ -26,7 +26,7 @@ Soubory **index.html**, **app.html**, **login.html** musí být v **kořenu proj
 ```bash
 cd /Users/katarina/Documents/OmniShelf
 git add .
-git commit -m "fix: design OmniShelf pro Vercel, relativní cesty, login/welcome"
+git commit -m "fix: design Omshelf pro Vercel, relativní cesty, login/welcome"
 git push origin main
 ```
 

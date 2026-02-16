@@ -1,5 +1,5 @@
 /**
- * login-form.js – univerzální vstupní logika pro OmniShelf a budoucí sekce (Workshop, Wardrobe).
+ * login-form.js – univerzální vstupní logika pro Omshelf a budoucí sekce (Workshop, Wardrobe).
  * Centrální bod přihlášení: věk → app.html?mode=kids nebo app.html.
  */
 (function () {

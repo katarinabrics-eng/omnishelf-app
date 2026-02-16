@@ -1,4 +1,4 @@
-# Sestavení OmniShelf (bez fetch)
+# Sestavení Omshelf (bez fetch)
 
 V Safari při otevření `app.html` přes **file://** prohlížeč blokuje `fetch()` na lokální soubory, takže moduly se nenačtou.
 

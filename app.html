@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<!-- OmniShelf – hlavní aplikace: Knihovna, Tržiště (NOVINKA, 2+1, Co prodávám), Vitus, Workshop, Šatník. Všechny cesty relativní (./) pro Vercel. -->
+<!-- Omshelf – hlavní aplikace: Knihovna, Tržiště (NOVINKA, 2+1, Co prodávám), Vitus, Workshop, Šatník. Všechny cesty relativní (./) pro Vercel. -->
 <html lang="cs">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="application-name" content="OmniShelf">
-    <title>OmniShelf 2.0</title>
+    <meta name="application-name" content="Omshelf">
+    <title>Omshelf 2.0</title>
     <link rel="manifest" href="./manifest.json">
     <meta name="theme-color" content="#8DD311">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -35,13 +35,13 @@
         <aside class="sidebar">
             <div class="sidebar-header">
                 <button type="button" class="btn-sidebar-close-mobile" id="btnSidebarCloseMobile" aria-label="Zavřít menu" title="Zavřít"><span aria-hidden="true">×</span></button>
-                <button type="button" class="btn-back-to-dashboard" id="btnBackToDashboard" style="display:none;"><span class="btn-back-arrow" style="color:#8DD311;">←</span><span class="btn-back-text">zpět na OmniShelf</span></button>
+                <button type="button" class="btn-back-to-dashboard" id="btnBackToDashboard" style="display:none;"><span class="btn-back-arrow" style="color:#8DD311;">←</span><span class="btn-back-text">zpět na Omshelf</span></button>
                 <button type="button" class="sidebar-logo" id="sidebarLogo" aria-label="Zpět na Knihovnu">
                     <div class="sidebar-logo-icon">
                         <img src="./Ikony do aplikace _ 200px/Logo.png" alt="" class="sidebar-logo-img">
                     </div>
                     <div class="sidebar-logo-inner">
-                        <div class="sidebar-logo-text" id="sidebarLogoText">OmniShelf AI</div>
+                        <div class="sidebar-logo-text" id="sidebarLogoText">Omshelf AI</div>
                         <div class="sidebar-slogan" id="sidebarSlogan" data-i18n="slogan">Vše, co miluješ, na jedné chytré polici</div>
                     </div>
                 </button>
@@ -89,7 +89,7 @@
                 <button type="button" class="sidebar-back-to-library" id="btnSidebarBackToLibrary"><span class="sidebar-back-arrow">←</span> zpět na hlavní nástěnku</button>
                 <hr class="sidebar-divider">
                 <div class="sidebar-library-group" id="sidebarChildrenLibrary">
-                    <button type="button" class="sidebar-nav-item" data-module="childrenLibrary" id="btnChildrenLibraryToggle"><span class="sidebar-nav-icon sidebar-nav-icon-img"><img src="./Ikony do aplikace _ 200px/01_small200px_11.png" alt=""></span> OmniShelf Kids</button>
+                    <button type="button" class="sidebar-nav-item" data-module="childrenLibrary" id="btnChildrenLibraryToggle"><span class="sidebar-nav-icon sidebar-nav-icon-img"><img src="./Ikony do aplikace _ 200px/01_small200px_11.png" alt=""></span> Omshelf Kids</button>
                 </div>
                 <hr class="sidebar-divider" data-adult-only>
                 <div class="sidebar-library-group" id="sidebarPracovna" data-adult-only>
@@ -174,7 +174,7 @@
             <section class="home-dashboard-section" id="homeDashboardSection" style="display:none;" aria-label="Domů – hlavní police">
                 <div class="home-hero home-hero-gradient">
                     <h2 class="home-hero-title">Váš domov v dokonalé harmonii. Stačí jedna fotka.</h2>
-                    <p class="home-hero-subtitle">OmniShelf AI organizuje vaše knihy, dílny i šatník. Zbavte se chaosu a mějte přehled o všem, co milujete, během vteřiny.</p>
+                    <p class="home-hero-subtitle">Omshelf AI organizuje vaše knihy, dílny i šatník. Zbavte se chaosu a mějte přehled o všem, co milujete, během vteřiny.</p>
                 </div>
                 <div class="home-dashboard-inner">
                     <!-- Ikony modulů -->
@@ -406,7 +406,7 @@
             <section class="messages-section" id="messagesSection" style="display:none;" aria-label="Zprávy">
                 <div class="messages-header">
                     <h1 class="messages-title">Zprávy</h1>
-                    <p class="messages-subtitle">Konverzace s majiteli knih a přáteli z OmniShelf</p>
+                    <p class="messages-subtitle">Konverzace s majiteli knih a přáteli z Omshelf</p>
                 </div>
                 <div class="messages-list" id="messagesList" role="list">
                     <article class="messages-contact" data-contact-id="1" role="listitem" tabindex="0">
@@ -1248,7 +1248,7 @@
                         <tr>
                             <td class="pricing-tier-name" data-label="">FAMILY / KIDS</td>
                             <td data-label="Cena"><span class="pricing-price" id="priceFamily">249 Kč</span><span class="pricing-price-year" id="priceFamilySuffix">/měsíc</span><br><span class="pricing-price-year" id="priceFamilyYear" style="display:none;">2 390 Kč/rok</span></td>
-                            <td data-label="Co získáte"><span class="pricing-desc">Vše z PRO + OmniShelf Kids pro celou rodinu</span></td>
+                            <td data-label="Co získáte"><span class="pricing-desc">Vše z PRO + Omshelf Kids pro celou rodinu</span></td>
                             <td class="pricing-cta" data-label=""><button type="button" class="btn-pricing btn-pricing-family" id="btnPricingFamily">Předplatit</button></td>
                         </tr>
                     </tbody>
@@ -1762,9 +1762,9 @@
             if (!('serviceWorker' in navigator)) return;
             window.addEventListener('load', function () {
                 navigator.serviceWorker.register('./service-worker.js', { scope: './' }).then(function (reg) {
-                    if (reg.updated) console.log('OmniShelf: SW updated');
+                    if (reg.updated) console.log('Omshelf: SW updated');
                 }).catch(function (err) {
-                    console.warn('OmniShelf: SW registration failed', err);
+                    console.warn('Omshelf: SW registration failed', err);
                 });
             });
         })();

@@ -146,13 +146,13 @@
         try { document.body.classList.toggle('is-register', isRegisterMode); } catch (e0) {}
 
         if (isRegisterMode) {
-            if (title) title.textContent = 'Registrace do OmniShelf';
+            if (title) title.textContent = 'Registrace do Omshelf';
             if (subtitle) subtitle.textContent = 'Vytvořte si účet a pokračujte do aplikace.';
             if (btn) btn.textContent = 'Vytvořit účet';
             if (toggleText) toggleText.innerHTML = 'Už máte účet? <span id="toggle-link">Přihlásit se</span>';
             if (passwordInput) passwordInput.setAttribute('autocomplete', 'new-password');
         } else {
-            if (title) title.textContent = 'Přihlášení do OmniShelf';
+            if (title) title.textContent = 'Přihlášení do Omshelf';
             if (subtitle) subtitle.textContent = 'Vítejte zpět! Prosím, přihlaste se.';
             if (btn) btn.textContent = 'Vstoupit';
             if (toggleText) toggleText.innerHTML = 'Nemáte ještě účet? <span id="toggle-link">Zaregistrujte se</span>';
@@ -218,7 +218,7 @@
 
         // Upozornění pro file:// režim (localStorage může být nečekaně izolovaný mezi stránkami v některých prohlížečích)
         if (isFileProtocol()) {
-            showError('Poznámka: aplikaci otevíráte jako soubor (file://). V některých prohlížečích pak přihlášení/účty nemusí fungovat konzistentně mezi stránkami. Doporučení: spustit OmniShelf přes lokální server (localhost).');
+            showError('Poznámka: aplikaci otevíráte jako soubor (file://). V některých prohlížečích pak přihlášení/účty nemusí fungovat konzistentně mezi stránkami. Doporučení: spustit Omshelf přes lokální server (localhost).');
         }
 
         if (btnReset) {

@@ -1,5 +1,5 @@
 /**
- * OmniShelf – Library Upload Logic (hotfix-safe).
+ * Omshelf – Library Upload Logic (hotfix-safe).
  * - HTML5 Canvas komprese obálek (max 300px, JPEG, q=0.6)
  * - FileReader helpers
  * - Retry mechanism při QuotaExceededError (spolupracuje se saveToStorage(), které vrací boolean)
@@ -165,7 +165,7 @@
                 book.image = dataUrl;
                 var ok = cfg.saveToStorage(book);
                 var len = (book.image || '').length;
-                console.log('OmniShelf: book.image délka po uložení = ' + len + ' (w=' + attempts[i].w + ', q=' + attempts[i].q + ')' + (len === 0 ? ' (CHYBA – obrázek se neuložil)' : ''));
+                console.log('Omshelf: book.image délka po uložení = ' + len + ' (w=' + attempts[i].w + ', q=' + attempts[i].q + ')' + (len === 0 ? ' (CHYBA – obrázek se neuložil)' : ''));
                 if (typeof cfg.onPreview === 'function') cfg.onPreview(dataUrl);
 
                 if (ok) {
@@ -182,7 +182,7 @@
                 }
                 if (typeof cfg.onFail === 'function') cfg.onFail(global && global.__OMNI_lastSaveError ? global.__OMNI_lastSaveError : new Error('Save failed'));
             }).catch(function (e) {
-                console.warn('OmniShelf: Komprese obrázku selhala', e);
+                console.warn('Omshelf: Komprese obrázku selhala', e);
                 if (typeof cfg.onFail === 'function') cfg.onFail(e);
             });
         }

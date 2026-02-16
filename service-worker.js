@@ -1,5 +1,5 @@
 /**
- * OmniShelf PWA – Service Worker (kostlivec)
+ * Omshelf PWA – Service Worker (kostlivec)
  * Zatím jen prázdná registrace pro splnění podmínky instalace na mobil.
  * Žádné cachování ani fetch – logiku Knihovny ani Vitusu nemění.
  */

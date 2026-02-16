@@ -1,5 +1,5 @@
 /**
- * OmniShelf – modul Text.
+ * Omshelf – modul Text.
  * Samostatná logika pro textové záznamy: ruční přidání, poznámky, citace.
  * Nezávislá na sektoru – použitelná pro Library, Workshop, Wardrobe, Music, Pantry.
  */

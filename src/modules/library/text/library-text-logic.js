@@ -1,5 +1,5 @@
 /**
- * OmniShelf – Library Text Logic.
+ * Omshelf – Library Text Logic.
  * - Filtrování knih podle view (Tvoje sbírka, Půjčil/a jsem, Rozečteno, ...)
  * - Normalizace statusů pro porovnání (bez diakritiky)
  *

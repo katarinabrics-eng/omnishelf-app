@@ -1,5 +1,5 @@
 /**
- * OmniShelf – centrální konfigurace sektorů aplikace.
+ * Omshelf – centrální konfigurace sektorů aplikace.
  * Umožňuje snadné přepínání mezi: Knihovna, Workshop (Dílna), Wardrobe (Šatník),
  * Music Library (Hudební sbírka), Pantry (Spíž) a dalšími.
  * Použití: přepínání v sidebaru, ukládání podle kategorie, vizuální mapy.

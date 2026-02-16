@@ -295,7 +295,7 @@
             helper.className = 'friends-reco-helper';
             helper.textContent = requested
                 ? ('Žádost byla odeslána. Knihu můžete získat od: ' + String(r.from || '—') + '.')
-                : ('Kliknutím odešlete žádost o zapůjčení a OmniShelf si ji uloží.');
+                : ('Kliknutím odešlete žádost o zapůjčení a Omshelf si ji uloží.');
             helper.style.display = requested ? 'block' : 'none';
 
             btn.addEventListener('click', function (e) {
@@ -309,7 +309,7 @@
                     saveBorrowIntents(map);
                     btn.textContent = 'Chci si půjčit';
                     helper.style.display = 'none';
-                    helper.textContent = 'Kliknutím odešlete žádost o zapůjčení a OmniShelf si ji uloží.';
+                    helper.textContent = 'Kliknutím odešlete žádost o zapůjčení a Omshelf si ji uloží.';
                 } else {
                     map[intentKey] = {
                         bookKey: r.bookKey || computeBookKey(r),

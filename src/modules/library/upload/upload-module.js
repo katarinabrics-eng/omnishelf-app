@@ -1,5 +1,5 @@
 /**
- * OmniShelf – modul Upload.
+ * Omshelf – modul Upload.
  * Robustní nahrávání a zobrazení souborů/fotek.
  * Připraveno pro vizuální mapy: místnosti, workshop, šatník, spíž (AI navigace v prostoru).
  *
