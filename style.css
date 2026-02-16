@@ -10036,27 +10036,38 @@
         }
         .bottom-tab-label { line-height: 1.1; }
 
-        /* Domovská stránka – hlavní police */
+        /* Domovská stránka – hlavní police (dle předlohy) */
         .home-dashboard-section {
-            padding: 24px 20px 32px;
+            padding: 0 0 32px;
             max-width: 640px;
             margin: 0 auto;
+        }
+        .home-hero {
+            padding: 32px 24px 40px;
+            margin: 0 0 24px;
+        }
+        .home-hero-gradient {
+            background: linear-gradient(180deg, rgba(141, 211, 17, 0.15) 0%, rgba(184, 230, 78, 0.08) 30%, rgba(232, 248, 212, 0.05) 60%, transparent 100%);
+        }
+        .home-hero-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text);
+            margin: 0 0 12px;
+            line-height: 1.25;
+        }
+        .home-hero-subtitle {
+            font-size: 0.9375rem;
+            color: var(--text);
+            opacity: 0.85;
+            margin: 0;
+            line-height: 1.5;
         }
         .home-dashboard-inner {
             display: flex;
             flex-direction: column;
             gap: 28px;
-        }
-        .home-dashboard-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--text);
-            margin: 0 0 4px;
-        }
-        .home-dashboard-subtitle {
-            font-size: 0.9375rem;
-            color: var(--text-muted);
-            margin: 0 0 8px;
+            padding: 0 20px;
         }
         .home-modules-grid {
             display: grid;
@@ -10073,8 +10084,8 @@
             justify-content: center;
             gap: 8px;
             padding: 20px 16px;
-            background: var(--surface-elevated);
-            border: 1px solid var(--border);
+            background: #fff;
+            border: 1px solid rgba(141, 211, 17, 0.35);
             border-radius: 16px;
             text-decoration: none;
             color: var(--text);
@@ -10153,8 +10164,8 @@
             padding: 12px 0;
         }
         .home-overview {
-            background: var(--surface-elevated);
-            border: 1px solid var(--border);
+            background: #F5F7F3;
+            border: 1px solid rgba(92, 138, 106, 0.2);
             border-radius: 16px;
             padding: 16px;
         }
@@ -10168,7 +10179,7 @@
             align-items: flex-start;
             gap: 12px;
             padding: 12px;
-            background: var(--surface);
+            background: #FBFBF6;
             border-radius: 12px;
         }
         .home-overview-icon {

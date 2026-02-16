@@ -170,11 +170,13 @@
                     </div>
                 </div>
             </div>
-            <!-- Domovská stránka (hlavní police) – ikony modulů, oznámení, přehled -->
+            <!-- Domovská stránka (hlavní police) – dle předlohy: hero, ikony modulů, oznámení, přehled -->
             <section class="home-dashboard-section" id="homeDashboardSection" style="display:none;" aria-label="Domů – hlavní police">
+                <div class="home-hero home-hero-gradient">
+                    <h2 class="home-hero-title">Váš domov v dokonalé harmonii. Stačí jedna fotka.</h2>
+                    <p class="home-hero-subtitle">OmniShelf AI organizuje vaše knihy, dílny i šatník. Zbavte se chaosu a mějte přehled o všem, co milujete, během vteřiny.</p>
+                </div>
                 <div class="home-dashboard-inner">
-                    <h2 class="home-dashboard-title">Moje hlavní police</h2>
-                    <p class="home-dashboard-subtitle">Vše na jednom místě</p>
                     <!-- Ikony modulů -->
                     <div class="home-modules-grid" id="homeModulesGrid" role="list">
                         <a href="./app.html?module=library" class="home-module-card" data-module="library" role="listitem">
@@ -185,9 +187,10 @@
                             <span class="home-module-icon"><img src="./Ikony do aplikace _ 200px/01_small200px_8.png" alt=""></span>
                             <span class="home-module-label">Vitus</span>
                         </a>
-                        <a href="./app.html?module=marketplace" class="home-module-card" data-module="marketplace" role="listitem">
-                            <span class="home-module-icon"><img src="./Ikony do aplikace _ 200px/01_small200px_12.png" alt=""></span>
-                            <span class="home-module-label">Tržiště</span>
+                        <a href="./coming-soon.html?module=pantry" class="home-module-card" role="listitem">
+                            <span class="home-module-icon"><img src="./Ikony do aplikace _ 200px/01_small200px_5.png" alt=""></span>
+                            <span class="home-module-label">Špížírna</span>
+                            <span class="home-module-soon">Soon</span>
                         </a>
                         <a href="./coming-soon.html?module=wardrobe" class="home-module-card" role="listitem">
                             <span class="home-module-icon"><img src="./Ikony do aplikace _ 200px/01_small200px_13.png" alt=""></span>
@@ -1370,22 +1373,22 @@
             </div>
         </div>
     </div>
-    <!-- Spodní Tab Bar (mobil): Domů, Knihovna, Vitus, Profil -->
+    <!-- Spodní Tab Bar (mobil): Domů, Knihovna, Vitus, Profil – zelené ikony dle předlohy -->
     <nav class="bottom-tab-bar" id="bottomTabBar" aria-label="Hlavní navigace">
         <a href="./app.html" class="bottom-tab-item" data-tab="home" aria-label="Domů">
-            <span class="bottom-tab-icon"><img src="./Ikony do aplikace _ 200px/01_small200px.png" alt=""></span>
+            <span class="bottom-tab-icon"><img src="./Ikony_zelene_male/01_zelene200px_1.png" alt="" onerror="this.src='./Ikony do aplikace _ 200px/01_small200px.png'"></span>
             <span class="bottom-tab-label">Domů</span>
         </a>
         <a href="./library.html" class="bottom-tab-item" data-tab="library" aria-label="Knihovna">
-            <span class="bottom-tab-icon"><img src="./Ikony do aplikace _ 200px/01_small200px_4.png" alt=""></span>
+            <span class="bottom-tab-icon"><img src="./Ikony_zelene_male/01_zelene200px_12.png" alt="" onerror="this.src='./Ikony do aplikace _ 200px/01_small200px_4.png'"></span>
             <span class="bottom-tab-label">Knihovna</span>
         </a>
         <a href="./vitus.html" class="bottom-tab-item" data-tab="vitus" aria-label="Vitus">
-            <span class="bottom-tab-icon"><img src="./Ikony do aplikace _ 200px/01_small200px_8.png" alt=""></span>
+            <span class="bottom-tab-icon"><img src="./Ikony_zelene_male/01_zelene200px_4.png" alt="" onerror="this.src='./Ikony do aplikace _ 200px/01_small200px_8.png'"></span>
             <span class="bottom-tab-label">Vitus</span>
         </a>
         <button type="button" class="bottom-tab-item" data-tab="profile" aria-label="Profil">
-            <span class="bottom-tab-icon"><img src="./Ikony do aplikace _ 200px/01_small200px_7.png" alt=""></span>
+            <span class="bottom-tab-icon"><img src="./Ikony_zelene_male/01_zelene200px_7.png" alt="" onerror="this.src='./Ikony do aplikace _ 200px/01_small200px_7.png'"></span>
             <span class="bottom-tab-label">Profil</span>
         </button>
     </nav>
