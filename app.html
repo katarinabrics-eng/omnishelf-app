@@ -27,7 +27,7 @@
             var p = new URLSearchParams(window.location.search);
             if (p.get('mode') === 'kids') window.__omniModeKids = true;
             var mod = p.get('module');
-            if (mod === 'vitus' || mod === 'library' || mod === 'marketplace') window.__omniOpenModule = mod;
+            if (mod === 'vitus' || mod === 'library' || mod === 'marketplace' || mod === 'messages') window.__omniOpenModule = mod;
         })();
     </script>
     <div class="dashboard">
@@ -170,6 +170,61 @@
                     </div>
                 </div>
             </div>
+            <!-- Domovská stránka (hlavní police) – ikony modulů, oznámení, přehled -->
+            <section class="home-dashboard-section" id="homeDashboardSection" style="display:none;" aria-label="Domů – hlavní police">
+                <div class="home-dashboard-inner">
+                    <h2 class="home-dashboard-title">Moje hlavní police</h2>
+                    <p class="home-dashboard-subtitle">Vše na jednom místě</p>
+                    <!-- Ikony modulů -->
+                    <div class="home-modules-grid" id="homeModulesGrid" role="list">
+                        <a href="./app.html?module=library" class="home-module-card" data-module="library" role="listitem">
+                            <span class="home-module-icon"><img src="./Ikony do aplikace _ 200px/01_small200px_4.png" alt=""></span>
+                            <span class="home-module-label">Knihovna</span>
+                        </a>
+                        <a href="./app.html?module=vitus" class="home-module-card" data-module="vitus" role="listitem">
+                            <span class="home-module-icon"><img src="./Ikony do aplikace _ 200px/01_small200px_8.png" alt=""></span>
+                            <span class="home-module-label">Vitus</span>
+                        </a>
+                        <a href="./app.html?module=marketplace" class="home-module-card" data-module="marketplace" role="listitem">
+                            <span class="home-module-icon"><img src="./Ikony do aplikace _ 200px/01_small200px_12.png" alt=""></span>
+                            <span class="home-module-label">Tržiště</span>
+                        </a>
+                        <a href="./coming-soon.html?module=wardrobe" class="home-module-card" role="listitem">
+                            <span class="home-module-icon"><img src="./Ikony do aplikace _ 200px/01_small200px_13.png" alt=""></span>
+                            <span class="home-module-label">Šatník</span>
+                            <span class="home-module-soon">Soon</span>
+                        </a>
+                    </div>
+                    <!-- Oznámení -->
+                    <div class="home-notifications" id="homeNotifications">
+                        <h3 class="home-section-title">Oznámení</h3>
+                        <ul class="home-notifications-list" id="homeNotificationsList" role="list">
+                            <!-- Naplní se z library-logic a vitus -->
+                        </ul>
+                        <p class="home-notifications-empty" id="homeNotificationsEmpty">Žádná nová oznámení.</p>
+                    </div>
+                    <!-- Aktuální stav – přehled modulů -->
+                    <div class="home-overview" id="homeOverview">
+                        <h3 class="home-section-title">Aktuální stav</h3>
+                        <div class="home-overview-cards" id="homeOverviewCards">
+                            <div class="home-overview-card" id="homeOverviewLibrary">
+                                <span class="home-overview-icon">📚</span>
+                                <div class="home-overview-content">
+                                    <strong>Knihovna</strong>
+                                    <p id="homeOverviewLibraryText">Načítám…</p>
+                                </div>
+                            </div>
+                            <div class="home-overview-card" id="homeOverviewVitus">
+                                <span class="home-overview-icon">💊</span>
+                                <div class="home-overview-content">
+                                    <strong>Vitus</strong>
+                                    <p id="homeOverviewVitusText">Načítám…</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
             <!-- Vitus (Apatyka) – samostatný dashboard (placeholder) -->
             <section class="vitus-section" id="vitusSection" style="display:none;" aria-label="Vitus – Apatyka">
                 <div class="vitus-hero">
@@ -1367,6 +1422,7 @@
     <script src="./js/config/sectors.js"></script>
     <script src="./src/core/app-state.js"></script>
     <script src="./src/core/module-switcher.js"></script>
+    <script src="./src/core/home-dashboard.js"></script>
     <script src="./src/modules/vitus/vitus-logic.js"></script>
     <script src="./src/modules/vitus/vitus-ai.js"></script>
     <script src="./src/modules/vitus/vitus-enrich.js"></script>

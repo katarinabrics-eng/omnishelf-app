@@ -18,13 +18,14 @@
     function normalizeModule(m) {
         m = String(m || '').trim().toLowerCase();
         if (m === 'vitus') return 'vitus';
-        return 'library';
+        if (m === 'library') return 'library';
+        return 'home';
     }
 
     function load() {
         var hasModuleParam = typeof window !== 'undefined' && window.location && window.location.search && window.location.search.indexOf('module=') >= 0;
         if (!hasModuleParam) {
-            active = 'library';
+            active = 'home';
             safeSet(active);
             return active;
         }
