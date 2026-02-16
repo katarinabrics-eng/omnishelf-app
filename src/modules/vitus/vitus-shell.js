@@ -1242,6 +1242,7 @@
             + '<div class="vitus-dose-view">'
             + '  <p class="vitus-disclaimer vitus-dose-disclaimer">Vitus není náhrada lékaře – jen pomáhá nezapomenout. Při nejasnostech se poraďte s odborníkem.</p>'
             + '  <div class="vitus-dose-nav">'
+            + '    <button type="button" class="vitus-btn vitus-btn--ghost vitus-dose-nav-btn" id="vitusDosePrev" data-date="' + escapeHtml(prevStr) + '">← Předchozí</button>'
             + '    <span class="vitus-dose-date">' + (isToday ? 'Dnes' : '') + ' ' + escapeHtml(dateStr) + '</span>'
             + '    <button type="button" class="vitus-btn vitus-btn--ghost vitus-dose-nav-btn" id="vitusDoseNext" data-date="' + escapeHtml(nextStr) + '">Další →</button>'
             + '  </div>'
@@ -1312,8 +1313,11 @@
         });
     }
 
+    var currentVitusView = 'meds';
+
     function setView(view) {
         view = String(view || '').trim() || 'meds';
+        currentVitusView = view;
         var title = $('vitusViewTitle');
         var body = $('vitusViewBody');
         if (!title || !body) return;
@@ -1356,15 +1360,22 @@
                 if (typeof refreshMedsView === 'function') refreshMedsView();
             });
         }
-        document.querySelectorAll('.vitus-nav-item').forEach(function (btn) {
-            btn.addEventListener('click', function () {
-                var v = btn.getAttribute('data-vitus-view') || 'meds';
-                setView(v);
-            });
+        document.addEventListener('click', function (e) {
+            var btn = e.target && e.target.closest ? e.target.closest('.vitus-nav-item') : null;
+            if (!btn) return;
+            try {
+                if (window.OMNI_AppState && window.OMNI_AppState.getActiveModule && window.OMNI_AppState.getActiveModule() !== 'vitus') return;
+            } catch (err) {}
+            var v = btn.getAttribute('data-vitus-view') || 'meds';
+            setView(v);
         });
 
-        // default
-        setView('meds');
+        document.addEventListener('omni:module-changed', function (e) {
+            var next = (e && e.detail && e.detail.next) ? e.detail.next : '';
+            if (next === 'vitus') setView(currentVitusView);
+        });
+
+        setView(currentVitusView);
 
         runDoseMissedCheck();
 
