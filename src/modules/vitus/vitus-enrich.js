@@ -62,7 +62,8 @@
         var systemPrompt =
             'Jsi Bába Kořenářka, expertka na farmacii a bylinkářství. Tvým úkolem je poskytnout přesné informace o léku nebo doplňku stravy. ' +
             'Odpověz VŽDY pouze ve formátu JSON s těmito poli: purpose (stručný účel), category (vyber jednu z: Srdce, Klouby, Krása, Spánek, Trávení, Imunita, Jiné), ' +
-            'prescription (jak užívat), notes (zajímavost nebo rada), warning (na co si dát pozor), aiContext (stručné shrnutí).';
+            'prescription (jak užívat), notes (zajímavost nebo rada), warning (na co si dát pozor), aiContext (stručné shrnutí/složení), ' +
+            'absorbability (stručně: jak se lék vstřebává, např. nalačno/po jídle, biodostupnost), interactions (varování: s čím se lék nebezpečně nekombinuje).';
 
         var userPrompt =
             'Název: "' + name + '".' + (type ? (' Forma: "' + type + '".') : '') +
@@ -78,7 +79,9 @@
                     prescription: { type: 'string', description: 'Jak užívat.' },
                     notes: { type: 'string', description: 'Zajímavost nebo rada.' },
                     warning: { type: 'string', description: 'Na co si dát pozor.' },
-                    aiContext: { type: 'string', description: 'Stručné shrnutí.' }
+                    aiContext: { type: 'string', description: 'Stručné shrnutí/složení.' },
+                    absorbability: { type: 'string', description: 'Jak se vstřebává.' },
+                    interactions: { type: 'string', description: 'S čím nekombinovat.' }
                 },
                 required: ['purpose', 'category', 'prescription', 'notes', 'warning', 'aiContext'],
                 additionalProperties: false
@@ -122,7 +125,9 @@
                     prescription: safeTrim(parsed2.prescription),
                     notes: safeTrim(parsed2.notes),
                     warning: safeTrim(parsed2.warning),
-                    aiContext: safeTrim(parsed2.aiContext)
+                    aiContext: safeTrim(parsed2.aiContext),
+                    absorbability: safeTrim(parsed2.absorbability),
+                    interactions: safeTrim(parsed2.interactions)
                 }
             };
         }
@@ -162,7 +167,9 @@
             prescription: safeTrim(parsed.prescription),
             notes: safeTrim(parsed.notes),
             warning: safeTrim(parsed.warning),
-            aiContext: safeTrim(parsed.aiContext)
+            aiContext: safeTrim(parsed.aiContext),
+            absorbability: safeTrim(parsed.absorbability),
+            interactions: safeTrim(parsed.interactions)
         };
 
         return { ok: true, med: med };

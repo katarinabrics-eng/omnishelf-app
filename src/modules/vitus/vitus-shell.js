@@ -112,6 +112,7 @@
         set('vitusMedNotes', result.notes);
         set('vitusMedWarning', result.warning);
         set('vitusMedCategory', result.category);
+        set('vitusMedForWhom', result.forWhom);
         set('vitusMedAiContext', result.aiContext);
         try { pendingAiContext = String(result.aiContext || ''); } catch (e0) { pendingAiContext = ''; }
     }
@@ -133,6 +134,9 @@
 
         var options = '<option value="">Ostatní</option>' + CATEGORIES.map(function (c) {
             return '<option value="' + escapeHtml(c) + '">' + escapeHtml(c) + '</option>';
+        }).join('');
+        var recipientOpts = '<option value="">—</option>' + getRecipients().map(function (r) {
+            return '<option value="' + escapeHtml(r) + '">' + escapeHtml(r) + '</option>';
         }).join('');
 
         var ADD_OPEN_KEY = 'omnishelf_vitus_add_open';
@@ -163,21 +167,22 @@
             + '        <div class="vitus-field-inline"><label class="vitus-label" for="vitusMedRemaining">Zbývá</label><input class="vitus-input" id="vitusMedRemaining" type="number" min="0" step="1" placeholder="12" /></div>'
             + '        <div class="vitus-field-inline"><label class="vitus-label" for="vitusMedDoseAmount">Dávka (ks)</label><input class="vitus-input" id="vitusMedDoseAmount" type="number" min="0" step="1" value="1" /></div>'
             + '        <div class="vitus-field-inline"><label class="vitus-label" for="vitusMedCategory">Polička</label><select class="vitus-input vitus-select" id="vitusMedCategory">' + options + '</select></div>'
+            + '        <div class="vitus-field-inline"><label class="vitus-label" for="vitusMedForWhom">Pro koho</label><select class="vitus-input vitus-select" id="vitusMedForWhom">' + recipientOpts + '</select></div>'
             + '      </div>'
             + '      <div class="vitus-form-row vitus-form-row--inline vitus-form-row--full">'
-            + '        <div class="vitus-field-inline"><label class="vitus-label" for="vitusMedPurpose">Účel</label><input class="vitus-input" id="vitusMedPurpose" placeholder="např. bolest hlavy, spánek…" /></div>'
+            + '        <div class="vitus-field-inline"><label class="vitus-label" for="vitusMedPurpose">Účel</label><textarea class="vitus-input vitus-textarea-add" id="vitusMedPurpose" rows="2" placeholder="např. bolest hlavy, spánek…"></textarea></div>'
             + '      </div>'
             + '      <div class="vitus-form-row vitus-form-row--inline vitus-form-row--full">'
-            + '        <div class="vitus-field-inline"><label class="vitus-label" for="vitusMedPrescription">Recept / instrukce</label><input class="vitus-input" id="vitusMedPrescription" placeholder="např. 1× denně po jídle…" /></div>'
+            + '        <div class="vitus-field-inline vitus-field-inline--full"><label class="vitus-label" for="vitusMedPrescription">Recept / instrukce</label><textarea class="vitus-input vitus-textarea-add" id="vitusMedPrescription" rows="2" placeholder="např. 1× denně po jídle…"></textarea></div>'
             + '      </div>'
             + '      <div class="vitus-form-row vitus-form-row--inline vitus-form-row--full">'
-            + '        <div class="vitus-field-inline"><label class="vitus-label" for="vitusMedNotes">Poznámky</label><input class="vitus-input" id="vitusMedNotes" placeholder="např. nekombinovat s…" /></div>'
+            + '        <div class="vitus-field-inline vitus-field-inline--full"><label class="vitus-label" for="vitusMedNotes">Poznámky</label><textarea class="vitus-input vitus-textarea-add" id="vitusMedNotes" rows="2" placeholder="např. nekombinovat s…"></textarea></div>'
             + '      </div>'
             + '      <div class="vitus-form-row vitus-form-row--inline vitus-form-row--full">'
-            + '        <div class="vitus-field-inline"><label class="vitus-label" for="vitusMedWarning">Varování</label><input class="vitus-input" id="vitusMedWarning" placeholder="na co si dát pozor…" /></div>'
+            + '        <div class="vitus-field-inline vitus-field-inline--full"><label class="vitus-label" for="vitusMedWarning">Varování</label><textarea class="vitus-input vitus-textarea-add" id="vitusMedWarning" rows="2" placeholder="na co si dát pozor…"></textarea></div>'
             + '      </div>'
             + '      <div class="vitus-form-row vitus-form-row--inline vitus-form-row--full">'
-            + '        <div class="vitus-field-inline"><label class="vitus-label" for="vitusMedAiContext">AI kontext (profil léku)</label><input class="vitus-input" id="vitusMedAiContext" placeholder="účinná látka, indikace…" /></div>'
+            + '        <div class="vitus-field-inline vitus-field-inline--full"><label class="vitus-label" for="vitusMedAiContext">Složení / AI kontext</label><textarea class="vitus-input vitus-textarea-add vitus-textarea-add--ai" id="vitusMedAiContext" rows="3" placeholder="účinná látka, indikace…"></textarea></div>'
             + '      </div>'
             + '      <div class="vitus-cover-block" id="vitusCoverBlock">'
             + '        <div class="vitus-cover-preview" id="vitusCoverPreview" style="display:none;"></div>'
@@ -343,6 +348,26 @@
             return null;
         }
 
+        /** Pro koho – členové rodiny / mazlíčci. Modularně: lze napojit na OMNI_LibraryLogic.getFamilyProfiles */
+        function getRecipients() {
+            if (typeof window.OMNI_LibraryLogic !== 'undefined' && typeof window.OMNI_LibraryLogic.getFamilyProfiles === 'function') {
+                var fp = window.OMNI_LibraryLogic.getFamilyProfiles();
+                if (fp && fp.length) return fp.map(function (p) { return p.name || p.id || '—'; });
+            }
+            return ['Já', 'Partner/ka', 'Děti', 'Mazlíček'];
+        }
+
+        function initTextareaAutoResize(ta) {
+            if (!ta || ta.tagName !== 'TEXTAREA') return;
+            function resize() {
+                ta.style.height = 'auto';
+                ta.style.height = Math.min(ta.scrollHeight, 300) + 'px';
+            }
+            ta.addEventListener('input', resize);
+            ta.addEventListener('focus', resize);
+            setTimeout(resize, 50);
+        }
+
         function openMedModal(id) {
             var med = getMedById(id);
             var overlay = $('vitusMedModal');
@@ -360,77 +385,111 @@
                 ? ('<img class="vitus-modal-cover-img" src="' + escapeHtml(med.coverImage) + '" alt="' + escapeHtml(med.name) + '" />')
                 : '<div class="vitus-modal-cover-empty">Bez fotky</div>';
 
+            var recipients = getRecipients();
+            var recipientsOptions = '<option value="">—</option>' + recipients.map(function (r) {
+                return '<option value="' + escapeHtml(r) + '"' + (med.forWhom === r ? ' selected' : '') + '>' + escapeHtml(r) + '</option>';
+            }).join('');
+
             bodyEl.innerHTML = ''
-                + '<div class="vitus-modal-grid">'
+                + '<div class="vitus-modal-grid vitus-modal-grid--detail">'
                 + '  <div class="vitus-modal-cover">'
                 + '    ' + coverHtml
                 + '    <button type="button" class="vitus-btn vitus-btn--ghost" id="vitusModalPickCover">Nahrát / změnit fotku</button>'
                 + '    <input type="file" id="vitusModalCoverInput" accept="image/*" style="display:none;" />'
                 + '  </div>'
-                + '  <form class="vitus-form vitus-form--modal" id="vitusEditMedForm">'
+                + '  <form class="vitus-form vitus-form--modal vitus-form--detail" id="vitusEditMedForm">'
                 + '    <input type="hidden" id="vitusEditMedId" value="' + escapeHtml(med.id) + '" />'
-                + '    <div class="vitus-form-row">'
-                + '      <div class="vitus-field">'
+                + '    <div class="vitus-form-row vitus-form-row--name">'
+                + '      <div class="vitus-field vitus-field--full">'
                 + '        <label class="vitus-label" for="vitusEditMedName">Název</label>'
-                + '        <input class="vitus-input" id="vitusEditMedName" required value="' + escapeHtml(med.name) + '" />'
+                + '        <textarea class="vitus-input vitus-textarea vitus-textarea--name" id="vitusEditMedName" rows="2" required>' + escapeHtml(med.name) + '</textarea>'
                 + '      </div>'
+                + '    </div>'
+                + '    <div class="vitus-form-row">'
                 + '      <div class="vitus-field">'
                 + '        <label class="vitus-label" for="vitusEditMedType">Forma</label>'
-                + '        <input class="vitus-input" id="vitusEditMedType" value="' + escapeHtml(med.type) + '" />'
+                + '        <input class="vitus-input vitus-input--large" id="vitusEditMedType" value="' + escapeHtml(med.type) + '" />'
+                + '      </div>'
+                + '      <div class="vitus-field">'
+                + '        <label class="vitus-label" for="vitusEditMedForWhom">Pro koho</label>'
+                + '        <select class="vitus-input vitus-select vitus-input--large" id="vitusEditMedForWhom">' + recipientsOptions + '</select>'
+                + '      </div>'
+                + '      <div class="vitus-field">'
+                + '        <label class="vitus-label" for="vitusEditMedCat">Polička</label>'
+                + '        <select class="vitus-input vitus-select vitus-input--large" id="vitusEditMedCat">' + options + '</select>'
                 + '      </div>'
                 + '    </div>'
-                + '    <div class="vitus-form-row">'
-                + '      <div class="vitus-field">'
-                + '        <label class="vitus-label" for="vitusEditMedTotal">Počet v balení</label>'
-                + '        <input class="vitus-input" id="vitusEditMedTotal" type="number" min="0" step="1" value="' + escapeHtml(String(med.totalQuantity || 0)) + '" />'
-                + '      </div>'
-                + '      <div class="vitus-field">'
-                + '        <label class="vitus-label" for="vitusEditMedRemaining">Zbývá</label>'
-                + '        <input class="vitus-input" id="vitusEditMedRemaining" type="number" min="0" step="1" value="' + escapeHtml(String(med.remainingQuantity || 0)) + '" />'
-                + '      </div>'
-                + '      <div class="vitus-field">'
-                + '        <label class="vitus-label" for="vitusEditMedDose">Dávka (ks)</label>'
-                + '        <input class="vitus-input" id="vitusEditMedDose" type="number" min="0" step="1" value="' + escapeHtml(String((med.dosage && med.dosage.amount) ? med.dosage.amount : 1)) + '" />'
-                + '      </div>'
-                + '    </div>'
-                + '    <div class="vitus-form-row">'
-                + '      <div class="vitus-field">'
-                + '        <label class="vitus-label" for="vitusEditMedExp">Expirace</label>'
-                + '        <input class="vitus-input" id="vitusEditMedExp" type="date" value="' + escapeHtml(med.expiration) + '" />'
-                + '      </div>'
-                + '      <div class="vitus-field">'
-                + '        <label class="vitus-label" for="vitusEditMedCat">Polička (kategorie)</label>'
-                + '        <select class="vitus-input vitus-select" id="vitusEditMedCat">' + options + '</select>'
+                + '    <div class="vitus-detail-block vitus-detail-block--stock">'
+                + '      <h4 class="vitus-detail-block-title">Stav zásob & Expirace</h4>'
+                + '      <div class="vitus-form-row">'
+                + '        <div class="vitus-field">'
+                + '          <label class="vitus-label" for="vitusEditMedTotal">Počet v balení</label>'
+                + '          <input class="vitus-input vitus-input--large" id="vitusEditMedTotal" type="number" min="0" step="1" value="' + escapeHtml(String(med.totalQuantity || 0)) + '" />'
+                + '        </div>'
+                + '        <div class="vitus-field">'
+                + '          <label class="vitus-label" for="vitusEditMedRemaining">Zbývá tablet/bal.</label>'
+                + '          <input class="vitus-input vitus-input--large" id="vitusEditMedRemaining" type="number" min="0" step="1" value="' + escapeHtml(String(med.remainingQuantity || 0)) + '" />'
+                + '        </div>'
+                + '        <div class="vitus-field">'
+                + '          <label class="vitus-label" for="vitusEditMedExp">Datum expirace</label>'
+                + '          <input class="vitus-input vitus-input--large" id="vitusEditMedExp" type="date" value="' + escapeHtml(med.expiration) + '" />'
+                + '        </div>'
+                + '        <div class="vitus-field">'
+                + '          <label class="vitus-label" for="vitusEditMedDose">Dávka (ks)</label>'
+                + '          <input class="vitus-input vitus-input--large" id="vitusEditMedDose" type="number" min="0" step="1" value="' + escapeHtml(String((med.dosage && med.dosage.amount) ? med.dosage.amount : 1)) + '" />'
+                + '        </div>'
                 + '      </div>'
                 + '    </div>'
                 + '    <div class="vitus-form-row">'
                 + '      <div class="vitus-field vitus-field--full">'
                 + '        <label class="vitus-label" for="vitusEditMedPurpose">Účel</label>'
-                + '        <input class="vitus-input" id="vitusEditMedPurpose" value="' + escapeHtml(med.purpose) + '" />'
+                + '        <textarea class="vitus-input vitus-textarea vitus-textarea--ai" id="vitusEditMedPurpose" rows="3" placeholder="např. bolest hlavy, spánek…">' + escapeHtml(med.purpose) + '</textarea>'
+                + '      </div>'
+                + '    </div>'
+                + '    <div class="vitus-form-row">'
+                + '      <div class="vitus-field vitus-field--full">'
+                + '        <label class="vitus-label" for="vitusEditMedAiContext">Složení / AI profil léku</label>'
+                + '        <textarea class="vitus-input vitus-textarea vitus-textarea--ai" id="vitusEditMedAiContext" rows="4" placeholder="účinná látka, indikace…">' + escapeHtml(med.aiContext || '') + '</textarea>'
                 + '      </div>'
                 + '    </div>'
                 + '    <div class="vitus-form-row">'
                 + '      <div class="vitus-field vitus-field--full">'
                 + '        <label class="vitus-label" for="vitusEditMedPrescription">Recept / instrukce</label>'
-                + '        <input class="vitus-input" id="vitusEditMedPrescription" value="' + escapeHtml(med.prescription) + '" />'
+                + '        <textarea class="vitus-input vitus-textarea" id="vitusEditMedPrescription" rows="2">' + escapeHtml(med.prescription) + '</textarea>'
                 + '      </div>'
                 + '    </div>'
                 + '    <div class="vitus-form-row">'
                 + '      <div class="vitus-field vitus-field--full">'
                 + '        <label class="vitus-label" for="vitusEditMedNotes">Poznámky</label>'
-                + '        <input class="vitus-input" id="vitusEditMedNotes" value="' + escapeHtml(med.notes) + '" />'
+                + '        <textarea class="vitus-input vitus-textarea" id="vitusEditMedNotes" rows="2">' + escapeHtml(med.notes) + '</textarea>'
                 + '      </div>'
                 + '    </div>'
                 + '    <div class="vitus-form-row">'
                 + '      <div class="vitus-field vitus-field--full">'
                 + '        <label class="vitus-label" for="vitusEditMedWarning">Varování</label>'
-                + '        <input class="vitus-input" id="vitusEditMedWarning" value="' + escapeHtml(med.warning || '') + '" />'
+                + '        <textarea class="vitus-input vitus-textarea" id="vitusEditMedWarning" rows="2">' + escapeHtml(med.warning || '') + '</textarea>'
                 + '      </div>'
                 + '    </div>'
-                + '    <div class="vitus-form-row">'
-                + '      <div class="vitus-field vitus-field--full">'
-                + '        <label class="vitus-label" for="vitusEditMedAiContext">AI kontext (profil léku)</label>'
-                + '        <input class="vitus-input" id="vitusEditMedAiContext" value="' + escapeHtml(med.aiContext || '') + '" />'
+                + '    <div class="vitus-detail-block vitus-detail-block--herbalist">'
+                + '      <h4 class="vitus-detail-block-title">🌿 Bába Kořenářka</h4>'
+                + '      <div class="vitus-form-row">'
+                + '        <div class="vitus-field vitus-field--full">'
+                + '          <label class="vitus-label" for="vitusEditMedAbsorbability">Vstřebatelnost</label>'
+                + '          <textarea class="vitus-input vitus-textarea vitus-textarea--herbalist" id="vitusEditMedAbsorbability" rows="2" placeholder="Analýza vstřebatelnosti (AI)">' + escapeHtml(med.absorbability || '') + '</textarea>'
+                + '        </div>'
+                + '      </div>'
+                + '      <div class="vitus-form-row">'
+                + '        <div class="vitus-field vitus-field--full">'
+                + '          <label class="vitus-label" for="vitusEditMedInteractions">Varování – interakce s jinými léky</label>'
+                + '          <textarea class="vitus-input vitus-textarea vitus-textarea--herbalist" id="vitusEditMedInteractions" rows="2" placeholder="Nekombinovat s… (AI)">' + escapeHtml(med.interactions || '') + '</textarea>'
+                + '        </div>'
+                + '      </div>'
+                + '    </div>'
+                + '    <div class="vitus-detail-block vitus-detail-block--sos">'
+                + '      <h4 class="vitus-detail-block-title">Rychlé akce</h4>'
+                + '      <div class="vitus-sos-buttons">'
+                + '        <button type="button" class="vitus-btn vitus-btn--sos" id="vitusBtnSos" disabled title="Připravujeme">SOS První pomoc</button>'
+                + '        <button type="button" class="vitus-btn vitus-btn--sos" id="vitusBtnRecept" disabled title="Připravujeme">Žádost o recept</button>'
                 + '      </div>'
                 + '    </div>'
                 + '    <div class="vitus-actions">'
@@ -440,9 +499,11 @@
                 + '      <button type="button" class="vitus-btn vitus-btn--ghost" id="vitusModalDelete">Smazat</button>'
                 + '      <span class="vitus-form-hint" id="vitusModalHint"></span>'
                 + '    </div>'
-                + '    <div class="vitus-ai-disclaimer">Informace jsou generovány AI a mají informativní charakter. Vždy konzultujte s lékařem.</div>'
+                + '    <div class="vitus-ai-disclaimer">Informace jsou generovány AI a mají informativní charakter. Vždy konzultuj s lékařem.</div>'
                 + '  </form>'
                 + '</div>';
+
+            bodyEl.querySelectorAll('.vitus-textarea').forEach(initTextareaAutoResize);
 
             // set selected category
             try {
@@ -513,6 +574,7 @@
                     try { localStorage.setItem(ADD_OPEN_KEY, acc.open ? '1' : '0'); } catch (e0) {}
                 });
             }
+            document.querySelectorAll('.vitus-textarea-add').forEach(initTextareaAutoResize);
 
             // Cover picking (no AI)
             var pendingCover = '';
@@ -730,6 +792,7 @@
                     var notes = $('vitusMedNotes') && $('vitusMedNotes').value;
                     var warning = $('vitusMedWarning') && $('vitusMedWarning').value;
                     var category = $('vitusMedCategory') && $('vitusMedCategory').value;
+                    var forWhom = $('vitusMedForWhom') && $('vitusMedForWhom').value;
                     var aiContext = $('vitusMedAiContext') && $('vitusMedAiContext').value;
 
                     var totalN = Number(total);
@@ -750,6 +813,7 @@
                         notes: notes,
                         warning: warning,
                         category: category,
+                        forWhom: forWhom || '',
                         coverImage: pendingCover || '',
                         aiContext: String(aiContext || pendingAiContext || '')
                     });
@@ -902,11 +966,14 @@
                 med.dosage.amount = Number($('vitusEditMedDose') ? $('vitusEditMedDose').value : (med.dosage.amount || 1));
                 med.expiration = $('vitusEditMedExp') ? $('vitusEditMedExp').value : med.expiration;
                 med.category = $('vitusEditMedCat') ? $('vitusEditMedCat').value : med.category;
+                med.forWhom = $('vitusEditMedForWhom') ? $('vitusEditMedForWhom').value : (med.forWhom || '');
                 med.purpose = $('vitusEditMedPurpose') ? $('vitusEditMedPurpose').value : med.purpose;
                 med.prescription = $('vitusEditMedPrescription') ? $('vitusEditMedPrescription').value : med.prescription;
                 med.notes = $('vitusEditMedNotes') ? $('vitusEditMedNotes').value : med.notes;
                 med.warning = $('vitusEditMedWarning') ? $('vitusEditMedWarning').value : (med.warning || '');
                 med.aiContext = $('vitusEditMedAiContext') ? $('vitusEditMedAiContext').value : (med.aiContext || '');
+                med.absorbability = $('vitusEditMedAbsorbability') ? $('vitusEditMedAbsorbability').value : (med.absorbability || '');
+                med.interactions = $('vitusEditMedInteractions') ? $('vitusEditMedInteractions').value : (med.interactions || '');
                 var res = logic.upsertMed(med);
                 if (hintEl) hintEl.textContent = res && res.ok ? 'Uloženo.' : 'Nelze uložit.';
                 renderShelves();
@@ -949,7 +1016,7 @@
                             if (!res || res.ok !== true) throw new Error('enrich_failed');
                             var patch = res.med || {};
                             // do léku nepřepisujeme coverImage (jen textová data)
-                            ['aiContext', 'purpose', 'prescription', 'notes', 'warning', 'category', 'type'].forEach(function (k) {
+                            ['aiContext', 'purpose', 'prescription', 'notes', 'warning', 'category', 'type', 'absorbability', 'interactions'].forEach(function (k) {
                                 if (typeof patch[k] === 'string' && patch[k].trim()) medE[k] = patch[k];
                             });
                             logic.upsertMed(medE);

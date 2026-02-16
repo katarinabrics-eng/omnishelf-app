@@ -64,7 +64,8 @@
             if (view === 'currentlyReading') {
                 // V sekci Rozečtené zobrazit pouze aktivní knihy (ne vrácené)
                 if (b.returned) return false;
-                return reading === 'reading';
+                var loc = ((b.location || '') + ' ' + (b.physicalLocation || '')).toLowerCase().replace(/\s/g, '');
+                return reading === 'reading' || loc.indexOf('rozecteneknihy') >= 0 || loc.indexOf('rozectene') >= 0;
             }
             if (view === 'borrowed') return (ownership === 'borrowed' || ownership === 'pujceno' || ownershipNorm === 'borrowed' || ownershipNorm === 'pujceno');
             if (view === 'borrowedByMe') {

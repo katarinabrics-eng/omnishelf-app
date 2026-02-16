@@ -62,9 +62,10 @@
             notes: String(m.notes || '').trim(),
             warning: String(m.warning || '').trim(),
             category: normalizeCategory(m.category),
-            // obal/fotka léku (data URL), volitelné
+            forWhom: String(m.forWhom || '').trim(), // Pro koho (člen rodiny / mazlíček)
+            absorbability: String(m.absorbability || '').trim(), // Bába Kořenářka: vstřebatelnost
+            interactions: String(m.interactions || '').trim(), // Bába Kořenářka: varování interakcí
             coverImage: (typeof m.coverImage === 'string') ? m.coverImage : '',
-            // AI kontext (textový profil z fotek/letáku/receptu) – volitelné
             aiContext: (typeof m.aiContext === 'string') ? m.aiContext : ''
         };
     }
