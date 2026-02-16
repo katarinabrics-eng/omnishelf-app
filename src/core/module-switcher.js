@@ -92,6 +92,10 @@
         if (active === 'vitus' || active === 'home') overrideDisplay(friendsReco, 'none');
         else clearDisplayOverride(friendsReco);
 
+        var libraryIntro = $('libraryIntroSection');
+        if (libraryIntro && active !== 'library') overrideDisplay(libraryIntro, 'none');
+        else if (libraryIntro) clearDisplayOverride(libraryIntro);
+
         var statsSection = $('statisticsSection');
         if (statsSection) statsSection.style.display = 'none';
         try { document.body.classList.remove('module-statistics'); } catch (e1) {}

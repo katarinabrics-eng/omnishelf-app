@@ -29,6 +29,7 @@
     var shelfCurrentPage = {};
     var BOOKS_PER_PAGE = 5;
     var borrowedEmptyMsgIndex = 0;
+    var libraryIntroVisible = false;
 
     // Cache pro veřejná doporučení (připíchnutá napříč knihami)
     var __friendsPublicRecoCacheRaw = null;
@@ -4488,6 +4489,22 @@
         };
 
         function applyReadingViewVisibility() {
+            var introSection = document.getElementById('libraryIntroSection');
+            if (introSection && libraryIntroVisible) {
+                introSection.style.display = 'block';
+                var wrap = document.getElementById('readingViewWrap');
+                var scanSection = document.getElementById('scanHistorySection');
+                var friendsSection = document.getElementById('friendsRecommendationsSection');
+                var libraryModules = document.getElementById('libraryModulesWrap');
+                var resultsWrap = document.getElementById('resultsSectionWrap');
+                if (wrap) wrap.style.display = 'none';
+                if (scanSection) scanSection.style.display = 'none';
+                if (friendsSection) friendsSection.style.display = 'none';
+                if (libraryModules) libraryModules.style.display = 'none';
+                if (resultsWrap) resultsWrap.style.display = 'none';
+                return;
+            }
+            if (introSection) introSection.style.display = 'none';
             var view = getCurrentLibraryView();
             var isReading = view === 'currentlyReading';
             var isCollection = view === 'collection';
@@ -4631,8 +4648,20 @@
             if (wishlistBirthdayNote) wishlistBirthdayNote.style.display = (view === 'wishlist' && getBirthYear()) ? 'block' : 'none';
         }
         document.addEventListener('library-view-changed', function () {
+            libraryIntroVisible = false;
             applyReadingViewVisibility();
             refreshGrid();
+        });
+        try {
+            if (document.body.classList.contains('module-library')) libraryIntroVisible = true;
+        } catch (e) {}
+        document.querySelectorAll('.library-intro-card').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                var view = btn.getAttribute('data-view');
+                if (!view) return;
+                var sidebarBtn = document.querySelector('#librarySubmenu .sidebar-submenu-item[data-view="' + view + '"]');
+                if (sidebarBtn) sidebarBtn.click();
+            });
         });
         applyReadingViewVisibility();
 

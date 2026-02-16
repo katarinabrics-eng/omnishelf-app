@@ -425,6 +425,24 @@
                     </article>
                 </div>
             </section>
+            <!-- Úvodní stránka knihovny – menu a vysvětlení (zobrazí se při vstupu do knihovny) -->
+            <section class="library-intro-section" id="libraryIntroSection" aria-label="Úvod do knihovny">
+                <div class="library-intro-hero">
+                    <h2 class="library-intro-title">Knihovna</h2>
+                    <p class="library-intro-desc">Vaše osobní Alexandria. Skenujte hřbety knih, evidujte půjčené tituly, doporučujte přátelům a nechte AI poradit, co číst podle nálady.</p>
+                </div>
+                <div class="library-intro-menu" role="navigation" aria-label="Sekce knihovny">
+                    <button type="button" class="library-intro-card" data-view="collection"><span class="library-intro-card-icon">📚</span><span class="library-intro-card-label">Tvoje sbírka</span><span class="library-intro-card-hint">Celá knihovna, skenování, přidávání</span></button>
+                    <button type="button" class="library-intro-card" data-view="currentlyReading"><span class="library-intro-card-icon">📖</span><span class="library-intro-card-label">Rozečteno</span><span class="library-intro-card-hint">AI doporučení podle nálady</span></button>
+                    <button type="button" class="library-intro-card" data-view="borrowed"><span class="library-intro-card-icon">🏠</span><span class="library-intro-card-label">Půjčil/a jsem</span><span class="library-intro-card-hint">Knihy u přátel</span></button>
+                    <button type="button" class="library-intro-card" data-view="borrowedByMe"><span class="library-intro-card-icon">📥</span><span class="library-intro-card-label">Mám vypůjčeno</span><span class="library-intro-card-hint">Co mám od jiných</span></button>
+                    <button type="button" class="library-intro-card" data-view="wishlist"><span class="library-intro-card-icon">🎁</span><span class="library-intro-card-label">Wishlist</span><span class="library-intro-card-hint">Polička přání</span></button>
+                    <button type="button" class="library-intro-card" data-view="forSale"><span class="library-intro-card-icon">💰</span><span class="library-intro-card-label">Na prodej</span><span class="library-intro-card-hint">Virtuální stánek</span></button>
+                    <button type="button" class="library-intro-card" data-view="favorites"><span class="library-intro-card-icon">♥</span><span class="library-intro-card-label">Srdcovky</span><span class="library-intro-card-hint">Oblíbené knihy</span></button>
+                    <button type="button" class="library-intro-card" data-view="friendsHighlights"><span class="library-intro-card-icon">👥</span><span class="library-intro-card-label">Přátelé doporučují</span><span class="library-intro-card-hint">Doporučení od přátel</span></button>
+                </div>
+                <p class="library-intro-footnote">Vyberte sekci a využijte plnou funkcionalitu – skenování, vyhledávání, řazení a další nástroje.</p>
+            </section>
             <!-- MODULES/Reading.html – sekce Rozečteno (vložený obsah, bez závislosti na fetch) -->
             <div id="readingViewWrap" class="reading-view-container" style="display:none;" aria-hidden="true">
                 <section class="reading-view-wrap reading-panel" id="readingViewSection" aria-label="Rozečteno">

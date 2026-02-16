@@ -1456,6 +1456,92 @@
             height: 100%;
         }
 
+        /* Úvodní stránka knihovny – menu a vysvětlení */
+        .library-intro-section {
+            padding: 1.5rem 1rem 2rem;
+            max-width: 720px;
+            margin: 0 auto;
+        }
+        .library-intro-hero {
+            text-align: center;
+            margin-bottom: 1.75rem;
+        }
+        .library-intro-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text);
+            margin: 0 0 0.5rem;
+        }
+        .library-intro-desc {
+            font-size: 0.9375rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+            margin: 0;
+        }
+        .library-intro-menu {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 12px;
+            margin-bottom: 1.25rem;
+        }
+        .library-intro-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1rem 0.75rem;
+            border: 1px solid var(--border-soft);
+            border-radius: var(--radius-card);
+            background: var(--surface-elevated);
+            cursor: pointer;
+            transition: background 0.2s, border-color 0.2s, transform 0.15s;
+            text-align: center;
+            font-family: inherit;
+        }
+        .library-intro-card:hover {
+            background: var(--accent-soft);
+            border-color: rgba(141, 211, 17, 0.4);
+        }
+        .library-intro-card:active {
+            transform: scale(0.98);
+        }
+        .library-intro-card-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            line-height: 1;
+        }
+        .library-intro-card-label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+        .library-intro-card-hint {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+            line-height: 1.3;
+        }
+        .library-intro-footnote {
+            font-size: 0.8125rem;
+            color: var(--text-muted);
+            text-align: center;
+            margin: 0;
+            line-height: 1.4;
+        }
+        @media (min-width: 480px) {
+            .library-intro-menu {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (min-width: 640px) {
+            .library-intro-menu {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 16px;
+            }
+            .library-intro-section {
+                padding: 2rem 1.5rem 2.5rem;
+            }
+        }
+
         /* Moduly knihovny: Texty | Upload souborů */
         .library-modules-wrap {
             margin-top: 24px;
@@ -9525,6 +9611,7 @@
 
         /* Bezpečnostní pojistka: ve Vitusu nikdy neukazuj knihovní UI */
         body.module-vitus #topBar,
+        body.module-vitus #libraryIntroSection,
         body.module-vitus #libraryModulesWrap,
         body.module-vitus #scanHistorySection,
         body.module-vitus #friendsRecommendationsSection,
@@ -9536,6 +9623,7 @@
         /* Domovská stránka (module-home) */
         body.module-home #topBar .library-global-sort-wrap,
         body.module-home #topBar .global-search-wrap { display: none; }
+        body.module-home #libraryIntroSection,
         body.module-home #libraryModulesWrap,
         body.module-home #readingViewWrap,
         body.module-home #scanHistorySection,
