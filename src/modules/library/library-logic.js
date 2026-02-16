@@ -744,7 +744,11 @@
         var s = (book.status || '').toLowerCase();
         var sNorm = (book.status || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/\s/g, '');
         if (!book.ownershipStatus) book.ownershipStatus = (s === 'borrowed' || s === 'pujceno' || sNorm === 'pujceno' || s === 'borrowedbyme' || s === 'forsale' || s === 'wishlist') ? ((s === 'pujceno' || sNorm === 'pujceno') ? 'borrowed' : s) : 'mine';
-        if (!book.readingStatus) book.readingStatus = (s === 'reading' ? 'reading' : s === 'read' ? 'read' : 'unread');
+        if (!book.readingStatus) {
+            var locNorm = ((book.location || '') + ' ' + (book.physicalLocation || '')).toLowerCase().replace(/\s/g, '');
+            var fromLoc = (locNorm.indexOf('rozecteneknihy') >= 0 || locNorm.indexOf('rozectene') >= 0) ? 'reading' : null;
+            book.readingStatus = fromLoc || (s === 'reading' ? 'reading' : s === 'read' ? 'read' : 'unread');
+        }
         if (!book.privacy) book.privacy = 'private';
         if (book.is_favorite === undefined) book.is_favorite = !!(book.isFavorite || book.is_favorite);
         if (book.isFavorite === undefined) book.isFavorite = !!book.is_favorite;
@@ -1110,7 +1114,8 @@
             if (view === 'currentlyReading') {
                 // V sekci Rozečtené zobrazit pouze aktivní knihy (ne vrácené)
                 if (b.returned) return false;
-                return reading === 'reading';
+                var loc = ((b.location || '') + ' ' + (b.physicalLocation || '')).toLowerCase().replace(/\s/g, '');
+                return reading === 'reading' || loc.indexOf('rozecteneknihy') >= 0 || loc.indexOf('rozectene') >= 0;
             }
             if (view === 'borrowed') return (ownership === 'borrowed' || ownership === 'pujceno' || ownershipNorm === 'borrowed' || ownershipNorm === 'pujceno');
             if (view === 'borrowedByMe') {
@@ -1354,17 +1359,19 @@
         var openaiKey = getOpenAiKey();
         var hasProxy = global.OMNI_Keys && global.OMNI_Keys.openAiFetch;
         if ((!openaiKey || (openaiKey.trim && !openaiKey.trim())) && !hasProxy) {
-            resultEl.textContent = 'Pro výtah je potřeba nastavit OpenAI API klíč (Nastavení aplikace).';
+            resultEl.textContent = 'Pro výtah potřebuješ nastavit OpenAI API klíč v Nastavení.';
             resultEl.classList.add('has-text', 'is-message');
             resultEl.style.display = 'block';
             return;
         }
         btnEl.disabled = true;
-        resultEl.textContent = 'Připravuji výtah…';
+        resultEl.textContent = 'Připravuju výtah…';
         resultEl.classList.remove('is-message');
         resultEl.classList.add('has-text');
         resultEl.style.display = 'block';
-        var systemPrompt = 'Jsi vstřícný asistent pro čtenáře. Pravidlo: NESMÍŠ prozradit nic, co se v knize odehrává PO stránce, kterou uživatel zadal. Výtah smí obsahovat pouze děj a události DO A VČETNĚ této stránky. Odpovídej stručně, bodově, v češtině.';
+        var voiceTone = (typeof getVoiceTone === 'function' ? getVoiceTone() : 'friendly') || 'friendly';
+        var toneHint = { friendly: 'Přátelský tón, oslovuj tykáním.', kind: 'Laskavý, vlídný tón, tykej.', funny: 'Lehce vtipný, hravý tón, tykej. Můžeš přidat drobný humor.', motivating: 'Povzbuzující tón, tykej. Povzbuď k další četbě.', serious: 'Střízlivý, věcný tón, tykej.' }[voiceTone] || 'Přátelský tón, tykej.';
+        var systemPrompt = 'Jsi vstřícný asistent pro čtenáře. Pravidlo: NESMÍŠ prozradit nic, co se v knize odehrává PO stránce, kterou uživatel zadal. Výtah smí obsahovat pouze děj a události DO A VČETNĚ této stránky. Odpovídej stručně, bodově, v češtině. ' + toneHint;
         var userPrompt = 'Kniha: „' + (title || 'Bez názvu') + '“, autor: ' + (author || 'neznámý') + '.\nUživatel dočetl do stránky ' + pageNum + '. Napiš krátký výtah nejdůležitějších bodů a událostí děje POUZE do stránky ' + pageNum + ' (včetně). Nic za touto stránkou neprozrazuj.';
         var body = {
             model: 'gpt-4o',
@@ -1546,7 +1553,8 @@
                 if (!b || b.returned) return false;
                 var r = (b.readingStatus || '').toString().toLowerCase().replace(/\s/g, '');
                 var s = (b.status || '').toString().toLowerCase().replace(/\s/g, '');
-                return r === 'reading' || s === 'reading';
+                var loc = ((b.location || '') + ' ' + (b.physicalLocation || '')).toLowerCase().replace(/\s/g, '');
+                return r === 'reading' || s === 'reading' || loc.indexOf('rozecteneknihy') >= 0 || loc.indexOf('rozectene') >= 0;
             }
             function isReadDone(b) {
                 if (!b) return false;
@@ -3873,20 +3881,49 @@
             var shelf = (book.location || '').trim() || '— Bez poličky —';
             var title = book.title || 'tuhle knihu';
             var author = (book.author || '').trim() || '';
-            var friendly = [
-                'Mám pro vás tip, u kterého se vám rozzáří oči. Ve vaší sbírce je „' + title + '“' + (author ? ' od ' + author : '') + '. Umístění: ' + shelf + '. Je to přesně ten typ knihy, který vás teď vtáhne – vřele ji doporučuji.',
-                'Doporučuji „' + title + '“' + (author ? ' od ' + author : '') + '. Umístění: ' + shelf + '. Myslím, že se vám teď bude číst výborně.',
-                'Ve vaší knihovně je skvělý tip: „' + title + '“' + (author ? ' od ' + author : '') + '. Umístění: ' + shelf + '. Pokud chcete něco, co vás chytí a nepustí, je to dobrá volba.',
-                'Mám pro vás doporučení: „' + title + '“' + (author ? ' – ' + author : '') + '. Umístění: ' + shelf + '. Podle nálady vám může sednout na jedničku.'
-            ];
-            return { message: friendly[Math.floor(Math.random() * friendly.length)], book: book };
+            var t = (typeof getVoiceTone === 'function' ? getVoiceTone() : 'friendly') || 'friendly';
+            if (t !== 'friendly' && t !== 'kind' && t !== 'funny' && t !== 'motivating' && t !== 'serious') t = 'friendly';
+            var byTone = {
+                friendly: [
+                    'Mám pro tebe tip, u kterého se ti rozzáří oči. Ve tvé sbírce je „' + title + '“' + (author ? ' od ' + author : '') + '. Najdeš ji na ' + shelf + '. Je to přesně ten typ knihy, který tě teď vtáhne – vřele ji doporučuji.',
+                    'Doporučuji „' + title + '“' + (author ? ' od ' + author : '') + '. Leží na ' + shelf + '. Myslím, že se ti teď bude číst výborně.',
+                    'V tvé knihovně je skvělý tip: „' + title + '“' + (author ? ' od ' + author : '') + '. Polička: ' + shelf + '. Pokud chceš něco, co tě chytí a nepustí, je to dobrá volba.',
+                    'Mám pro tebe doporučení: „' + title + '“' + (author ? ' – ' + author : '') + '. Najdeš ji na ' + shelf + '. Podle nálady ti může sednout na jedničku.'
+                ],
+                kind: [
+                    'Tvoje knihovna skrývá perlou: „' + title + '“' + (author ? ' od ' + author : '') + '. Leží na ' + shelf + '. Doporučuji ji s láskou – může ti přinést hezké chvíle.',
+                    'Vezmi si k srdci „' + title + '“' + (author ? ' od ' + author : '') + '. Umístění: ' + shelf + '. Je to kniha, která si zaslouží tvou pozornost.',
+                    '„' + title + '“' + (author ? ' od ' + author : '') + ' čeká na ' + shelf + '. Tichá radost pro tebe – doporučuji přečíst.',
+                    'Nabízím ti „' + title + '“' + (author ? ' – ' + author : '') + ' z ' + shelf + '. Kniha, která může obohatit tvůj den.'
+                ],
+                funny: [
+                    'Hele, tohle tě chytí! „' + title + '“' + (author ? ' od ' + author : '') + ' číhá na ' + shelf + '. Odtrhni se od mobilu a dej jí šanci – slibuju, že nebudeš litovat! 📚',
+                    'Tahle knížka ti sedne jak ulitá: „' + title + '“' + (author ? ' od ' + author : '') + '. Hledej na ' + shelf + '. Ideální na teď – věř mi! 😄',
+                    '„' + title + '“' + (author ? ' od ' + author : '') + ' – polička ' + shelf + '. Tvůj další oběť… teda čtení čeká! Ber ji a čti. 🎯',
+                    'Mám pro tebe bombu: „' + title + '“' + (author ? ' – ' + author : '') + '. Leží na ' + shelf + '. Přesně to, co teď potřebuješ – jen to neodkládej na zítra!'
+                ],
+                motivating: [
+                    'Jdeme na to! „' + title + '“' + (author ? ' od ' + author : '') + ' je na ' + shelf + '. Tvůj další krok ke skvělé knize – ber ji a čti!',
+                    '„' + title + '“' + (author ? ' od ' + author : '') + ' – najdeš ji na ' + shelf + '. Každá přečtená stránka se počítá. Držím palce!',
+                    'Vzchop se a sáhni po „' + title + '“' + (author ? ' od ' + author : '') + '. Polička: ' + shelf + '. Je čas na další skvělý příběh.',
+                    'Tvé knihy čekají. Začni s „' + title + '“' + (author ? ' – ' + author : '') + ' na ' + shelf + '. Teď je ten správný moment!'
+                ],
+                serious: [
+                    'Doporučení: „' + title + '“' + (author ? ' od ' + author : '') + '. Umístění: ' + shelf + '. Titul odpovídající současnému výběru.',
+                    'Evidovaný titul „' + title + '“' + (author ? ' – ' + author : '') + ' na poličce ' + shelf + '. Vhodný pro aktuální četbu.',
+                    '„' + title + '“' + (author ? ' od ' + author : '') + '. Lokace: ' + shelf + '. Doporučeno na základě struktury knihovny.',
+                    'Záznam: „' + title + '“' + (author ? ' – ' + author : '') + '. Polička: ' + shelf + '. Relevantní pro současný kontext.'
+                ]
+            };
+            var msgs = byTone[t] || byTone.friendly;
+            return { message: msgs[Math.floor(Math.random() * msgs.length)], book: book };
         }
         function triggerReadingAi(options) {
             var result = getReadingAiSuggestion(options);
             var genreLabels = { detektivka: 'detektivku', scifi: 'sci-fi', romantika: 'romantiku', fantasy: 'fantasy', thriller: 'thriller' };
             var fallback = (options && options.genre)
                 ? ('Mám rozečtenou nějakou ' + (genreLabels[options.genre] || options.genre) + '? Zatím nic takového u sebe nemáš – přidej knihy a napiš mi znovu.')
-                : 'Zatím nemám co doporučit. Přidejte několik knih a zkuste to znovu.';
+                : 'Zatím nemám co doporučit. Přidej několik knih a zkus to znovu.';
             setReadingAiResponse(result.message || fallback, result.book || null);
         }
         var readingAiQueryInput = document.getElementById('readingAiQueryInput');
@@ -4463,7 +4500,7 @@
             if (wrap) { wrap.style.display = isReading ? 'block' : 'none'; wrap.setAttribute('aria-hidden', isReading ? 'false' : 'true'); }
             if (uploadCards) uploadCards.style.display = '';
             if (manualForm) manualForm.style.display = '';
-            if (scanHeader) scanHeader.style.display = isReading ? 'none' : 'flex';
+            if (scanHeader) scanHeader.style.display = 'flex';
             var borrowedPanel = document.getElementById('borrowedTopPanel');
             if (borrowedPanel) borrowedPanel.style.display = view === 'borrowed' ? 'block' : 'none';
             var borrowedByMePanel = document.getElementById('borrowedByMePanel');
@@ -4478,6 +4515,7 @@
                 : view === 'favorites' ? 'Srdcovky'
                 : view === 'wishlist' ? 'Wishlist'
                 : view === 'forSale' ? 'Na prodej'
+                : view === 'currentlyReading' ? 'Vaše rozečtené knihy'
                 : 'Moje knihovna';
             if (scanTitle) scanTitle.textContent = titleText;
             var sub = document.getElementById('scanHistorySubtitle');
@@ -4485,14 +4523,15 @@
                 if (view === 'favorites') sub.textContent = 'Moje srdcovky – seznam oblíbených knih. Vyhledávání se týká pouze této sekce.';
                 else if (view === 'wishlist') sub.textContent = 'Polička přání – vyhledávejte napříč knihovnou a přidávejte knihy do seznamu přání.';
                 else if (view === 'forSale') sub.textContent = 'Vyberte knihu k prodeji a spravujte svůj „virtuální stánek“.';
+                else if (view === 'currentlyReading') sub.textContent = 'Knihy, které právě čtete, a historie dočtených.';
                 else sub.textContent = '';
             }
 
-            // Zjednodušit hlavičku (bez přepínače režimu a bez extra řazení) – Srdcovky/Wishlist/Mám vypůjčeno
+            // Zjednodušit hlavičku (bez přepínače režimu a bez extra řazení) – Srdcovky/Wishlist/Mám vypůjčeno/Rozečteno
             var viewToggle = document.getElementById('libraryViewToggle');
             var sortWrap = scanHeader ? scanHeader.querySelector('.scan-history-sort-wrap') : null;
-            if (viewToggle) viewToggle.style.display = (view === 'favorites' || view === 'wishlist' || view === 'borrowedByMe') ? 'none' : '';
-            if (sortWrap) sortWrap.style.display = (view === 'favorites' || view === 'wishlist' || view === 'borrowedByMe') ? 'none' : '';
+            if (viewToggle) viewToggle.style.display = (view === 'favorites' || view === 'wishlist' || view === 'borrowedByMe' || view === 'currentlyReading') ? 'none' : '';
+            if (sortWrap) sortWrap.style.display = (view === 'favorites' || view === 'wishlist' || view === 'borrowedByMe' || view === 'currentlyReading') ? 'none' : '';
 
             // Srdcovky/Wishlist: vyhledávání je primární – otevřít pole a nastavit jasný placeholder
             var librarySearchInput = document.getElementById('librarySearchInput');
@@ -4561,7 +4600,7 @@
             var noUploadViews = { currentlyReading: true, borrowed: true };
             // Friends Highlights: vlastní interaktivní stránka (bez upload/text panelu, bez klasické knihovny)
             if (friendsSection) friendsSection.style.display = (view === 'friendsHighlights') ? 'block' : 'none';
-            if (scanSection) scanSection.style.display = (view === 'friendsHighlights' || view === 'currentlyReading') ? 'none' : '';
+            if (scanSection) scanSection.style.display = (view === 'friendsHighlights') ? 'none' : '';
             if (view === 'friendsHighlights') {
                 if (libraryModulesWrap) libraryModulesWrap.style.display = 'none';
             } else if (noUploadViews[view]) {
@@ -5302,7 +5341,7 @@
                 btn.onclick = function () {
                     var tone = this.getAttribute('data-tone');
                     result.style.display = 'block';
-                    result.textContent = 'Připravuji upomínku…';
+                    result.textContent = 'Připravuju upomínku…';
                     requestBorrowedReminder(book, tone, result, closeReminder);
                 };
             });
@@ -5319,9 +5358,11 @@
                 } catch (e) {}
             }
             if (!dateStr) dateStr = '—';
+            var voiceTone = (typeof getVoiceTone === 'function' ? getVoiceTone() : 'friendly') || 'friendly';
+            var styleHint = { friendly: 'Přátelsky, vlídně.', kind: 'Laskavě, s porozuměním.', funny: 'Lehce vtipně, hravě – můžeš přidat drobný humor.', motivating: 'Povzbudivě, ale mile.', serious: 'Věcně, střízlivě.' }[voiceTone] || 'Přátelsky.';
             var prompt = tone === 'firm'
-                ? 'Napiš krátkou DŮRAZNOU upomínku (1–2 věty) pro vrácení knihy. Kniha: „' + title + '“, půjčeno: ' + to + ', vrátit do: ' + dateStr + '. Buď stručně a rozhodně. Česky.'
-                : 'Napiš krátkou MILOU upomínku (1–2 věty) pro vrácení knihy. Kniha: „' + title + '“, půjčeno: ' + to + ', vrátit do: ' + dateStr + '. Vlídný tón. Česky.';
+                ? 'Napiš krátkou DŮRAZNOU upomínku (1–2 věty) pro vrácení knihy. Kniha: „' + title + '“, půjčeno: ' + to + ', vrátit do: ' + dateStr + '. Buď stručně a rozhodně. Tykej (používej ty). Česky.'
+                : 'Napiš krátkou MILOU upomínku (1–2 věty) pro vrácení knihy. Kniha: „' + title + '“, půjčeno: ' + to + ', vrátit do: ' + dateStr + '. Tón: ' + styleHint + ' Tykej (používej ty). Česky.';
             var openaiKey = getOpenAiKey();
             var hasProxy = global.OMNI_Keys && global.OMNI_Keys.openAiFetch;
             if ((!openaiKey || (openaiKey.trim && !openaiKey.trim())) && !hasProxy) {
