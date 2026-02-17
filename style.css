@@ -9988,6 +9988,8 @@
         }
         .vitus-btn--ghost { background: transparent; }
 
+        .vitus-shelves-block { margin-top: 20px; }
+        .vitus-shelves-block .vitus-card-sub em { font-style: italic; color: var(--text-secondary); font-weight: 600; }
         .vitus-shelves { padding: 16px 18px 20px; display: grid; gap: 14px; }
         .vitus-shelf {
             border: 1px solid var(--border-soft);
@@ -9996,45 +9998,94 @@
             padding: 14px 16px;
         }
         .vitus-shelf-title { font-weight: 900; font-size: 1rem; color: #2F3A2E; margin-bottom: 12px; }
-        .vitus-shelf-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
-        @media (min-width: 640px) {
-            .vitus-shelf-grid { grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); }
+        .vitus-shelf-scroll {
+            overflow-x: auto;
+            overflow-y: hidden;
+            -webkit-overflow-scrolling: touch;
+            scroll-snap-type: x mandatory;
+            margin: 0 -16px;
+            padding: 0 16px 8px;
         }
-
+        .vitus-shelf-scroll::-webkit-scrollbar { height: 6px; }
+        .vitus-shelf-scroll::-webkit-scrollbar-track { background: rgba(0,0,0,0.04); border-radius: 3px; }
+        .vitus-shelf-scroll::-webkit-scrollbar-thumb { background: rgba(92, 138, 106, 0.3); border-radius: 3px; }
+        .vitus-shelf-grid {
+            display: flex;
+            gap: 12px;
+            padding-bottom: 4px;
+        }
         .vitus-med-card {
+            flex: 0 0 85%;
+            min-width: 260px;
+            max-width: 320px;
+            scroll-snap-align: center;
             border: 1px solid rgba(0,0,0,0.06);
             background: #FBFBF6;
             border-radius: 16px;
-            padding: 12px 14px;
+            padding: 0;
             box-shadow: 0 1px 2px rgba(0,0,0,0.04);
-            display: grid;
-            grid-template-columns: 64px 1fr;
-            gap: 12px;
+            display: flex;
+            flex-direction: column;
             cursor: pointer;
             transition: box-shadow 0.15s;
+            overflow: hidden;
         }
         .vitus-med-card:hover {
             box-shadow: 0 4px 12px rgba(0,0,0,0.06);
         }
-        .vitus-med-main { min-width: 0; }
-        .vitus-med-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
-        .vitus-med-name { font-weight: 1000; font-size: 1rem; letter-spacing: -0.01em; }
-        .vitus-med-badges { display: inline-flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+        .vitus-med-cover-wrap {
+            position: relative;
+            width: 100%;
+            height: 140px;
+            flex-shrink: 0;
+            background: rgba(92, 138, 106, 0.08);
+        }
         .vitus-med-cover {
-            width: 64px;
-            height: 64px;
-            border-radius: 14px;
+            width: 100%;
+            height: 100%;
+            border-radius: 0;
             overflow: hidden;
-            border: 1px solid rgba(0,0,0,0.06);
+            border: none;
+            border-bottom: 1px solid rgba(0,0,0,0.04);
             background: rgba(92, 138, 106, 0.10);
             display: flex;
             align-items: center;
             justify-content: center;
             color: #2F3A2E;
-            flex-shrink: 0;
         }
-        .vitus-med-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
-        .vitus-med-cover--empty span { font-size: 1.4rem; }
+        .vitus-med-cover img { width: 100%; height: 100%; object-fit: contain; display: block; }
+        .vitus-med-cover--empty span { font-size: 2.2rem; }
+        .vitus-med-forwhom {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            font-size: 0.7rem;
+            font-weight: 900;
+            padding: 4px 8px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.9);
+            color: #2F3A2E;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .vitus-med-status {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            font-size: 0.75rem;
+            font-weight: 900;
+            padding: 4px 8px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.9);
+            color: #2F3A2E;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        @media (min-width: 640px) {
+            .vitus-med-card { flex: 0 0 42%; min-width: 280px; }
+        }
+        .vitus-med-main { padding: 12px 14px; min-width: 0; flex: 1; }
+        .vitus-med-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+        .vitus-med-name { font-weight: 1000; font-size: 1rem; letter-spacing: -0.01em; }
+        .vitus-med-badges { display: inline-flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
         .vitus-badge {
             font-size: 0.72rem;
             font-weight: 1000;

@@ -153,7 +153,7 @@
         var SECTOR_KEY = 'omnishelf_vitus_sector';
         var defaultSector = 'add';
         try { defaultSector = String(localStorage.getItem(SECTOR_KEY) || 'add'); } catch (e0) { defaultSector = 'add'; }
-        if (defaultSector !== 'add' && defaultSector !== 'scan' && defaultSector !== 'cures' && defaultSector !== 'shelves') defaultSector = 'add';
+        if (defaultSector !== 'add' && defaultSector !== 'scan' && defaultSector !== 'cures') defaultSector = 'add';
 
         body.innerHTML = ''
             + '<div class="vitus-sector-intro">'
@@ -163,7 +163,6 @@
             + '  <button type="button" class="vitus-sector-tab" data-sector="add" role="tab" aria-selected="' + (defaultSector === 'add' ? 'true' : 'false') + '"><span class="vitus-sector-icon">➕</span><span class="vitus-sector-label">Přidat lék</span></button>'
             + '  <button type="button" class="vitus-sector-tab" data-sector="scan" role="tab" aria-selected="' + (defaultSector === 'scan' ? 'true' : 'false') + '"><span class="vitus-sector-icon">📄</span><span class="vitus-sector-label">Skenovat</span></button>'
             + '  <button type="button" class="vitus-sector-tab" data-sector="cures" role="tab" aria-selected="' + (defaultSector === 'cures' ? 'true' : 'false') + '"><span class="vitus-sector-icon">📅</span><span class="vitus-sector-label">Kúry</span></button>'
-            + '  <button type="button" class="vitus-sector-tab" data-sector="shelves" role="tab" aria-selected="' + (defaultSector === 'shelves' ? 'true' : 'false') + '"><span class="vitus-sector-icon">📦</span><span class="vitus-sector-label">Moje lékárnička</span></button>'
             + '</div>'
             + '<div class="vitus-sector-panels">'
             + '  <div class="vitus-sector-panel' + (defaultSector === 'add' ? ' vitus-sector-panel--active' : '') + '" id="vitusPanelAdd" role="tabpanel">'
@@ -313,16 +312,14 @@
             + '  </div>'
             + '    </section>'
             + '  </div>'
-            + '  <div class="vitus-sector-panel' + (defaultSector === 'shelves' ? ' vitus-sector-panel--active' : '') + '" id="vitusPanelShelves" role="tabpanel">'
-            + '    <section class="vitus-card vitus-card--wide">'
+            + '</div>'
+            + '<section class="vitus-card vitus-card--wide vitus-shelves-block">'
             + '  <div class="vitus-card-head">'
             + '    <div class="vitus-card-title">Moje lékárnička</div>'
-            + '    <div class="vitus-card-sub">Všechny vaše léky na jednom místě. Skupiny podle kategorie.</div>'
+            + '    <div class="vitus-card-sub">Všechny vaše léky na jednom místě. Skupiny podle kategorie. <em>Klikni na lék pro víc info.</em></div>'
             + '  </div>'
             + '  <div class="vitus-shelves" id="vitusShelves"></div>'
             + '</section>'
-            + '  </div>'
-            + '</div>'
             + '<div class="vitus-modal-overlay" id="vitusMedModal" hidden>'
             + '  <div class="vitus-modal">'
             + '    <div class="vitus-modal-top">'
@@ -348,6 +345,14 @@
             }
             wrap.innerHTML = keys.map(function (cat) {
                 var meds = grouped[cat] || [];
+                var forWhomShort = function (s) {
+                    var t = String(s || '').trim().toLowerCase();
+                    if (t.indexOf('já') >= 0 || t === 'ja') return 'JA';
+                    if (t.indexOf('partner') >= 0) return 'P';
+                    if (t.indexOf('děti') >= 0 || t.indexOf('deti') >= 0) return 'D';
+                    if (t.indexOf('mazlíček') >= 0 || t.indexOf('mazlicek') >= 0) return 'M';
+                    return (s && s.length) ? String(s).charAt(0).toUpperCase() : '';
+                };
                 var cards = meds.map(function (m) {
                     var expDays = daysTo(m.expiration);
                     var expBadge = '';
@@ -355,39 +360,35 @@
                         if (expDays < 0) expBadge = '<span class="vitus-badge vitus-badge--danger">Expirované</span>';
                         else if (expDays <= 14) expBadge = '<span class="vitus-badge vitus-badge--warn">Exp. ' + expDays + ' dní</span>';
                     }
-                    var unit = (m.dosage && m.dosage.unit) ? m.dosage.unit : 'ks';
-                    var doseText = (m.dosage && (m.dosage.text || m.dosage.amount)) ? ('<span class="vitus-meta-item">Dávka: ' + escapeHtml(m.dosage.text || (String(m.dosage.amount) + ' ' + unit)) + '</span>') : '';
-                    var purpose = m.purpose ? ('<span class="vitus-meta-item">Účel: ' + escapeHtml(m.purpose) + '</span>') : '';
+                    var forWhomLabel = forWhomShort(m.forWhom);
                     var cover = (m.coverImage && String(m.coverImage).indexOf('data:image') === 0)
                         ? ('<div class="vitus-med-cover"><img src="' + escapeHtml(m.coverImage) + '" alt="' + escapeHtml(m.name) + '" /></div>')
                         : '<div class="vitus-med-cover vitus-med-cover--empty"><span>🌿</span></div>';
                     return ''
-                        + '<div class="vitus-med-card" data-med-id="' + escapeHtml(m.id) + '">'
-                        + cover
+                        + '<div class="vitus-med-card" data-med-id="' + escapeHtml(m.id) + '" title="Klikni pro víc info">'
+                        + '  <div class="vitus-med-cover-wrap">'
+                        + '    ' + cover
+                        + (forWhomLabel ? ('<span class="vitus-med-forwhom" title="Kdo lék užívá">' + escapeHtml(forWhomLabel) + '</span>') : '')
+                        + '    <span class="vitus-med-status" title="Zbývá / celkem">' + escapeHtml(fmtQty(m)) + '</span>'
+                        + '  </div>'
                         + '  <div class="vitus-med-main">'
-                        + '  <div class="vitus-med-top">'
-                        + '    <div class="vitus-med-name">' + escapeHtml(m.name) + '</div>'
-                        + '    <div class="vitus-med-badges">'
-                        +       expBadge
-                        + '      <span class="vitus-badge vitus-badge--qty">' + escapeHtml(fmtQty(m)) + '</span>'
+                        + '    <div class="vitus-med-top">'
+                        + '      <div class="vitus-med-name">' + escapeHtml(m.name) + '</div>'
+                        + '      <div class="vitus-med-badges">' + expBadge + '</div>'
                         + '    </div>'
-                        + '  </div>'
-                        + '  <div class="vitus-med-meta">'
-                        + '    ' + (m.type ? ('<span class="vitus-meta-item">Forma: ' + escapeHtml(m.type) + '</span>') : '')
-                        + '    ' + doseText
-                        + '    ' + purpose
-                        + '  </div>'
-                        + '  <div class="vitus-med-actions">'
-                        + '    <button type="button" class="vitus-btn vitus-btn--dose" data-action="dose">Užít dávku</button>'
-                        + '    <button type="button" class="vitus-btn vitus-btn--ghost" data-action="delete" title="Smazat">Smazat</button>'
-                        + '  </div>'
+                        + '    <div class="vitus-med-actions">'
+                        + '      <button type="button" class="vitus-btn vitus-btn--dose" data-action="dose">Užít dávku</button>'
+                        + '      <button type="button" class="vitus-btn vitus-btn--ghost" data-action="delete" title="Smazat">Smazat</button>'
+                        + '    </div>'
                         + '  </div>'
                         + '</div>';
                 }).join('');
                 return ''
                     + '<div class="vitus-shelf">'
                     + '  <div class="vitus-shelf-title">' + escapeHtml(cat) + '</div>'
-                    + '  <div class="vitus-shelf-grid">' + cards + '</div>'
+                    + '  <div class="vitus-shelf-scroll" role="region" aria-label="Léky – listování do stran">'
+                    + '    <div class="vitus-shelf-grid">' + cards + '</div>'
+                    + '  </div>'
                     + '</div>';
             }).join('');
         }
