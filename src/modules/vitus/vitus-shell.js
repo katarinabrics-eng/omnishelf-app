@@ -162,7 +162,7 @@
         body.innerHTML = ''
             + '<div class="vitus-panels-status-bar" id="vitusPanelsStatusBar" aria-live="polite">'
             + '  <span class="vitus-panels-status-text" id="vitusPanelsStatusText">' + (panelsOpen ? 'Panel zadání je otevřený' : 'Panel zadání je zavřený') + '</span>'
-            + '  <button type="button" class="vitus-panels-open-btn" id="vitusBtnOpenPanels">Otevřít zadání / skenování</button>'
+            + '  <button type="button" class="vitus-panels-open-btn" id="vitusBtnOpenPanels" title="Otevřít zadání / skenování">Otevřít</button>'
             + '  <button type="button" class="vitus-panels-close-btn" id="vitusBtnClosePanels" aria-label="Zavřít panel" title="Zavřít"' + (panelsOpen ? '' : ' hidden') + '>×</button>'
             + '</div>'
             + '<div class="vitus-panels-wrap" id="vitusPanelsWrap"' + (panelsOpen ? '' : ' hidden') + '>'
