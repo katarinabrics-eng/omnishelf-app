@@ -9998,13 +9998,21 @@
             padding: 14px 16px;
         }
         .vitus-shelf-title { font-weight: 900; font-size: 1rem; color: #2F3A2E; margin-bottom: 12px; }
+        .vitus-shelf-pagination {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            margin-top: 8px;
+            text-align: center;
+        }
         .vitus-shelf-scroll {
             overflow-x: auto;
             overflow-y: hidden;
             -webkit-overflow-scrolling: touch;
             scroll-snap-type: x mandatory;
+            scroll-padding-inline: 16px;
             margin: 0 -16px;
-            padding: 0 16px 8px;
+            padding: 4px 16px 16px;
         }
         .vitus-shelf-scroll::-webkit-scrollbar { height: 6px; }
         .vitus-shelf-scroll::-webkit-scrollbar-track { background: rgba(0,0,0,0.04); border-radius: 3px; }
@@ -10015,10 +10023,10 @@
             padding-bottom: 4px;
         }
         .vitus-med-card {
-            flex: 0 0 85%;
-            min-width: 260px;
-            max-width: 320px;
-            scroll-snap-align: center;
+            flex: 0 0 calc(100vw - 64px);
+            width: calc(100vw - 64px);
+            max-width: 340px;
+            scroll-snap-align: start;
             border: 1px solid rgba(0,0,0,0.1);
             background: #FBFBF6;
             border-radius: 16px;
@@ -10081,7 +10089,7 @@
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
         @media (min-width: 640px) {
-            .vitus-med-card { flex: 0 0 42%; min-width: 280px; }
+            .vitus-med-card { flex: 0 0 380px; width: 380px; max-width: 380px; }
         }
         .vitus-med-main { padding: 12px 14px; min-width: 0; flex: 1; }
         .vitus-med-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }

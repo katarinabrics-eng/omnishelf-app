@@ -391,14 +391,39 @@
                         + '  </div>'
                         + '</div>';
                 }).join('');
+                var count = meds.length;
+                var shelfId = 'vitusShelf_' + String(cat).replace(/\s+/g, '_').replace(/[^a-zA-Z0-9\u00C0-\u017F_-]/g, '');
                 return ''
                     + '<div class="vitus-shelf">'
                     + '  <div class="vitus-shelf-title">' + escapeHtml(cat) + '</div>'
-                    + '  <div class="vitus-shelf-scroll" role="region" aria-label="Léky – listování do stran">'
+                    + '  <div class="vitus-shelf-scroll" id="' + shelfId + '" role="region" aria-label="Léky – listování do stran" data-shelf-count="' + count + '">'
                     + '    <div class="vitus-shelf-grid">' + cards + '</div>'
                     + '  </div>'
+                    + (count > 1 ? ('<div class="vitus-shelf-pagination" data-for="' + shelfId + '"><span class="vitus-shelf-page-current">1</span> / <span class="vitus-shelf-page-total">' + count + '</span></div>') : '')
                     + '</div>';
             }).join('');
+            document.querySelectorAll('.vitus-shelf-scroll').forEach(function (scrollEl) {
+                var forId = scrollEl.id;
+                if (!forId) return;
+                var pagEl = document.querySelector('.vitus-shelf-pagination[data-for="' + forId + '"]');
+                if (!pagEl) return;
+                var currSpan = pagEl.querySelector('.vitus-shelf-page-current');
+                var totalSpan = pagEl.querySelector('.vitus-shelf-page-total');
+                var total = parseInt(scrollEl.getAttribute('data-shelf-count') || '1', 10);
+                if (totalSpan) totalSpan.textContent = String(total);
+                function upd() {
+                    var cardsEl = scrollEl.querySelectorAll('.vitus-med-card');
+                    if (!cardsEl.length || !currSpan) return;
+                    var first = cardsEl[0];
+                    var cardW = first ? (first.offsetWidth + 12) : 200;
+                    var scrollLeft = scrollEl.scrollLeft || 0;
+                    var idx = Math.round(scrollLeft / cardW);
+                    idx = Math.max(0, Math.min(idx, total - 1));
+                    currSpan.textContent = String(idx + 1);
+                }
+                scrollEl.addEventListener('scroll', upd);
+                upd();
+            });
         }
 
         /** Pro koho – členové rodiny / mazlíčci. Modularně: lze napojit na OMNI_LibraryLogic.getFamilyProfiles */
