@@ -183,30 +183,33 @@
             + '        <div class="vitus-field-inline"><label class="vitus-label" for="vitusMedRemaining">Zbývá</label><input class="vitus-input" id="vitusMedRemaining" type="number" min="0" step="0.1" placeholder="12" /></div>'
             + '        <div class="vitus-field-inline"><label class="vitus-label" for="vitusMedDoseAmount" id="vitusMedDoseLabel">Dávka (ks)</label><input class="vitus-input" id="vitusMedDoseAmount" type="number" min="0" step="0.1" value="1" /></div>'
             + '        <div class="vitus-field-inline"><label class="vitus-label" for="vitusMedCategory">Umístění</label><select class="vitus-input vitus-select" id="vitusMedCategory">' + options + '</select></div>'
-            + '        <div class="vitus-field-inline"><label class="vitus-label" for="vitusMedForWhom">Pro koho</label><select class="vitus-input vitus-select" id="vitusMedForWhom">' + recipientOpts + '</select></div>'
             + '      </div>'
-            + '      <div class="vitus-form-row vitus-form-row--inline vitus-form-row--full">'
-            + '        <div class="vitus-field-inline"><label class="vitus-label" for="vitusMedPurpose">Účel</label><textarea class="vitus-input vitus-textarea-add" id="vitusMedPurpose" rows="2" placeholder="např. bolest hlavy, spánek…"></textarea></div>'
+            + '      <div class="vitus-form-row vitus-form-row--stacked">'
+            + '        <div class="vitus-field vitus-field--full"><label class="vitus-label" for="vitusMedForWhom">Pro koho</label><select class="vitus-input vitus-select" id="vitusMedForWhom">' + recipientOpts + '</select></div>'
             + '      </div>'
-            + '      <div class="vitus-form-row vitus-form-row--inline vitus-form-row--full">'
-            + '        <div class="vitus-field-inline vitus-field-inline--full"><label class="vitus-label" for="vitusMedPrescription">Recept / instrukce</label><textarea class="vitus-input vitus-textarea-add" id="vitusMedPrescription" rows="2" placeholder="např. 1× denně po jídle…"></textarea></div>'
+            + '      <div class="vitus-form-row vitus-form-row--stacked">'
+            + '        <div class="vitus-field vitus-field--full"><label class="vitus-label" for="vitusMedPurpose">Účel</label><textarea class="vitus-input vitus-textarea-add" id="vitusMedPurpose" rows="2" placeholder="např. bolest hlavy, spánek…"></textarea></div>'
             + '      </div>'
-            + '      <div class="vitus-form-row vitus-form-row--inline vitus-form-row--full">'
-            + '        <div class="vitus-field-inline vitus-field-inline--full"><label class="vitus-label" for="vitusMedNotes">Poznámky</label><textarea class="vitus-input vitus-textarea-add" id="vitusMedNotes" rows="2" placeholder="např. nekombinovat s…"></textarea></div>'
+            + '      <div class="vitus-form-row vitus-form-row--stacked">'
+            + '        <div class="vitus-field vitus-field--full"><label class="vitus-label" for="vitusMedPrescription">Recept / instrukce</label><textarea class="vitus-input vitus-textarea-add" id="vitusMedPrescription" rows="2" placeholder="např. 1× denně po jídle…"></textarea></div>'
             + '      </div>'
-            + '      <div class="vitus-form-row vitus-form-row--inline vitus-form-row--full">'
-            + '        <div class="vitus-field-inline vitus-field-inline--full"><label class="vitus-label" for="vitusMedWarning">Varování</label><textarea class="vitus-input vitus-textarea-add" id="vitusMedWarning" rows="2" placeholder="na co si dát pozor…"></textarea></div>'
+            + '      <div class="vitus-form-row vitus-form-row--stacked">'
+            + '        <div class="vitus-field vitus-field--full"><label class="vitus-label" for="vitusMedNotes">Poznámky</label><textarea class="vitus-input vitus-textarea-add" id="vitusMedNotes" rows="2" placeholder="např. nekombinovat s…"></textarea></div>'
             + '      </div>'
-            + '      <div class="vitus-form-row vitus-form-row--inline vitus-form-row--full">'
-            + '        <div class="vitus-field-inline vitus-field-inline--full"><label class="vitus-label" for="vitusMedAiContext">Složení / AI kontext</label><textarea class="vitus-input vitus-textarea-add vitus-textarea-add--ai" id="vitusMedAiContext" rows="3" placeholder="účinná látka, indikace…"></textarea></div>'
+            + '      <div class="vitus-form-row vitus-form-row--stacked">'
+            + '        <div class="vitus-field vitus-field--full"><label class="vitus-label" for="vitusMedWarning">Varování</label><textarea class="vitus-input vitus-textarea-add" id="vitusMedWarning" rows="2" placeholder="na co si dát pozor…"></textarea></div>'
+            + '      </div>'
+            + '      <div class="vitus-form-row vitus-form-row--stacked">'
+            + '        <div class="vitus-field vitus-field--full"><label class="vitus-label" for="vitusMedAiContext">Složení / AI kontext</label><textarea class="vitus-input vitus-textarea-add vitus-textarea-add--ai" id="vitusMedAiContext" rows="3" placeholder="účinná látka, indikace…"></textarea></div>'
             + '      </div>'
             + '      <div class="vitus-cover-block" id="vitusCoverBlock">'
             + '        <div class="vitus-cover-preview" id="vitusCoverPreview" style="display:none;"></div>'
             + '        <p class="vitus-cover-from-scan" id="vitusCoverFromScan" style="display:none;">Obrázek ze skenu – bude použit jako obal léku. Můžete nahradit tlačítkem níže.</p>'
             + '      </div>'
-            + '      <div class="vitus-actions">'
+            + '      <div class="vitus-actions vitus-actions--wrap">'
             + '        <button type="submit" class="vitus-btn vitus-btn--primary">Přidat lék</button>'
             + '        <button type="button" class="vitus-btn vitus-btn--ghost" id="vitusPickCoverBtn">Přidat / nahradit foto léku</button>'
+            + '        <button type="button" class="vitus-btn vitus-btn--ghost" id="vitusAddMedEnrich" title="Bába Kořenářka dohledá info o léku přes AI">Dohledat info</button>'
             + '        <span class="vitus-form-hint" id="vitusMedFormHint"></span>'
             + '      </div>'
             + '      <input type="file" id="vitusCoverInput" accept="image/*" style="display:none;" />'
@@ -1202,6 +1205,77 @@
                     renderShelves();
                     renderCureMeds();
                     renderActiveCures();
+                }
+                if (e.target.id === 'vitusAddMedEnrich') {
+                    var nameEl = $('vitusMedName');
+                    var nameVal = (nameEl && nameEl.value) ? String(nameEl.value).trim() : '';
+                    var hintAdd = $('vitusMedFormHint');
+                    var btnAdd = e.target;
+                    var enrichApi = getEnrich();
+                    var enabled = !!(enrichApi && typeof enrichApi.isEnabled === 'function' && enrichApi.isEnabled());
+                    if (!enabled) {
+                        if (hintAdd) hintAdd.textContent = 'Chybí AI klíč. Nastavte v Nastavení OpenAI API klíč nebo Gemini API klíč.';
+                        return;
+                    }
+                    if (!nameVal) {
+                        if (hintAdd) hintAdd.textContent = 'Nejprve zadejte název léku.';
+                        return;
+                    }
+                    var typeEl = $('vitusMedType');
+                    var typeVal = (typeEl && typeEl.value) ? String(typeEl.value).trim() : '';
+                    var medLike = { name: nameVal, type: typeVal };
+                    if (!enrichApi || typeof enrichApi.enrichMed !== 'function') return;
+                    if (hintAdd) hintAdd.textContent = '';
+                    var originalText = '';
+                    try { originalText = btnAdd.textContent; } catch (eT2) { originalText = 'Dohledat info'; }
+                    try {
+                        btnAdd.disabled = true;
+                        btnAdd.classList.add('is-loading');
+                        btnAdd.textContent = 'Bába listuje v herbářích...';
+                    } catch (eUI3) {}
+                    Promise.resolve()
+                        .then(function () { return enrichApi.enrichMed(medLike); })
+                        .then(function (res) {
+                            if (!res || res.ok !== true) throw new Error('enrich_failed');
+                            var patch = res.med || {};
+                            function setForm(id, val) {
+                                var el = $(id);
+                                if (!el || val == null || val === undefined) return;
+                                var s = String(val).trim();
+                                if (!s) return;
+                                el.value = s;
+                            }
+                            if (typeof patch.purpose === 'string' && patch.purpose.trim()) setForm('vitusMedPurpose', patch.purpose);
+                            if (typeof patch.prescription === 'string' && patch.prescription.trim()) setForm('vitusMedPrescription', patch.prescription);
+                            if (typeof patch.notes === 'string' && patch.notes.trim()) setForm('vitusMedNotes', patch.notes);
+                            if (typeof patch.warning === 'string' && patch.warning.trim()) setForm('vitusMedWarning', patch.warning);
+                            if (typeof patch.aiContext === 'string' && patch.aiContext.trim()) setForm('vitusMedAiContext', patch.aiContext);
+                            if (typeof patch.category === 'string' && patch.category.trim()) setForm('vitusMedCategory', patch.category);
+                            if (typeof patch.type === 'string' && patch.type.trim()) {
+                                setForm('vitusMedType', patch.type);
+                                var typeSelect = $('vitusMedType');
+                                if (typeSelect) typeSelect.dispatchEvent(new Event('change', { bubbles: true }));
+                            }
+                            if (hintAdd) hintAdd.textContent = 'Info dohledáno. Zkontrolujte a případně doplňte.';
+                            document.querySelectorAll('#vitusAddMedForm .vitus-textarea-add').forEach(function (ta) {
+                                if (ta && ta.tagName === 'TEXTAREA') ta.dispatchEvent(new Event('input', { bubbles: true }));
+                            });
+                        })
+                        .catch(function (err) {
+                            var msg = String((err && err.message) ? err.message : err);
+                            if (msg.indexOf('missing_ai_key') >= 0 || msg.indexOf('missing_openai_key') >= 0 || msg.indexOf('missing_gemini_key') >= 0) {
+                                if (hintAdd) hintAdd.textContent = 'Chybí AI klíč. Nastavte v Nastavení OpenAI API klíč nebo Gemini API klíč.';
+                            } else {
+                                if (hintAdd) hintAdd.textContent = 'Nepodařilo se dohledat: ' + msg;
+                            }
+                        })
+                        .finally(function () {
+                            try {
+                                btnAdd.disabled = false;
+                                btnAdd.classList.remove('is-loading');
+                                btnAdd.textContent = originalText;
+                            } catch (eUI4) {}
+                        });
                 }
             });
         }

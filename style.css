@@ -9903,6 +9903,8 @@
         .vitus-form-row--cure-type { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: flex-end; }
         .vitus-form-row--inline { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; margin-bottom: 8px; }
         .vitus-form-row--inline.vitus-form-row--full { display: flex; }
+        .vitus-form-row--stacked { margin-bottom: 10px; }
+        .vitus-form-row--stacked .vitus-field { display: flex; flex-direction: column; gap: 6px; align-items: stretch; }
         .vitus-field { display: flex; flex-direction: column; gap: 6px; }
         .vitus-field-inline { display: flex; align-items: center; gap: 8px; min-width: 0; }
         .vitus-field-inline .vitus-label { flex-shrink: 0; width: auto; min-width: 0; margin: 0; white-space: nowrap; }
@@ -9930,6 +9932,7 @@
         body.module-vitus .vitus-input { background: #FBFBF6; }
         .vitus-select { cursor: pointer; }
         .vitus-actions { display: flex; align-items: center; gap: 10px; margin-top: 6px; }
+        .vitus-actions--wrap { flex-wrap: wrap; }
         .vitus-form-hint { font-size: 0.85rem; color: var(--text-secondary); font-weight: 700; }
         .vitus-disclaimer {
             font-size: 0.78rem;
