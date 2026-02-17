@@ -155,21 +155,29 @@
         try { defaultSector = String(localStorage.getItem(SECTOR_KEY) || 'add'); } catch (e0) { defaultSector = 'add'; }
         if (defaultSector !== 'add' && defaultSector !== 'scan' && defaultSector !== 'cures') defaultSector = 'add';
 
+        var VITUS_PANELS_OPEN_KEY = 'omnishelf_vitus_panels_open';
+        var panelsOpen = false;
+        try { panelsOpen = String(localStorage.getItem(VITUS_PANELS_OPEN_KEY) || '') === '1'; } catch (e0) { panelsOpen = false; }
+
         body.innerHTML = ''
-            + '<div class="vitus-sector-intro">'
+            + '<div class="vitus-panels-status-bar" id="vitusPanelsStatusBar" aria-live="polite">'
+            + '  <span class="vitus-panels-status-text" id="vitusPanelsStatusText">' + (panelsOpen ? 'Panel zadání je otevřený' : 'Panel zadání je zavřený') + '</span>'
+            + '  <button type="button" class="vitus-panels-open-btn" id="vitusBtnOpenPanels">Otevřít zadání / skenování</button>'
+            + '  <button type="button" class="vitus-panels-close-btn" id="vitusBtnClosePanels" aria-label="Zavřít panel" title="Zavřít"' + (panelsOpen ? '' : ' hidden') + '>×</button>'
+            + '</div>'
+            + '<div class="vitus-panels-wrap" id="vitusPanelsWrap"' + (panelsOpen ? '' : ' hidden') + '>'
             + '  <p class="vitus-sector-intro-text">Ruční zadání nebo analýza fotky receptu/krabičky – vyberte sekci a doplňte data.</p>'
-            + '</div>'
-            + '<div class="vitus-sector-tabs" role="tablist">'
-            + '  <button type="button" class="vitus-sector-tab" data-sector="add" role="tab" aria-selected="' + (defaultSector === 'add' ? 'true' : 'false') + '"><span class="vitus-sector-icon">➕</span><span class="vitus-sector-label">Přidat lék</span></button>'
-            + '  <button type="button" class="vitus-sector-tab" data-sector="scan" role="tab" aria-selected="' + (defaultSector === 'scan' ? 'true' : 'false') + '"><span class="vitus-sector-icon">📄</span><span class="vitus-sector-label">Skenovat</span></button>'
-            + '  <button type="button" class="vitus-sector-tab" data-sector="cures" role="tab" aria-selected="' + (defaultSector === 'cures' ? 'true' : 'false') + '"><span class="vitus-sector-icon">📅</span><span class="vitus-sector-label">Kúry</span></button>'
-            + '</div>'
-            + '<div class="vitus-sector-panels">'
+            + '  <div class="vitus-sector-tabs" role="tablist">'
+            + '    <button type="button" class="vitus-sector-tab" data-sector="add" role="tab" aria-selected="' + (defaultSector === 'add' ? 'true' : 'false') + '"><span class="vitus-sector-icon">➕</span><span class="vitus-sector-label">Přidat lék</span></button>'
+            + '    <button type="button" class="vitus-sector-tab" data-sector="scan" role="tab" aria-selected="' + (defaultSector === 'scan' ? 'true' : 'false') + '"><span class="vitus-sector-icon">📄</span><span class="vitus-sector-label">Skenovat</span></button>'
+            + '    <button type="button" class="vitus-sector-tab" data-sector="cures" role="tab" aria-selected="' + (defaultSector === 'cures' ? 'true' : 'false') + '"><span class="vitus-sector-icon">📅</span><span class="vitus-sector-label">Kúry</span></button>'
+            + '  </div>'
+            + '  <div class="vitus-sector-panels">'
             + '  <div class="vitus-sector-panel' + (defaultSector === 'add' ? ' vitus-sector-panel--active' : '') + '" id="vitusPanelAdd" role="tabpanel">'
-            + '    <section class="vitus-card">'
-            + '        <div class="vitus-card-head">'
-            + '          <div class="vitus-card-title">Zobání / Elixíry</div>'
-            + '          <div class="vitus-card-sub">Tady můžete cokoliv ručně doplnit nebo opravit – tvůj zob nebo elixír.</div>'
+            + '    <div class="vitus-module">'
+            + '        <div class="vitus-module-head">'
+            + '          <h3 class="vitus-module-title">Zobání / Elixíry</h3>'
+            + '          <p class="vitus-module-sub">Tady můžete cokoliv ručně doplnit nebo opravit – tvůj zob nebo elixír.</p>'
             + '        </div>'
             + '        <form class="vitus-form vitus-form--compact" id="vitusAddMedForm" autocomplete="off">'
             + '      <div class="vitus-form-row vitus-form-row--inline">'
@@ -213,13 +221,13 @@
             + '      </div>'
             + '      <input type="file" id="vitusCoverInput" accept="image/*" style="display:none;" />'
             + '    </form>'
-            + '    </section>'
+            + '    </div>'
             + '  </div>'
             + '  <div class="vitus-sector-panel' + (defaultSector === 'scan' ? ' vitus-sector-panel--active' : '') + '" id="vitusPanelScan" role="tabpanel">'
-            + '    <section class="vitus-card">'
-            + '        <div class="vitus-card-head">'
-            + '          <div class="vitus-card-title">Skenovat detailně</div>'
-            + '          <div class="vitus-card-sub">Recept, krabička, příbalový leták nebo ručně psaný dokument.</div>'
+            + '    <div class="vitus-module">'
+            + '        <div class="vitus-module-head">'
+            + '          <h3 class="vitus-module-title">Skenovat detailně</h3>'
+            + '          <p class="vitus-module-sub">Recept, krabička, příbalový leták nebo ručně psaný dokument.</p>'
             + '        </div>'
             + '        <div class="vitus-scan-pad">'
             + '          <div class="vitus-scan-target">'
@@ -244,13 +252,13 @@
             + '            <span class="vitus-form-hint" id="vitusScanHint"></span>'
             + '          </div>'
             + '        </div>'
-            + '    </section>'
+            + '    </div>'
             + '  </div>'
             + '  <div class="vitus-sector-panel' + (defaultSector === 'cures' ? ' vitus-sector-panel--active' : '') + '" id="vitusPanelCures" role="tabpanel">'
-            + '    <section class="vitus-card vitus-card--wide">'
-            + '  <div class="vitus-card-head">'
-            + '    <div class="vitus-card-title">Léčebné kúry</div>'
-            + '    <div class="vitus-card-sub">Aktivní kúry mají odpočet do konce a zobrazují se v Dávkování.</div>'
+            + '    <div class="vitus-module vitus-module--wide">'
+            + '  <div class="vitus-module-head">'
+            + '    <h3 class="vitus-module-title">Léčebné kúry</h3>'
+            + '    <p class="vitus-module-sub">Aktivní kúry mají odpočet do konce a zobrazují se v Dávkování.</p>'
             + '  </div>'
             + '  <div class="vitus-cures-grid">'
             + '    <form class="vitus-form" id="vitusAddCureForm" autocomplete="off">'
@@ -310,13 +318,14 @@
             + '      <div class="vitus-active-cures" id="vitusActiveCures"></div>'
             + '    </div>'
             + '  </div>'
-            + '    </section>'
+            + '    </div>'
             + '  </div>'
             + '</div>'
-            + '<section class="vitus-card vitus-card--wide vitus-shelves-block">'
-            + '  <div class="vitus-card-head">'
-            + '    <div class="vitus-card-title">Moje lékárnička</div>'
-            + '    <div class="vitus-card-sub">Všechny vaše léky na jednom místě. Skupiny podle kategorie. <em>Klikni na lék pro víc info.</em></div>'
+            + '</div>'
+            + '<section class="vitus-shelves-block">'
+            + '  <div class="vitus-shelves-block-head">'
+            + '    <h2 class="vitus-shelves-title">Moje lékárnička</h2>'
+            + '    <p class="vitus-shelves-sub">Všechny vaše léky na jednom místě. Skupiny podle kategorie. <em>Klikni na lék pro víc info.</em></p>'
             + '  </div>'
             + '  <div class="vitus-shelves" id="vitusShelves"></div>'
             + '</section>'
@@ -644,6 +653,7 @@
         function openCureFormWithMed(med) {
             if (!med) return;
             closeMedModal();
+            setPanelsOpen(true);
             switchSector('cures');
             var nameEl = $('vitusCureName');
             if (nameEl) nameEl.value = 'Kúra – ' + (med.name || '');
@@ -690,7 +700,25 @@
             }).join('');
         }
 
+        function setPanelsOpen(open) {
+            var wrap = $('vitusPanelsWrap');
+            var statusText = $('vitusPanelsStatusText');
+            var openBtn = $('vitusBtnOpenPanels');
+            var closeBtn = $('vitusBtnClosePanels');
+            if (wrap) wrap.hidden = !open;
+            if (statusText) statusText.textContent = open ? 'Panel zadání je otevřený' : 'Panel zadání je zavřený';
+            if (openBtn) openBtn.style.display = open ? 'none' : '';
+            if (closeBtn) { closeBtn.hidden = !open; }
+            try { localStorage.setItem(VITUS_PANELS_OPEN_KEY, open ? '1' : '0'); } catch (e0) {}
+        }
+
         function wire() {
+            var openBtn = $('vitusBtnOpenPanels');
+            var closeBtn = $('vitusBtnClosePanels');
+            if (openBtn) openBtn.addEventListener('click', function () { setPanelsOpen(true); });
+            if (closeBtn) closeBtn.addEventListener('click', function () { setPanelsOpen(false); });
+            if (openBtn && panelsOpen) openBtn.style.display = 'none';
+
             // Sector tabs
             document.querySelectorAll('.vitus-sector-tab').forEach(function (btn) {
                 var sector = btn.getAttribute('data-sector');
@@ -844,9 +872,11 @@
 
                 if (target === 'cure') {
                     applyScanResultToCureForm(result);
+                    setPanelsOpen(true);
                     switchSector('cures');
                 } else {
                     applyScanResultToMedForm(result);
+                    setPanelsOpen(true);
                     switchSector('add');
                 }
 
