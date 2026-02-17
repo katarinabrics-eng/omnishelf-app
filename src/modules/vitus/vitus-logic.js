@@ -46,6 +46,10 @@
         var dosageAmount = Number(dosage.amount);
         if (!isFinite(dosageAmount) || dosageAmount <= 0) dosageAmount = 1;
 
+        var doseUnit = (m.dosage && m.dosage.unit) ? String(m.dosage.unit).trim() : '';
+        var typeStr = String(m.type || '').toLowerCase();
+        if (!doseUnit && (typeStr === 'sirup' || typeStr === 'kapky' || typeStr === 'roztok')) doseUnit = 'ml';
+        if (!doseUnit) doseUnit = 'ks';
         return {
             id: String(m.id || uid('med')),
             name: String(m.name || '').trim(),
@@ -54,7 +58,8 @@
             remainingQuantity: remainingQ,
             dosage: {
                 amount: dosageAmount,
-                text: String(dosage.text || '').trim()
+                text: String(dosage.text || '').trim(),
+                unit: doseUnit
             },
             expiration: String(m.expiration || '').trim(), // YYYY-MM-DD
             purpose: String(m.purpose || '').trim(),
