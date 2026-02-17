@@ -111,8 +111,9 @@
                 <div class="sidebar-menu sidebar-menu--vitus" id="sidebarMenuVitus" hidden>
                     <div class="sidebar-vitus-title">Vitus (Apatyka)</div>
                     <button type="button" class="vitus-nav-item active" data-vitus-view="meds">Léky</button>
-                    <button type="button" class="vitus-nav-item" data-vitus-view="dose">Dávkování</button>
+                    <button type="button" class="vitus-nav-item" data-vitus-view="dose">Zobání</button>
                     <button type="button" class="vitus-nav-item" data-vitus-view="herbalist">Bába Kořenářka</button>
+                    <button type="button" class="vitus-nav-item" data-vitus-view="rodina">Rodina</button>
                 </div>
                 <button type="button" class="sidebar-nav-item sidebar-nav-settings" id="btnOpenSettings" data-open-modal="settings">Nastavení<span class="settings-pending-dot" id="settingsPendingDot" aria-hidden="true"></span></button>
                 <div class="sidebar-export" data-adult-only>
@@ -228,14 +229,23 @@
                     </div>
                 </div>
             </section>
-            <!-- Vitus (Apatyka) – samostatný dashboard (placeholder) -->
+            <!-- Vitus (Apatyka) – samostatný dashboard -->
             <section class="vitus-section" id="vitusSection" style="display:none;" aria-label="Vitus – Apatyka">
-                <div class="vitus-hero">
-                    <div class="vitus-hero-badge">🌿 Vitus</div>
-                    <h2 class="vitus-hero-title">Apatyka</h2>
-                    <p class="vitus-hero-sub" id="vitusWelcomeText">Vítejte v Apatyce. Bába Kořenářka připravuje vaše bylinky a léky.</p>
-                </div>
-                <div class="vitus-panel">
+                <!-- Úvodní stránka Vitus – menu (zobrazí se při vstupu) -->
+                <section class="vitus-intro-section" id="vitusIntroSection" aria-label="Úvod do Vitusu">
+                    <div class="vitus-intro-hero">
+                        <h2 class="vitus-intro-title">Vitus</h2>
+                        <p class="vitus-intro-desc">Tvoje lékárnička. Eviduj léky, dávkování a nech si od Báby Kořenářky poradit s bylinkami při běžných neduzích.</p>
+                    </div>
+                    <div class="vitus-intro-menu" role="navigation" aria-label="Sekce Vitusu">
+                        <button type="button" class="vitus-intro-card" data-vitus-view="meds"><span class="vitus-intro-card-icon">💊</span><span class="vitus-intro-card-label">Léky</span><span class="vitus-intro-card-hint">Seznam léků, kúry, expirace</span></button>
+                        <button type="button" class="vitus-intro-card" data-vitus-view="dose"><span class="vitus-intro-card-icon">📅</span><span class="vitus-intro-card-label">Zobání</span><span class="vitus-intro-card-hint">Dávkování, kalendář, Užito</span></button>
+                        <button type="button" class="vitus-intro-card" data-vitus-view="herbalist"><span class="vitus-intro-card-icon">🌿</span><span class="vitus-intro-card-label">Bába Kořenářka</span><span class="vitus-intro-card-hint">Bylinky, babské rady, AI poradna</span></button>
+                        <button type="button" class="vitus-intro-card" data-vitus-view="rodina"><span class="vitus-intro-card-icon">👨‍👩‍👧</span><span class="vitus-intro-card-label">Rodina</span><span class="vitus-intro-card-hint">Léky pro členy rodiny</span></button>
+                    </div>
+                    <p class="vitus-intro-footnote">Vyberte sekci – není to náhrada lékaře, jen doplněk pro domácí lékárničku.</p>
+                </section>
+                <div class="vitus-panel" id="vitusPanel">
                     <div class="vitus-panel-header">
                         <h3 class="vitus-panel-title" id="vitusViewTitle">Léky</h3>
                         <span class="vitus-panel-hint">Jste v novém modulu – odlišná paleta je záměr.</span>

@@ -28,6 +28,15 @@
         return (typeof window !== 'undefined' && window.OMNI_VitusEnrich) ? window.OMNI_VitusEnrich : null;
     }
 
+    function getMedById(id) {
+        id = String(id || '');
+        var logic = getLogic();
+        if (!logic) return null;
+        var meds = logic.listMeds();
+        for (var i = 0; i < meds.length; i++) if (meds[i].id === id) return meds[i];
+        return null;
+    }
+
     var CATEGORIES = ['Srdce', 'Klouby', 'Krása', 'Spánek', 'Trávení', 'Imunita', 'Jiné'];
     var pendingAiContext = '';
 
@@ -365,13 +374,6 @@
                     + '  <div class="vitus-shelf-grid">' + cards + '</div>'
                     + '</div>';
             }).join('');
-        }
-
-        function getMedById(id) {
-            id = String(id || '');
-            var meds = logic.listMeds();
-            for (var i = 0; i < meds.length; i++) if (meds[i].id === id) return meds[i];
-            return null;
         }
 
         /** Pro koho – členové rodiny / mazlíčci. Modularně: lze napojit na OMNI_LibraryLogic.getFamilyProfiles */
@@ -1238,16 +1240,58 @@
                 + '</div></section>'
             : '';
 
+        var mode = DOSE_VIEW_STATE.mode || 'day';
+        var weekSlotsHtml = '';
+        if (mode === 'week' || mode === 'month') {
+            var daysToShow = mode === 'week' ? 7 : 28;
+            var startD = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+            var weekDays = [];
+            for (var i = 0; i < daysToShow; i++) {
+                var dd = new Date(startD.getTime());
+                dd.setDate(dd.getDate() + i);
+                var ds = dd.getFullYear() + '-' + String(dd.getMonth() + 1).padStart(2, '0') + '-' + String(dd.getDate()).padStart(2, '0');
+                var daySlots = logic.getDoseSlotsForDay(ds) || [];
+                var isDayToday = ds === (today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0'));
+                var dayLabel = (dd.getDate()) + '.' + (dd.getMonth() + 1) + '.';
+                var daySlotsStr = daySlots.map(function (s) {
+                    var col = medColorMap[s.medId] || '#5C8A6A';
+                    return '<div class="vitus-dose-slot vitus-dose-slot--compact" data-med-id="' + escapeHtml(s.medId) + '" data-date="' + escapeHtml(s.date) + '" data-time="' + escapeHtml(s.time) + '">'
+                        + '<span class="vitus-dose-color" style="background:' + escapeHtml(col) + '"></span>'
+                        + '<span class="vitus-dose-time">' + escapeHtml(s.time) + '</span> '
+                        + '<span class="vitus-dose-name">' + escapeHtml(s.medName) + '</span>'
+                        + '<label class="vitus-dose-check"><input type="checkbox" class="vitus-dose-checkbox" ' + (s.taken ? 'checked' : '') + ' /> Užito</label></div>';
+                }).join('');
+                weekDays.push('<div class="vitus-dose-week-day' + (isDayToday ? ' vitus-dose-week-day--today' : '') + '">'
+                    + '<div class="vitus-dose-week-day-label">' + escapeHtml(dayLabel) + (isDayToday ? ' (Dnes)' : '') + '</div>'
+                    + '<div class="vitus-dose-week-day-slots">' + (daySlotsStr || '<span class="vitus-muted">—</span>') + '</div></div>');
+            }
+            weekSlotsHtml = '<div class="vitus-dose-week-grid">' + weekDays.join('') + '</div>';
+        }
+        var displaySlots = (mode === 'week' || mode === 'month') ? weekSlotsHtml : slotsHtml;
+        var prevOffset = mode === 'day' ? 1 : (mode === 'week' ? 7 : 28);
+        var nextOffset = prevOffset;
+        var prevDateMode = new Date(d.getTime());
+        prevDateMode.setDate(prevDateMode.getDate() - prevOffset);
+        var nextDateMode = new Date(d.getTime());
+        nextDateMode.setDate(nextDateMode.getDate() + nextOffset);
+        var prevStrMode = prevDateMode.getFullYear() + '-' + String(prevDateMode.getMonth() + 1).padStart(2, '0') + '-' + String(prevDateMode.getDate()).padStart(2, '0');
+        var nextStrMode = nextDateMode.getFullYear() + '-' + String(nextDateMode.getMonth() + 1).padStart(2, '0') + '-' + String(nextDateMode.getDate()).padStart(2, '0');
+
         body.innerHTML = ''
             + '<div class="vitus-dose-view">'
             + '  <p class="vitus-disclaimer vitus-dose-disclaimer">Vitus není náhrada lékaře – jen pomáhá nezapomenout. Při nejasnostech se poraďte s odborníkem.</p>'
+            + '  <div class="vitus-dose-mode-toggle" role="group">'
+            + '    <button type="button" class="vitus-dose-mode-btn' + (mode === 'day' ? ' active' : '') + '" data-mode="day">Den</button>'
+            + '    <button type="button" class="vitus-dose-mode-btn' + (mode === 'week' ? ' active' : '') + '" data-mode="week">Týden</button>'
+            + '    <button type="button" class="vitus-dose-mode-btn' + (mode === 'month' ? ' active' : '') + '" data-mode="month">Měsíc</button>'
+            + '  </div>'
             + '  <div class="vitus-dose-nav">'
-            + '    <button type="button" class="vitus-btn vitus-btn--ghost vitus-dose-nav-btn" id="vitusDosePrev" data-date="' + escapeHtml(prevStr) + '">← Předchozí</button>'
-            + '    <span class="vitus-dose-date">' + (isToday ? 'Dnes' : '') + ' ' + escapeHtml(dateStr) + '</span>'
-            + '    <button type="button" class="vitus-btn vitus-btn--ghost vitus-dose-nav-btn" id="vitusDoseNext" data-date="' + escapeHtml(nextStr) + '">Další →</button>'
+            + '    <button type="button" class="vitus-btn vitus-btn--ghost vitus-dose-nav-btn" data-date="' + escapeHtml(mode === 'day' ? prevStr : prevStrMode) + '">← Předchozí</button>'
+            + '    <span class="vitus-dose-date">' + (isToday && mode === 'day' ? 'Dnes' : '') + ' ' + escapeHtml(dateStr) + (mode === 'week' ? ' (týden)' : mode === 'month' ? ' (4 týdny)' : '') + '</span>'
+            + '    <button type="button" class="vitus-btn vitus-btn--ghost vitus-dose-nav-btn" data-date="' + escapeHtml(mode === 'day' ? nextStr : nextStrMode) + '">Další →</button>'
             + '  </div>'
             + '  <div class="vitus-dose-slots" id="vitusDoseSlots">'
-            + slotsHtml
+            + (typeof displaySlots === 'string' ? displaySlots : slotsHtml)
             + '  </div>'
             + (legendHtml ? '<div class="vitus-dose-legend"><h4 class="vitus-dose-legend-title">Léky</h4><div class="vitus-dose-legend-items">' + legendHtml + '</div></div>' : '')
             + archiveHtml
@@ -1278,6 +1322,14 @@
             });
         });
 
+        body.querySelectorAll('.vitus-dose-mode-btn').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                var m = this.getAttribute('data-mode') || 'day';
+                DOSE_VIEW_STATE.mode = m;
+                renderDoseView(body);
+            });
+        });
+
         body.querySelectorAll('.vitus-dose-legend-edit').forEach(function (btn) {
             btn.addEventListener('click', function (e) {
                 e.stopPropagation();
@@ -1301,6 +1353,98 @@
         });
     }
 
+    function renderHerbalistView(body) {
+        if (!body) return;
+        var logic = getLogic();
+        var quickItems = [
+            { q: 'bolí mě zub', label: 'Bolí zub' },
+            { q: 'bolí mě hlava', label: 'Bolest hlavy' },
+            { q: 'nachlazení, rýma', label: 'Nachlazení' },
+            { q: 'heřmánek', label: 'Heřmánek' },
+            { q: 'šalvěj', label: 'Šalvěj' },
+            { q: 'meduňka', label: 'Meduňka' },
+            { q: 'šípek', label: 'Šípek' }
+        ];
+        var ctx = '';
+        if (logic) {
+            var meds = logic.listMeds() || [];
+            if (meds.length) ctx += 'Léky v lékárničce: ' + meds.map(function (m) { return (m.name || ''); }).filter(Boolean).join(', ') + '. ';
+            if (typeof logic.getMissedDosesReport === 'function') {
+                var rep = logic.getMissedDosesReport();
+                if (rep) ctx += rep;
+            }
+        }
+        body.innerHTML = ''
+            + '<div class="vitus-herbalist-view">'
+            + '  <p class="vitus-disclaimer vitus-herbalist-disclaimer">Není to náhrada lékaře – jen doplněk pro domácí lékárničku. U závažných potíží vždy vyhledejte odborníka.</p>'
+            + '  <div class="vitus-herbalist-quick">'
+            + '    <span class="vitus-herbalist-quick-label">Rychlý výběr:</span>'
+            + quickItems.map(function (x) { return '<button type="button" class="vitus-herbalist-quick-btn" data-query="' + escapeHtml(x.q) + '">' + escapeHtml(x.label) + '</button>'; }).join('')
+            + '  </div>'
+            + '  <div class="vitus-herbalist-input-wrap">'
+            + '    <input type="text" id="vitusHerbalistInput" class="vitus-herbalist-input" placeholder="Napiš např. bolí mě zub, heřmánek, co na kašel…" autocomplete="off" />'
+            + '    <button type="button" class="vitus-btn vitus-herbalist-send" id="vitusHerbalistSend">Zeptat se</button>'
+            + '  </div>'
+            + '  <div class="vitus-herbalist-response" id="vitusHerbalistResponse" aria-live="polite"></div>'
+            + '</div>';
+        var inputEl = document.getElementById('vitusHerbalistInput');
+        var respEl = document.getElementById('vitusHerbalistResponse');
+        var sendBtn = document.getElementById('vitusHerbalistSend');
+        function ask(query) {
+            query = String(query || '').trim();
+            if (!query) return;
+            if (respEl) respEl.innerHTML = '<p class="vitus-muted">Bába přemýšlí…</p>';
+            if (sendBtn) sendBtn.disabled = true;
+            var systemPrompt = 'Jsi Bába Kořenářka, zkušená bylinkářka. Pomáháš s běžnými neduhy a bylinkami pro domácí lékárničku. NENÍŠ náhrada lékaře – vždy doporuč návštěvu odborníka u vážných potíží. '
+                + 'Když uživatel popíše problém (např. bolí zub): doporuč zubaře, ale též babskou radu, jak si krátkodobě ulevit, aniž by sahal po chemii z lékárny. '
+                + 'Když uživatel napsal název bylinky: vysvětli, na co se používá a jak ji připravit. Piš stručně, srozumitelně, v češtině.';
+            var userContent = query;
+            if (ctx) userContent = '[Kontext o lécích a dávkování uživatele: ' + ctx + ']\n\nDotaz: ' + query;
+            var bodyReq = {
+                model: 'gpt-4o-mini',
+                max_tokens: 600,
+                messages: [
+                    { role: 'system', content: systemPrompt },
+                    { role: 'user', content: userContent }
+                ]
+            };
+            var hasProxy = window.OMNI_Keys && typeof window.OMNI_Keys.openAiFetch === 'function';
+            var key = (window.OMNI_Keys && typeof window.OMNI_Keys.getOpenAiKey === 'function') ? window.OMNI_Keys.getOpenAiKey() : '';
+            var url = (window.OMNI_CONFIG && window.OMNI_CONFIG.apiBase) ? (window.OMNI_CONFIG.apiBase + '/openai') : '/api/openai';
+            var fetchPromise = hasProxy
+                ? window.OMNI_Keys.openAiFetch(bodyReq)
+                : (key ? fetch('https://api.openai.com/v1/chat/completions', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + key },
+                    body: JSON.stringify(bodyReq)
+                }) : fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(bodyReq) }));
+            Promise.resolve(fetchPromise)
+                .then(function (r) { return r.json ? r.json() : r; })
+                .then(function (data) {
+                    var text = (data && data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content)
+                        ? data.choices[0].message.content
+                        : (data && data.choices && data.choices[0]) ? String(data.choices[0]) : '';
+                    if (respEl) respEl.innerHTML = '<div class="vitus-herbalist-answer">' + escapeHtml(text).replace(/\n/g, '<br>') + '</div>';
+                })
+                .catch(function (err) {
+                    var msg = (err && err.message) ? err.message : 'Nepodařilo se zeptat. Zkontrolujte API klíč v Nastavení.';
+                    if (respEl) respEl.innerHTML = '<p class="vitus-herbalist-error">' + escapeHtml(msg) + '</p>';
+                })
+                .finally(function () {
+                    if (sendBtn) sendBtn.disabled = false;
+                });
+        }
+        body.querySelectorAll('.vitus-herbalist-quick-btn').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                var q = this.getAttribute('data-query') || '';
+                if (inputEl) inputEl.value = q;
+                ask(q);
+            });
+        });
+        if (sendBtn) sendBtn.addEventListener('click', function () { ask(inputEl ? inputEl.value : ''); });
+        if (inputEl) inputEl.addEventListener('keydown', function (e) { if (e.key === 'Enter') ask(this.value); });
+    }
+
     function runDoseMissedCheck() {
         var logic = getLogic();
         if (!logic || typeof logic.getDoseSlotsForDay !== 'function') return;
@@ -1314,10 +1458,16 @@
     }
 
     var currentVitusView = 'meds';
+    var vitusIntroVisible = false;
 
     function setView(view) {
         view = String(view || '').trim() || 'meds';
         currentVitusView = view;
+        vitusIntroVisible = false;
+        var introSection = document.getElementById('vitusIntroSection');
+        var panel = document.getElementById('vitusPanel');
+        if (introSection) introSection.style.display = 'none';
+        if (panel) panel.style.display = '';
         var title = $('vitusViewTitle');
         var body = $('vitusViewBody');
         if (!title || !body) return;
@@ -1325,7 +1475,7 @@
         var t = 'Léky';
         var content = '';
         if (view === 'dose') {
-            t = 'Dávkování';
+            t = 'Zobání';
             refreshMedsView = function () {
                 renderDoseView(body);
             };
@@ -1337,12 +1487,18 @@
             return;
         } else if (view === 'herbalist') {
             t = 'Bába Kořenářka';
-            content = '<p class="vitus-muted">Zde budou bylinkové recepty, rady a “AI kořenářka”.</p>';
+            content = '';
+        } else if (view === 'rodina') {
+            t = 'Rodina';
+            content = '<p class="vitus-muted">Léky pro členy rodiny – připravujeme.</p>';
         }
 
         title.textContent = t;
         if (view === 'meds') {
             renderMedsView(body);
+        } else if (view === 'herbalist') {
+            refreshMedsView = null;
+            renderHerbalistView(body);
         } else {
             refreshMedsView = null;
             body.innerHTML = content;
@@ -1362,20 +1518,49 @@
         }
         document.addEventListener('click', function (e) {
             var btn = e.target && e.target.closest ? e.target.closest('.vitus-nav-item') : null;
-            if (!btn) return;
-            try {
-                if (window.OMNI_AppState && window.OMNI_AppState.getActiveModule && window.OMNI_AppState.getActiveModule() !== 'vitus') return;
-            } catch (err) {}
-            var v = btn.getAttribute('data-vitus-view') || 'meds';
-            setView(v);
+            if (btn) {
+                try {
+                    if (window.OMNI_AppState && window.OMNI_AppState.getActiveModule && window.OMNI_AppState.getActiveModule() !== 'vitus') return;
+                } catch (err) {}
+                var v = btn.getAttribute('data-vitus-view') || 'meds';
+                setView(v);
+                return;
+            }
+            var introCard = e.target && e.target.closest ? e.target.closest('.vitus-intro-card') : null;
+            if (introCard) {
+                var v2 = introCard.getAttribute('data-vitus-view') || 'meds';
+                setView(v2);
+            }
         });
 
         document.addEventListener('omni:module-changed', function (e) {
             var next = (e && e.detail && e.detail.next) ? e.detail.next : '';
-            if (next === 'vitus') setView(currentVitusView);
+            if (next === 'vitus') {
+                try {
+                    if (document.body.classList.contains('module-vitus')) vitusIntroVisible = true;
+                } catch (err) {}
+                var introSection = document.getElementById('vitusIntroSection');
+                var panel = document.getElementById('vitusPanel');
+                if (vitusIntroVisible && introSection && panel) {
+                    introSection.style.display = 'block';
+                    panel.style.display = 'none';
+                } else {
+                    setView(currentVitusView);
+                }
+            }
         });
 
-        setView(currentVitusView);
+        try {
+            if (document.body.classList.contains('module-vitus')) vitusIntroVisible = true;
+        } catch (err) {}
+        var introSection = document.getElementById('vitusIntroSection');
+        var panel = document.getElementById('vitusPanel');
+        if (vitusIntroVisible && introSection && panel) {
+            introSection.style.display = 'block';
+            panel.style.display = 'none';
+        } else {
+            setView(currentVitusView);
+        }
 
         runDoseMissedCheck();
 
