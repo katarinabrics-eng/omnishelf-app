@@ -168,12 +168,12 @@
             + '  <div class="vitus-sector-panel' + (defaultSector === 'add' ? ' vitus-sector-panel--active' : '') + '" id="vitusPanelAdd" role="tabpanel">'
             + '    <section class="vitus-card">'
             + '        <div class="vitus-card-head">'
-            + '          <div class="vitus-card-title">Moje Apatyka</div>'
-            + '          <div class="vitus-card-sub">Tady můžete cokoliv ručně doplnit nebo opravit.</div>'
+            + '          <div class="vitus-card-title">Zobání / Elixíry</div>'
+            + '          <div class="vitus-card-sub">Tady můžete cokoliv ručně doplnit nebo opravit – tvůj zob nebo elixír.</div>'
             + '        </div>'
             + '        <form class="vitus-form vitus-form--compact" id="vitusAddMedForm" autocomplete="off">'
             + '      <div class="vitus-form-row vitus-form-row--inline">'
-            + '        <div class="vitus-field-inline"><label class="vitus-label" for="vitusMedName">Název léku</label><input class="vitus-input" id="vitusMedName" required placeholder="např. Ibuprofen" /></div>'
+            + '        <div class="vitus-field-inline"><label class="vitus-label" for="vitusMedName">Název elixíru / zobání</label><input class="vitus-input" id="vitusMedName" required placeholder="např. Ibuprofen" /></div>'
             + '        <div class="vitus-field-inline"><label class="vitus-label" for="vitusMedType">Typ</label><select class="vitus-input vitus-select" id="vitusMedType"><option value="">—</option><option value="tablety">tablety</option><option value="sirup">sirup</option><option value="kapky">kapky</option><option value="roztok">roztok</option><option value="mast">mast</option><option value="spray">spray</option><option value="tobolky">tobolky</option><option value="čípky">čípky</option><option value="jiné">jiné</option></select></div>'
             + '        <div class="vitus-field-inline"><label class="vitus-label" for="vitusMedExpiration">Expirace</label><input class="vitus-input" id="vitusMedExpiration" type="date" /></div>'
             + '      </div>'
@@ -340,9 +340,14 @@
                 return a.localeCompare(b);
             });
             if (!keys.length) {
-                wrap.innerHTML = '<div class="vitus-empty">Zatím tu nejsou žádné léky. Přidejte první do Apatyky.</div>';
+                wrap.innerHTML = '<div class="vitus-empty">Zatím tu nejsou žádné léky. Přidejte první do Zobání.</div>';
                 return;
             }
+            var activeCures = logic.listActiveCures() || [];
+            var medIdsInCure = {};
+            activeCures.forEach(function (x) {
+                (x.cure && x.cure.medIds || []).forEach(function (mid) { medIdsInCure[mid] = true; });
+            });
             wrap.innerHTML = keys.map(function (cat) {
                 var meds = grouped[cat] || [];
                 var forWhomShort = function (s) {
@@ -360,7 +365,9 @@
                         if (expDays < 0) expBadge = '<span class="vitus-badge vitus-badge--danger">Expirované</span>';
                         else if (expDays <= 14) expBadge = '<span class="vitus-badge vitus-badge--warn">Exp. ' + expDays + ' dní</span>';
                     }
+                    var inCureBadge = medIdsInCure[m.id] ? '<span class="vitus-badge vitus-badge--cure" title="V aktivní kúře">V kúře</span>' : '';
                     var forWhomLabel = forWhomShort(m.forWhom);
+                    var purposeShort = (m.purpose && m.purpose.trim()) ? String(m.purpose).trim().slice(0, 50) + (m.purpose.length > 50 ? '…' : '') : '';
                     var cover = (m.coverImage && String(m.coverImage).indexOf('data:image') === 0)
                         ? ('<div class="vitus-med-cover"><img src="' + escapeHtml(m.coverImage) + '" alt="' + escapeHtml(m.name) + '" /></div>')
                         : '<div class="vitus-med-cover vitus-med-cover--empty"><span>🌿</span></div>';
@@ -374,8 +381,9 @@
                         + '  <div class="vitus-med-main">'
                         + '    <div class="vitus-med-top">'
                         + '      <div class="vitus-med-name">' + escapeHtml(m.name) + '</div>'
-                        + '      <div class="vitus-med-badges">' + expBadge + '</div>'
+                        + '      <div class="vitus-med-badges">' + expBadge + inCureBadge + '</div>'
                         + '    </div>'
+                        + (purposeShort ? ('<div class="vitus-med-purpose">' + escapeHtml(purposeShort) + '</div>') : '')
                         + '    <div class="vitus-med-actions">'
                         + '      <button type="button" class="vitus-btn vitus-btn--dose" data-action="dose">Užít dávku</button>'
                         + '      <button type="button" class="vitus-btn vitus-btn--ghost" data-action="delete" title="Smazat">Smazat</button>'
