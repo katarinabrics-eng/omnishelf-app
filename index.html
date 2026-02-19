@@ -1,779 +1,656 @@
 <!DOCTYPE html>
-<html lang="cs" class="scroll-smooth">
+<html lang="cs">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="theme-color" content="#8DD311">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="mobile-web-app-capable" content="yes">
-    <title>Omshelf | Váš prostor v rovnováze</title>
+    <meta name="theme-color" content="#17120f">
+    <meta name="description" content="AI Content Creator od Studia Lucifera. Dáte nám přístup k brandu, my dodáme rychlé a funkční příspěvky na sítě. AI + kreativní kurátor = prvotřídní výsledek.">
+    <title>AI Content Creator | Studio Lucifera</title>
     <link rel="manifest" href="./manifest.json">
-    <link rel="apple-touch-icon" href="./assets/img/ikona_kartyknih.png">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="./css/pricing.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif; background-color: #ffffff; color: #1d1d1f; }
-        .glass { background: rgba(255, 255, 255, 0.65); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
-        .hero-gradient { background: linear-gradient(180deg, transparent 0%, transparent 55%, rgba(255,255,255,0.4) 75%, rgba(255,255,255,0.9) 90%, #ffffff 100%), linear-gradient(90deg, #8DD311 0%, #b8e64e 25%, #e8f8d4 60%, #ffffff 100%); }
-        .section-divider { height: 1px; background: linear-gradient(90deg, transparent, #8DD311 20%, #8DD311 80%, transparent); opacity: 0.4; }
-        .carousel-wrapper { scroll-snap-type: x mandatory; scroll-padding-inline: 1rem; scrollbar-width: none; -ms-overflow-style: none; scroll-behavior: smooth; }
-        @media (min-width: 768px) { .carousel-wrapper { scroll-padding-inline: 3rem; } }
-        .carousel-wrapper::-webkit-scrollbar { display: none; }
-        .sector-icon { border-radius: 1.25rem; overflow: hidden; object-fit: cover; object-position: center; filter: drop-shadow(0 10px 24px rgba(0,0,0,0.08)); transition: transform 0.3s ease, filter 0.3s ease; width: clamp(120px, 18vw, 280px); height: clamp(120px, 18vw, 280px); }
-        .sector-card:hover .sector-icon { transform: scale(1.05); filter: drop-shadow(0 6px 16px rgba(141,211,17,0.2)); }
-        .carousel-nav { opacity: 0; transition: opacity 0.2s ease; }
-        .carousel-container:hover .carousel-nav { opacity: 1; }
-        .sector-card { transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
-        .sector-card.focused { transform: scale(1.1); }
-        @keyframes btn-pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(141, 211, 17, 0.4); } 50% { box-shadow: 0 0 0 12px rgba(141, 211, 17, 0); } }
-        .btn-primary:hover { animation: btn-pulse 1.5s ease-in-out infinite; }
-        @keyframes play-pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.08); opacity: 0.9; } }
-        .play-btn-icon { animation: play-pulse 2s ease-in-out infinite; }
-        .testimonials-scroll::-webkit-scrollbar { display: none; }
-        .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
-        .faq-item.open .faq-answer { max-height: 500px; transition: max-height 0.4s ease-in; }
-        .faq-item.open .faq-icon-minus { display: block; }
-        .faq-item.open .faq-icon-plus { display: none; }
-        .faq-item .faq-icon-minus { display: none; }
-        .faq-item .faq-icon-plus { display: block; }
-        @keyframes live-pulse { 0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(141, 211, 17, 0.5); } 50% { opacity: 0.9; box-shadow: 0 0 0 6px rgba(141, 211, 17, 0); } }
-        .badge-live { animation: live-pulse 2s ease-in-out infinite; }
-        .sector-card-upcoming { opacity: 0.8; }
-        .sector-card-upcoming:hover { opacity: 1; }
-        .sector-icon-wrap { display: flex; align-items: center; justify-content: center; }
-        .carousel-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(0,0,0,0.2); transition: background 0.3s, transform 0.2s; cursor: pointer; }
-        .carousel-dot:hover { background: rgba(0,0,0,0.35); }
-        .carousel-dot.active { background: #8DD311; transform: scale(1.25); }
-        /* Mobil: swipe v kolotoči, větší touch zóny */
-        @media (max-width: 767px) {
-            .carousel-wrapper { -webkit-overflow-scrolling: touch; touch-action: pan-y pinch-zoom; }
-            .sector-card { min-height: 320px; padding: 1.25rem 1rem; }
-            .sector-icon { width: clamp(100px, 22vw, 160px); height: clamp(100px, 22vw, 160px); min-width: 100px; min-height: 100px; }
-            .sector-card .sector-icon-wrap { min-width: 100px; min-height: 100px; display: flex; align-items: center; justify-content: center; }
-            .carousel-nav { opacity: 1; width: 44px; height: 44px; min-width: 44px; min-height: 44px; }
-            .carousel-dot { width: 10px; height: 10px; min-width: 10px; min-height: 10px; padding: 8px; margin: 0 2px; }
+        :root {
+            --bg: #f6f2ed;
+            --surface: #ffffff;
+            --text: #17120f;
+            --muted: #5f5750;
+            --line: #ded4c9;
+            --accent: #c08a46;
+            --accent-dark: #9f6d32;
+            --radius-xl: 28px;
+            --radius-lg: 20px;
+            --shadow-soft: 0 20px 60px rgba(23, 18, 15, 0.08);
         }
-        /* Styl dle prezentace: světle šedé pozadí, karty */
-        .welcome-page { background-color: #f5f5f5; }
-        .welcome-page .section-benefity { background: #363636; color: #fff; border-radius: 1.5rem; }
-        .welcome-page .section-benefity h2 { color: #fff; }
-        .benefit-card { background: #fff; color: #1d1d1f; border-radius: 1rem; padding: 1.5rem; }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            text-rendering: optimizeLegibility;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .container {
+            width: min(1160px, calc(100% - 2.5rem));
+            margin: 0 auto;
+        }
+
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            border: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.78);
+            border-radius: 999px;
+            padding: 0.45rem 0.9rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+        }
+
+        .dot {
+            width: 0.45rem;
+            height: 0.45rem;
+            border-radius: 50%;
+            background: var(--accent);
+            box-shadow: 0 0 0 7px rgba(192, 138, 70, 0.16);
+        }
+
+        .site-nav {
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            backdrop-filter: blur(10px);
+            background: rgba(246, 242, 237, 0.84);
+            border-bottom: 1px solid rgba(23, 18, 15, 0.08);
+        }
+
+        .site-nav__inner {
+            min-height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .brand {
+            font-weight: 700;
+            letter-spacing: 0.01em;
+        }
+
+        .brand small {
+            color: var(--muted);
+            font-weight: 500;
+            display: block;
+            font-size: 0.78rem;
+            line-height: 1.3;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            font-size: 0.92rem;
+            color: var(--muted);
+        }
+
+        .nav-links a:hover {
+            color: var(--text);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 999px;
+            padding: 0.8rem 1.35rem;
+            font-size: 0.94rem;
+            font-weight: 600;
+            border: 1px solid transparent;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .btn--primary {
+            background: var(--text);
+            color: #fff;
+        }
+
+        .btn--primary:hover {
+            background: #2e2622;
+        }
+
+        .btn--accent {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        .btn--accent:hover {
+            background: var(--accent-dark);
+        }
+
+        .btn--ghost {
+            border-color: var(--line);
+            color: var(--text);
+            background: transparent;
+        }
+
+        .btn--ghost:hover {
+            background: #fff;
+        }
+
+        .hero {
+            padding: 3.8rem 0 2.4rem;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1.25fr 0.75fr;
+            gap: 1.2rem;
+            align-items: stretch;
+        }
+
+        .hero-main {
+            background: linear-gradient(140deg, #fff 0%, #f3ebe2 100%);
+            border: 1px solid #e5dbcf;
+            border-radius: var(--radius-xl);
+            padding: clamp(1.6rem, 2.7vw, 2.8rem);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .hero-main h1 {
+            margin-top: 1.2rem;
+            font-size: clamp(2rem, 5vw, 4.15rem);
+            line-height: 1.04;
+            letter-spacing: -0.03em;
+        }
+
+        .hero-main p {
+            margin-top: 1.25rem;
+            max-width: 56ch;
+            font-size: clamp(1rem, 1.8vw, 1.28rem);
+            color: var(--muted);
+        }
+
+        .hero-actions {
+            margin-top: 1.75rem;
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .hero-side {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: var(--radius-lg);
+            padding: 1.25rem;
+        }
+
+        .card h3 {
+            font-size: 1.08rem;
+            margin-bottom: 0.6rem;
+        }
+
+        .card p {
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+
+        .points {
+            list-style: none;
+            margin-top: 0.75rem;
+            display: grid;
+            gap: 0.6rem;
+        }
+
+        .points li {
+            display: flex;
+            align-items: start;
+            gap: 0.58rem;
+            font-size: 0.93rem;
+            color: #413a35;
+        }
+
+        .points li::before {
+            content: "";
+            width: 0.5rem;
+            height: 0.5rem;
+            border-radius: 50%;
+            background: var(--accent);
+            margin-top: 0.42rem;
+            flex-shrink: 0;
+        }
+
+        .stats {
+            margin-top: 1.2rem;
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 0.9rem;
+        }
+
+        .stat {
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            padding: 0.95rem;
+        }
+
+        .stat strong {
+            display: block;
+            font-size: clamp(1.18rem, 2vw, 1.6rem);
+            letter-spacing: -0.02em;
+        }
+
+        .stat span {
+            color: var(--muted);
+            font-size: 0.86rem;
+        }
+
+        .section {
+            padding: 4.6rem 0 0;
+        }
+
+        .section h2 {
+            font-size: clamp(1.65rem, 3.2vw, 2.9rem);
+            line-height: 1.12;
+            letter-spacing: -0.025em;
+            max-width: 20ch;
+        }
+
+        .section-subtitle {
+            margin-top: 0.8rem;
+            color: var(--muted);
+            max-width: 64ch;
+            font-size: 1.04rem;
+        }
+
+        .steps {
+            margin-top: 2rem;
+            display: grid;
+            gap: 1rem;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .step {
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: var(--radius-lg);
+            padding: 1.2rem;
+            display: grid;
+            gap: 0.7rem;
+        }
+
+        .step-num {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            background: #f0e2d2;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.88rem;
+            font-weight: 700;
+        }
+
+        .step h3 {
+            font-size: 1.05rem;
+            line-height: 1.35;
+        }
+
+        .step p {
+            color: var(--muted);
+            font-size: 0.94rem;
+        }
+
+        .two-col {
+            margin-top: 1.9rem;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1rem;
+        }
+
+        .feature-list {
+            margin-top: 1.7rem;
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 1rem;
+        }
+
+        .feature-list .card {
+            min-height: 168px;
+        }
+
+        .feature-list h3 {
+            margin-bottom: 0.4rem;
+        }
+
+        .audience {
+            margin-top: 1.7rem;
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 1rem;
+        }
+
+        .quote {
+            margin-top: 1.6rem;
+            border-left: 3px solid var(--accent);
+            padding: 1rem 1.1rem;
+            background: rgba(255, 255, 255, 0.66);
+            border-radius: 0 14px 14px 0;
+            color: #3d342e;
+            max-width: 70ch;
+        }
+
+        .cta {
+            margin: 4.6rem 0;
+            background: #17120f;
+            color: #f8f4ef;
+            border-radius: var(--radius-xl);
+            padding: clamp(1.5rem, 4vw, 2.6rem);
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 1.2rem;
+            align-items: center;
+        }
+
+        .cta h2 {
+            color: #fff;
+            max-width: 22ch;
+            font-size: clamp(1.7rem, 3.3vw, 2.7rem);
+            letter-spacing: -0.025em;
+            line-height: 1.1;
+        }
+
+        .cta p {
+            margin-top: 0.8rem;
+            color: #d9ccc0;
+            max-width: 58ch;
+            font-size: 0.98rem;
+        }
+
+        .contact-meta {
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            color: #ccb9a4;
+        }
+
+        .footer {
+            border-top: 1px solid rgba(23, 18, 15, 0.08);
+            padding: 1.3rem 0 1.8rem;
+            color: #625851;
+            font-size: 0.86rem;
+        }
+
+        @media (max-width: 1040px) {
+            .hero-grid,
+            .cta {
+                grid-template-columns: 1fr;
+            }
+
+            .feature-list {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .audience {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 860px) {
+            .nav-links {
+                display: none;
+            }
+
+            .steps,
+            .two-col,
+            .feature-list,
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .hero {
+                padding-top: 2.6rem;
+            }
+        }
     </style>
 </head>
-<body class="antialiased welcome-page">
-    <nav class="fixed w-full z-50 glass border-b border-gray-100">
-        <div class="max-w-[1400px] mx-auto px-6 h-14 flex items-center justify-between">
-            <div class="text-xl font-semibold tracking-tight text-[#1d1d1f]">Omshelf</div>
-            <div class="space-x-8 text-sm font-extralight hidden md:flex text-[#1d1d1f]">
-                <a href="login.html?next=app.html" id="welcomeBtnEnterApp" class="bg-[#8DD311] text-black px-5 py-2 rounded-full hover:bg-[#7bc00f] transition font-light" title="Přihlášení do aplikace">Vstoupit do aplikace</a>
+<body>
+    <nav class="site-nav">
+        <div class="container site-nav__inner">
+            <div class="brand">
+                Studio Lucifera
+                <small>AI Content Creator</small>
+            </div>
+            <div class="nav-links">
+                <a href="#jak">Jak to funguje</a>
+                <a href="#system">AI + kurátor</a>
+                <a href="#vystupy">Co získáte</a>
+                <a href="#kontakt" class="btn btn--primary">Poptat spolupráci</a>
             </div>
         </div>
     </nav>
-    <section class="pt-48 pb-40 px-6 hero-gradient w-full">
-        <div class="max-w-[1400px] mx-auto text-center">
-            <h1 class="text-5xl md:text-7xl font-bold tracking-tight text-[#1d1d1f] mb-12">Váš domov v dokonalé harmonii.<br>Stačí jedna fotka.</h1>
-            <p class="text-xl md:text-2xl text-[#1d1d1f] font-light leading-relaxed max-w-2xl mx-auto mb-16 opacity-90">Omshelf AI organizuje vaše knihy, dílnu i šatník. Zbavte se chaosu a mějte přehled o všem, co milujete, během vteřiny.</p>
-            <div class="flex flex-col sm:flex-row justify-center items-center gap-5">
-                <a href="login.html?next=app.html" id="welcomeBtnStartFree" class="btn-primary bg-[#8DD311] text-black px-12 py-4 rounded-full text-lg font-medium hover:bg-[#7bc00f] transition-all">
-                    Začít organizovat zdarma
-                </a>
-                <a href="#how-it-works" class="text-[#1d1d1f]/80 font-light text-base py-2 px-6 rounded-full border border-[#1d1d1f]/30 hover:border-[#8DD311] hover:text-[#1d1d1f] transition">
-                    Jak to funguje?
-                </a>
-            </div>
-            <!-- Zjednodušený landing: bez velkých informačních boxů -->
-        </div>
-    </section>
-    <section id="sektory" class="py-32 -mt-16 pt-20" style="background-color: #f5f5f5;">
-        <div class="max-w-[1400px] mx-auto px-4 md:px-8">
-            <div id="carouselContainer" class="carousel-container relative group">
-                <button type="button" onclick="carouselPrev()" class="carousel-nav absolute left-0 top-1/2 -translate-y-1/2 z-10 w-12 h-12 md:w-14 md:h-14 rounded-full bg-white/90 shadow-lg border border-gray-100 flex items-center justify-center text-[#1d1d1f] hover:bg-white transition -ml-2 md:-ml-4" aria-label="Předchozí">
-                    <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
-                </button>
-                <button type="button" onclick="carouselNext()" class="carousel-nav absolute right-0 top-1/2 -translate-y-1/2 z-10 w-12 h-12 md:w-14 md:h-14 rounded-full bg-white/90 shadow-lg border border-gray-100 flex items-center justify-center text-[#1d1d1f] hover:bg-white transition -mr-2 md:-mr-4" aria-label="Další">
-                    <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                </button>
-                <div id="sectorCarousel" class="carousel-wrapper flex overflow-x-auto gap-6 md:gap-8 py-4 px-4 md:px-12 snap-x">
-                    <a href="login.html?next=app.html" class="sector-card sector-card-live flex-shrink-0 w-[85vw] min-w-[280px] md:min-w-[400px] md:w-[calc((100%-2*1rem)/3)] flex flex-col items-center p-8 md:p-10 rounded-[3rem] bg-white shadow-sm border border-gray-100 hover:border-[#8DD311] transition-all duration-300 snap-center text-center relative no-underline text-inherit cursor-pointer" data-module="Knihovna">
-                        <span class="absolute top-4 right-4 badge-live bg-[#8DD311] text-black px-3 py-1 text-xs font-bold uppercase tracking-wider rounded-full">LIVE</span>
-                        <div class="sector-icon-wrap mb-6"><img src="./Zaloha a grafika/ikonky/kniha.png" alt="Knihovna" class="sector-icon"></div>
-                        <span class="text-xl font-semibold text-[#1d1d1f]">Knihovna</span>
-                        <span class="text-sm font-light text-slate-600 mt-1 max-w-[260px]">Vaše osobní Alexandria. Stačí naskenovat hřbety a Omshelf si pamatuje, komu jste co půjčili a v jakém regálu kniha leží.</span>
-                        <span class="mt-4 py-2.5 px-5 rounded-full bg-[#8DD311] text-black text-sm font-semibold hover:bg-[#7bc00f] transition">Vstoupit do knihovny</span>
-                    </a>
-                    <a href="login.html?next=app.html%3Fmodule%3Dvitus" class="sector-card sector-card-live flex-shrink-0 w-[85vw] min-w-[280px] md:min-w-[400px] md:w-[calc((100%-2*1rem)/3)] flex flex-col items-center p-8 md:p-10 rounded-[3rem] bg-white shadow-sm border border-gray-100 hover:border-[#8DD311] transition-all duration-300 snap-center text-center relative no-underline text-inherit cursor-pointer" data-module="Lékárnička (Vitus)">
-                        <span class="absolute top-4 right-4 badge-live bg-[#8DD311] text-black px-3 py-1 text-xs font-bold uppercase tracking-wider rounded-full">LIVE</span>
-                        <div class="sector-icon-wrap mb-6"><img src="./Zaloha a grafika/ikonky/Ikony modulu/Vitus.jpg" alt="Lékárnička Vitus" class="sector-icon"></div>
-                        <span class="text-xl font-semibold text-[#1d1d1f]">Lékárnička (Vitus)</span>
-                        <span class="text-sm font-light text-slate-600 mt-1 max-w-[260px]">Apatyka v kapse. Evidujte léky, expirace a dávkování. Bába Kořenářka připravuje bylinky a připomíná, co spotřebovat.</span>
-                        <span class="mt-4 py-2.5 px-5 rounded-full bg-[#8DD311] text-black text-sm font-semibold hover:bg-[#7bc00f] transition">Vstoupit do Apatyky</span>
-                    </a>
-                    <div onclick="openTesterModal()" class="sector-card sector-card-upcoming flex-shrink-0 w-[85vw] min-w-[280px] md:min-w-[400px] md:w-[calc((100%-2*1rem)/3)] flex flex-col items-center p-8 md:p-10 rounded-[3rem] bg-white shadow-sm border border-gray-100 hover:border-[#8DD311] transition-all duration-300 snap-center text-center relative cursor-pointer" data-module="Dílna">
-                        <span class="absolute top-4 right-4 bg-white/80 text-gray-500 px-3 py-1 text-xs font-medium uppercase tracking-wider rounded-full border border-gray-200">Již brzy</span>
-                        <div class="sector-icon-wrap mb-6"><img src="./Zaloha a grafika/ikonky/Ikony modulu/dilna.png" alt="Dílna" class="sector-icon"></div>
-                        <span class="text-xl font-semibold text-[#1d1d1f]">Dílna</span>
-                        <span class="text-sm font-light text-slate-600 mt-1 max-w-[260px]">Pořádek v každém šroubku. Už nikdy nebudete kupovat vrták, který už máte. AI ví přesně, kde v ponku se skrývá vaše nářadí.</span>
+
+    <main>
+        <section class="hero">
+            <div class="container hero-grid">
+                <div class="hero-main">
+                    <span class="pill"><span class="dot" aria-hidden="true"></span> Nová služba Studia Lucifera</span>
+                    <h1>AI Content Creator, který prodává vaši značku konzistentně a bez chaosu.</h1>
+                    <p>
+                        Dáte nám přístup k brandu. My vám připravíme příspěvky na sítě raz dva, ve vašem tónu a s jasným cílem.
+                        Žádná náhoda: za každým výstupem stojí spolupráce AI a kreativního kurátora.
+                    </p>
+                    <div class="hero-actions">
+                        <a href="#kontakt" class="btn btn--accent">Chci nezávaznou konzultaci</a>
+                        <a href="#jak" class="btn btn--ghost">Ukázat proces</a>
                     </div>
-                    <div onclick="openTesterModal()" class="sector-card sector-card-upcoming flex-shrink-0 w-[85vw] min-w-[280px] md:min-w-[400px] md:w-[calc((100%-2*1rem)/3)] flex flex-col items-center p-8 md:p-10 rounded-[3rem] bg-white shadow-sm border border-gray-100 hover:border-[#8DD311] transition-all duration-300 snap-center text-center relative cursor-pointer" data-module="Šatník">
-                        <span class="absolute top-4 right-4 bg-white/80 text-gray-500 px-3 py-1 text-xs font-medium uppercase tracking-wider rounded-full border border-gray-200">Již brzy</span>
-                        <div class="sector-icon-wrap mb-6"><img src="./Zaloha a grafika/ikonky/Ikony modulu/satnik.png" alt="Šatník" class="sector-icon"></div>
-                        <span class="text-xl font-semibold text-[#1d1d1f]">Šatník</span>
-                        <span class="text-sm font-light text-slate-600 mt-1 max-w-[260px]">Digitální šatna v kapse. Plánujte outfity odkudkoliv a mějte přehled o každém kousku bez přehrabování polic.</span>
-                    </div>
-                    <div onclick="openTesterModal()" class="sector-card sector-card-upcoming flex-shrink-0 w-[85vw] min-w-[280px] md:min-w-[400px] md:w-[calc((100%-2*1rem)/3)] flex flex-col items-center p-8 md:p-10 rounded-[3rem] bg-white shadow-sm border border-gray-100 hover:border-[#8DD311] transition-all duration-300 snap-center text-center relative cursor-pointer" data-module="Vinotéka">
-                        <span class="absolute top-4 right-4 bg-white/80 text-gray-500 px-3 py-1 text-xs font-medium uppercase tracking-wider rounded-full border border-gray-200">Již brzy</span>
-                        <div class="sector-icon-wrap mb-6"><img src="./Zaloha a grafika/ikonky/Ikony modulu/vinoteka.png" alt="Vinotéka" class="sector-icon"></div>
-                        <span class="text-xl font-semibold text-[#1d1d1f]">Vinotéka</span>
-                        <span class="text-sm font-light text-slate-600 mt-1 max-w-[260px]">Sommelierův deník. Sledujte archivy, ročníky a ideální dobu pro otevření lahve. Váš vinný lístek je vždy aktuální.</span>
-                    </div>
-                    <div onclick="openTesterModal()" class="sector-card sector-card-upcoming flex-shrink-0 w-[85vw] min-w-[280px] md:min-w-[400px] md:w-[calc((100%-2*1rem)/3)] flex flex-col items-center p-8 md:p-10 rounded-[3rem] bg-white shadow-sm border border-gray-100 hover:border-[#8DD311] transition-all duration-300 snap-center text-center relative cursor-pointer" data-module="Hudba">
-                        <span class="absolute top-4 right-4 bg-white/80 text-gray-500 px-3 py-1 text-xs font-medium uppercase tracking-wider rounded-full border border-gray-200">Již brzy</span>
-                        <div class="sector-icon-wrap mb-6"><img src="./Zaloha a grafika/ikonky/Ikony modulu/hudba.png" alt="Hudba" class="sector-icon"></div>
-                        <span class="text-xl font-semibold text-[#1d1d1f]">Hudba</span>
-                        <span class="text-sm font-light text-slate-600 mt-1 max-w-[260px]">Domov pro vaše desky a nástroje. Katalogizujte svou sbírku vinylů i hudební vybavení s bleskovým vyhledáváním.</span>
-                    </div>
-                    <div onclick="openTesterModal()" class="sector-card sector-card-upcoming flex-shrink-0 w-[85vw] min-w-[280px] md:min-w-[400px] md:w-[calc((100%-2*1rem)/3)] flex flex-col items-center p-8 md:p-10 rounded-[3rem] bg-white shadow-sm border border-gray-100 hover:border-[#8DD311] transition-all duration-300 snap-center text-center relative cursor-pointer" data-module="Sklad">
-                        <span class="absolute top-4 right-4 bg-white/80 text-gray-500 px-3 py-1 text-xs font-medium uppercase tracking-wider rounded-full border border-gray-200">Již brzy</span>
-                        <div class="sector-icon-wrap mb-6"><img src="./Zaloha a grafika/ikonky/Ikony modulu/sklad.png" alt="Sklad" class="sector-icon"></div>
-                        <span class="text-xl font-semibold text-[#1d1d1f]">Sklad</span>
-                        <span class="text-sm font-light text-slate-600 mt-1 max-w-[260px]">Konec plýtvání. Omshelf hlídá expiraci potravin a upozorní vás, co je potřeba spotřebovat. Šetřete peníze i planetu.</span>
-                    </div>
-                    <div role="button" tabindex="0" id="welcomeCardKids" class="sector-card sector-card-live flex-shrink-0 w-[85vw] min-w-[280px] md:min-w-[400px] md:w-[calc((100%-2*1rem)/3)] flex flex-col items-center p-8 md:p-10 rounded-[3rem] bg-white shadow-sm border border-gray-100 hover:border-[#8DD311] transition-all duration-300 snap-center text-center relative cursor-pointer" data-module="Dětská knihovna (OmniKids)">
-                        <span class="absolute top-4 right-4 badge-live bg-[#8DD311] text-black px-3 py-1 text-xs font-bold uppercase tracking-wider rounded-full">LIVE</span>
-                        <div class="sector-icon-wrap mb-6"><img src="./Zaloha a grafika/ikonky/Ikony modulu/OmniKids.png" alt="Dětská knihovna" class="sector-icon"></div>
-                        <span class="text-xl font-semibold text-[#1d1d1f]">Dětská knihovna</span>
-                        <span class="text-sm font-light text-slate-600 mt-1 max-w-[260px]">Knihovna pro nejmenší. Děti si evidují svoje knihy, půjčují kamarádům a učí se odpovědnosti za své věci.</span>
-                        <span class="mt-4 py-2.5 px-5 rounded-full bg-[#8DD311] text-black text-sm font-semibold hover:bg-[#7bc00f] transition">Vstoupit do knihovny</span>
-                    </div>
-                </div>
-                <div id="carouselDots" class="flex justify-center gap-2 mt-6"></div>
-            </div>
-        </div>
-    </section>
-    <section id="benefity" class="section-benefity py-16 md:py-20 px-4 md:px-8">
-        <div class="max-w-[1400px] mx-auto">
-            <h2 class="text-3xl md:text-4xl font-bold tracking-tight text-center mb-12">Benefity, které mění život.</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="benefit-card flex flex-col items-center text-center">
-                    <div class="w-14 h-14 rounded-2xl bg-[#8DD311]/15 flex items-center justify-center mb-4">
-                        <svg class="w-8 h-8 text-[#8DD311]" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
-                    </div>
-                    <h3 class="text-lg font-bold text-[#1d1d1f] mb-2">Mental Space.</h3>
-                    <p class="text-slate-600 font-light text-sm leading-relaxed">Konec kognitivní zátěže.</p>
-                </div>
-                <div class="benefit-card flex flex-col items-center text-center">
-                    <div class="w-14 h-14 rounded-2xl bg-[#8DD311]/15 flex items-center justify-center mb-4">
-                        <svg class="w-8 h-8 text-[#8DD311]" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                    </div>
-                    <h3 class="text-lg font-bold text-[#1d1d1f] mb-2">Úspora času.</h3>
-                    <p class="text-slate-600 font-light text-sm leading-relaxed">Hledání věcí stojí rok života. My ho vracíme.</p>
-                </div>
-                <div class="benefit-card flex flex-col items-center text-center">
-                    <div class="w-14 h-14 rounded-2xl bg-[#8DD311]/15 flex items-center justify-center mb-4">
-                        <svg class="w-8 h-8 text-[#8DD311]" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
-                    </div>
-                    <h3 class="text-lg font-bold text-[#1d1d1f] mb-2">Zero Waste.</h3>
-                    <p class="text-slate-600 font-light text-sm leading-relaxed">Nekupujete to, co už vlastníte.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-    <div class="section-divider max-w-[1400px] mx-auto"></div>
-    <section id="how-it-works" class="py-32 bg-white">
-        <div class="max-w-5xl mx-auto px-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
-                <div>
-                    <h2 class="text-4xl md:text-5xl font-semibold tracking-tight text-[#1d1d1f] mb-12 text-left">Od chaosu k řádu během tří vteřin.</h2>
-                    <div class="space-y-8 text-left">
-                        <div class="flex gap-4">
-                            <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-[#8DD311]/10 flex items-center justify-center">
-                                <svg class="w-6 h-6 text-[#8DD311]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                            </div>
-                            <div>
-                                <h3 class="text-xl font-semibold text-[#1d1d1f] mb-2">1. Namíříte</h3>
-                                <p class="text-gray-500 font-light leading-relaxed">Otevřete aplikaci a namíříte kameru na svou knihovnu, regál v dílně nebo špajz.</p>
-                            </div>
+                    <div class="stats">
+                        <div class="stat">
+                            <strong>48 h</strong>
+                            <span>na první balík návrhů</span>
                         </div>
-                        <div class="flex gap-4">
-                            <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-[#8DD311]/10 flex items-center justify-center">
-                                <svg class="w-6 h-6 text-[#8DD311]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
-                            </div>
-                            <div>
-                                <h3 class="text-xl font-semibold text-[#1d1d1f] mb-2">2. AI analyzuje</h3>
-                                <p class="text-gray-500 font-light leading-relaxed">Naše AI okamžitě identifikuje předměty, texty i značky. Žádné ruční vypisování.</p>
-                            </div>
+                        <div class="stat">
+                            <strong>100 %</strong>
+                            <span>kontrola výstupů živým člověkem</span>
                         </div>
-                        <div class="flex gap-4">
-                            <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-[#8DD311]/10 flex items-center justify-center">
-                                <svg class="w-6 h-6 text-[#8DD311]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 13l4 4L19 7"/></svg>
-                            </div>
-                            <div>
-                                <h3 class="text-xl font-semibold text-[#1d1d1f] mb-2">3. Hotovo</h3>
-                                <p class="text-gray-500 font-light leading-relaxed">Vše je zařazeno. Máte vizuální mapu svého domova a víte o každém šroubku.</p>
-                            </div>
+                        <div class="stat">
+                            <strong>1 tým</strong>
+                            <span>AI workflow + kreativní kurátor</span>
                         </div>
                     </div>
-                    <a href="login.html?next=app.html" class="btn-primary mt-12 w-fit inline-block py-5 px-8 rounded-full bg-[#8DD311] text-black font-bold text-xl hover:bg-[#7bc00f] transition-all">
-                        Chci mít domov v harmonii
-                    </a>
                 </div>
-                <div class="flex justify-center md:justify-end">
-                    <img src="./Zaloha a grafika/ikonky/apka.png" alt="Screenshot aplikace Omshelf" class="max-w-[380px] w-full rounded-[2.5rem]" style="filter: drop-shadow(0 25px 50px rgba(0,0,0,0.1));">
+                <aside class="hero-side">
+                    <div class="card">
+                        <h3>Co děláme za vás</h3>
+                        <p>Od nápadu po text připravený k publikaci. Rychle, čistě a v souladu s vaší značkou.</p>
+                        <ul class="points">
+                            <li>Témata, která sedí vašemu publiku</li>
+                            <li>Texty, hooky a CTA pro sociální sítě</li>
+                            <li>Redakční rytmus bez výpadků</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>Živý kurátor dohlíží na kvalitu</h3>
+                        <p>
+                            Když je třeba, kurátor zasáhne do obsahu ručně: doladí kontext, tón i argumentaci tak,
+                            aby výsledek byl prvotřídní a funkční.
+                        </p>
+                    </div>
+                </aside>
+            </div>
+        </section>
+
+        <section id="jak" class="section">
+            <div class="container">
+                <h2>Jak spolupráce probíhá od prvního dne</h2>
+                <p class="section-subtitle">
+                    Proces jsme postavili tak, aby byl jednoduchý pro vás a zároveň držel kvalitu, kterou potřebuje značka,
+                    jež chce dlouhodobě růst.
+                </p>
+                <div class="steps">
+                    <article class="step">
+                        <span class="step-num">1</span>
+                        <h3>Předáte nám brand kontext</h3>
+                        <p>Tonality, cílovku, nabídku, zakázaná témata a to, co už vám funguje.</p>
+                    </article>
+                    <article class="step">
+                        <span class="step-num">2</span>
+                        <h3>AI připraví rychlé návrhy</h3>
+                        <p>Na základě dat a vašich podkladů vzniknou drafty příspěvků pro vybrané sítě.</p>
+                    </article>
+                    <article class="step">
+                        <span class="step-num">3</span>
+                        <h3>Kreativní kurátor vše validuje</h3>
+                        <p>Člověk hlídá značku, smysl sdělení a marketingovou funkčnost každého textu.</p>
+                    </article>
+                    <article class="step">
+                        <span class="step-num">4</span>
+                        <h3>Dostáváte hotový obsah</h3>
+                        <p>Příspěvky připravené k publikaci, včetně doporučeného pořadí a jasného CTA.</p>
+                    </article>
                 </div>
             </div>
-        </div>
-    </section>
-    <section class="py-24 bg-[#f9f9f9]">
-        <div class="max-w-5xl mx-auto px-6">
-            <h2 class="text-4xl md:text-5xl font-bold tracking-tight text-[#1d1d1f] mb-16 text-center">AI jako váš nástroj, ne náhrada.</h2>
-            <div class="max-w-4xl mx-auto">
-                <h3 class="text-2xl font-semibold text-[#1d1d1f] mb-4">Vizuální orientace v prostoru</h3>
-                <p class="text-gray-600 font-light leading-relaxed mb-10">V budoucnu vám Omshelf umožní nahrát fotky celých místností. Naše AI spojí snímky do interaktivní mapy, která vás navede přesně k regálu, kde leží vaše hledaná věc.</p>
-                <div class="flex justify-center">
-                    <img src="./Zaloha a grafika/ikonky/prostor%203d2.png" alt="Vizuální mapa prostoru" class="max-w-full w-full rounded-3xl">
+        </section>
+
+        <section id="system" class="section">
+            <div class="container">
+                <h2>Žádná náhoda. Jen funkční spojení AI a kreativního člověka.</h2>
+                <p class="section-subtitle">
+                    AI nám šetří čas a zrychluje produkci. Kreativní kurátor dává výstupu úroveň, značkovou přesnost a
+                    jistotu, že publikum dostane kvalitní obsah.
+                </p>
+                <div class="two-col">
+                    <article class="card">
+                        <h3>AI vrstva</h3>
+                        <ul class="points">
+                            <li>rychlé generování variant a úhlů tématu</li>
+                            <li>konzistence frekvence i formátů</li>
+                            <li>škálování bez ztráty tempa</li>
+                        </ul>
+                    </article>
+                    <article class="card">
+                        <h3>Kreativní kurátor</h3>
+                        <ul class="points">
+                            <li>hlídá relevance, fakta a tón značky</li>
+                            <li>ručně zasahuje tam, kde AI nestačí</li>
+                            <li>odpovídá za to, že obsah skutečně funguje</li>
+                        </ul>
+                    </article>
+                </div>
+                <p class="quote">
+                    "Výstup neodevzdáváme, dokud by za něj náš kurátor nedal ruku do ohně.
+                    Právě to odlišuje AI obsah od AI Content Creatoru od Studia Lucifera."
+                </p>
+            </div>
+        </section>
+
+        <section id="vystupy" class="section">
+            <div class="container">
+                <h2>Co od nás každý měsíc dostanete</h2>
+                <p class="section-subtitle">
+                    Kompletní content balík, který šetří čas vašemu týmu a zároveň drží kvalitu komunikace značky.
+                </p>
+                <div class="feature-list">
+                    <article class="card">
+                        <h3>Obsahový plán</h3>
+                        <p>Praktický redakční kalendář podle vašich cílů, sezóny a kampaní.</p>
+                    </article>
+                    <article class="card">
+                        <h3>Příspěvky připravené k publikaci</h3>
+                        <p>Texty pro sociální sítě, rozdělené podle formátu a publikačního rytmu.</p>
+                    </article>
+                    <article class="card">
+                        <h3>Varianty hooků a CTA</h3>
+                        <p>Více vstupů i zakončení, ať můžete testovat, co opravdu zabírá.</p>
+                    </article>
+                    <article class="card">
+                        <h3>Brandová konzistence</h3>
+                        <p>Každý text projde kontrolou, aby držel jazyk, hodnoty a osobnost značky.</p>
+                    </article>
+                    <article class="card">
+                        <h3>Rychlé iterace</h3>
+                        <p>Potřebujete změnit směr? Díky AI workflow upravíme výstupy bez ztráty kvality.</p>
+                    </article>
+                    <article class="card">
+                        <h3>Mentální klid</h3>
+                        <p>Obsah běží stabilně a vy se můžete soustředit na obchod, produkt a zákazníky.</p>
+                    </article>
                 </div>
             </div>
-            <p class="text-gray-500 font-extralight italic text-center mt-12 text-lg">Pamatujeme si věci, abyste vy už nemuseli.</p>
-        </div>
-    </section>
-    <section id="showcase" class="py-24" style="background: linear-gradient(180deg, #ffffff 0%, rgba(250, 255, 240, 0.6) 50%, rgba(247, 254, 231, 0.3) 100%);">
-        <div class="max-w-5xl mx-auto px-6">
-            <h2 class="text-4xl md:text-5xl font-bold tracking-tight text-slate-800 mb-16 text-center">Podívejte se, jak se chaos mění v řád.</h2>
-            <div class="relative rounded-[3rem] overflow-hidden border-[12px] border-white aspect-video" style="box-shadow: 0 20px 60px -15px rgba(163, 230, 53, 0.2);">
-                <video id="showcaseVideo" class="w-full h-full object-cover" poster="./Zaloha a grafika/ikonky/video%20thumbneil.png" muted playsinline>
-                    <source src="./Zaloha a grafika/video/omnishelf-demo.mp4" type="video/mp4">
-                </video>
-                <button type="button" id="videoPlayBtn" onclick="playShowcaseVideo()" class="absolute inset-0 flex items-center justify-center bg-black/20 hover:bg-black/30 transition-colors cursor-pointer" aria-label="Přehrát video">
-                    <span class="play-btn-icon w-24 h-24 rounded-full bg-white/95 flex items-center justify-center shadow-xl">
-                        <svg class="w-12 h-12 text-[#8DD311] ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                    </span>
-                </button>
-            </div>
-            <div class="flex justify-center mt-8">
-                <div class="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-white border border-[#8DD311]/40">
-                    <svg class="w-5 h-5 text-[#8DD311] flex-shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-                    <span class="text-sm text-slate-600 font-light">ADHD Friendly. Navrženo pro lidi, kteří potřebují externí mozek pro klidnější život.</span>
+        </section>
+
+        <section class="section">
+            <div class="container">
+                <h2>Pro koho je AI Content Creator ideální</h2>
+                <p class="section-subtitle">
+                    Pro firmy a tvůrce, kteří chtějí stabilní komunikaci bez interního přetížení.
+                </p>
+                <div class="audience">
+                    <article class="card">
+                        <h3>Zakladatelé a menší týmy</h3>
+                        <p>Nemáte čas psát každý den, ale potřebujete být pravidelně vidět.</p>
+                    </article>
+                    <article class="card">
+                        <h3>E-shopy a služby</h3>
+                        <p>Chcete obsah, který podporuje důvěru, poptávky i opakované nákupy.</p>
+                    </article>
+                    <article class="card">
+                        <h3>Osobní značky</h3>
+                        <p>Potřebujete mluvit vlastním hlasem i ve chvíli, kdy nestíháte tvořit sami.</p>
+                    </article>
                 </div>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-16">
-                <div class="p-6 rounded-2xl bg-white/80 backdrop-blur-md border border-slate-100 flex gap-4">
-                    <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-[#8DD311]/20 flex items-center justify-center">
-                        <svg class="w-6 h-6 text-[#8DD311]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/></svg>
-                    </div>
-                    <div>
-                        <h4 class="font-semibold text-slate-800 mb-2">Bleskový import</h4>
-                        <p class="text-slate-600 text-sm font-light leading-relaxed">Stačí namířit kameru. AI okamžitě rozpozná hřbety knih, nářadí v dílně i etikety ve spíži a během vteřin vytvoří váš digitální archiv.</p>
-                    </div>
-                </div>
-                <div class="p-6 rounded-2xl bg-white/80 backdrop-blur-md border border-slate-100 flex gap-4">
-                    <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-[#8DD311]/20 flex items-center justify-center">
-                        <svg class="w-6 h-6 text-[#8DD311]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                    </div>
-                    <div>
-                        <h4 class="font-semibold text-slate-800 mb-2">Najdu to za vás</h4>
-                        <p class="text-slate-600 text-sm font-light leading-relaxed">Už žádné přehrabování krabic. Zeptejte se Omshelfu a AI vás vizuálně navede k přesnému regálu, kde se hledaná věc nachází.</p>
-                    </div>
-                </div>
-                <div class="p-6 rounded-2xl bg-white/80 backdrop-blur-md border border-slate-100 flex gap-4">
-                    <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-[#8DD311]/20 flex items-center justify-center">
-                        <svg class="w-6 h-6 text-[#8DD311]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
-                    </div>
-                    <div>
-                        <h4 class="font-semibold text-slate-800 mb-2">Přehled v kapse</h4>
-                        <p class="text-slate-600 text-sm font-light leading-relaxed">Mějte absolutní kontrolu nad expirací potravin nebo stavem materiálu. Omshelf vás včas upozorní, co je potřeba dokoupit nebo spotřebovat.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <section id="testimonials" class="py-20 bg-white">
-        <div class="max-w-6xl mx-auto px-6">
-            <h2 class="text-4xl md:text-5xl font-bold tracking-tight text-[#1d1d1f] mb-16 text-center">Co říkají uživatelé</h2>
-            <div class="testimonials-scroll flex overflow-x-auto gap-6 pb-4 md:overflow-visible md:grid md:grid-cols-3 scroll-smooth snap-x" style="scrollbar-width: none; -webkit-overflow-scrolling: touch;">
-                <div class="flex-shrink-0 w-[300px] md:w-auto snap-center p-8 rounded-[2rem] border border-gray-100 bg-gray-50/50">
-                    <div class="flex gap-1 mb-4 text-[#8DD311]">
-                        <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
-                    </div>
-                    <p class="text-gray-600 font-light mb-6">„Konečně vím, co mám v dílně. Omshelf mi ušetřil tisíce za zbytečné nákupy.“</p>
-                    <p class="text-sm font-semibold text-[#1d1d1f]">— Jan Novák</p>
-                </div>
-                <div class="flex-shrink-0 w-[300px] md:w-auto snap-center p-8 rounded-[2rem] border border-gray-100 bg-gray-50/50">
-                    <div class="flex gap-1 mb-4 text-[#8DD311]">
-                        <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
-                    </div>
-                    <p class="text-gray-600 font-light mb-6">„Šatník pod kontrolou. Ráno vím přesně, co si obléct – žádné hledání v přeplněné skříni.“</p>
-                    <p class="text-sm font-semibold text-[#1d1d1f]">— Marie Svobodová</p>
-                </div>
-                <div class="flex-shrink-0 w-[300px] md:w-auto snap-center p-8 rounded-[2rem] border border-gray-100 bg-gray-50/50">
-                    <div class="flex gap-1 mb-4 text-[#8DD311]">
-                        <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
-                    </div>
-                    <p class="text-gray-600 font-light mb-6">„Vinotéka konečně přehledná. AI rozpozná etikety a já mám seznam všeho na jednom místě.“</p>
-                    <p class="text-sm font-semibold text-[#1d1d1f]">— Petr Král</p>
-                </div>
-            </div>
-            <p class="text-sm text-gray-500 font-extralight text-center mt-12">Přidejte se k rodinám, které vyměnily chaos za společný čas a harmonii.</p>
-        </div>
-    </section>
-    <div class="section-divider max-w-[1400px] mx-auto"></div>
-    <section id="pricing" class="py-32 bg-white">
-        <div class="max-w-[800px] mx-auto px-6">
-            <h2 class="text-4xl md:text-5xl font-bold tracking-tight text-[#1d1d1f] mb-16 text-center">Začněte organizovat ještě dnes.</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                
-                <div class="p-10 rounded-[2rem] border border-gray-200 bg-white flex flex-col text-left">
-                    <h3 class="text-xl font-semibold text-[#1d1d1f] mb-2">Pro začátek</h3>
-                    <div class="text-4xl font-bold text-[#1d1d1f] mb-8">0 Kč</div>
-                    <ul class="space-y-4 mb-10 text-gray-600 font-light">
-                        <li>• Až 2 sektory (např. Knihovna a Dílna)</li>
-                        <li>• Základní AI rozpoznávání</li>
-                        <li>• Přístup z mobilu</li>
-                    </ul>
-                    <a href="login.html?next=app.html" class="mt-auto py-3 px-6 rounded-full border-2 border-[#8DD311] bg-transparent text-[#1d1d1f] font-medium text-center hover:bg-[#8DD311]/10 transition">Začít zdarma</a>
-                    <p class="text-xs text-slate-400 mt-2 text-center">Žádná karta. Žádné závazky.</p>
-                </div>
-    
-                <div class="p-10 rounded-[2rem] border-2 border-[#8DD311] bg-white flex flex-col text-left relative" style="box-shadow: 0 0 40px rgba(141,211,17,0.15);">
-                    <div class="absolute top-0 right-0 bg-slate-800 text-white px-4 py-1.5 text-xs font-medium uppercase tracking-wider rounded-bl-2xl">Most Popular</div>
-                    <h3 class="text-xl font-semibold text-[#1d1d1f] mb-2">Vše pod kontrolou</h3>
-                    <div class="text-4xl font-bold text-[#1d1d1f] mb-8">149 Kč <span class="text-lg text-gray-500 font-normal">/ měsíc</span></div>
-                    <ul class="space-y-4 mb-10 text-gray-600 font-light">
-                        <li>• Neomezený počet sektorů</li>
-                        <li>• Přednostní AI zpracování</li>
-                        <li>• Sdílení s rodinou</li>
-                        <li>• Vizuální mapa (Beta)</li>
-                        <li>• Bonus: Digitální průvodce organizací</li>
-                        <li class="flex items-center gap-2"><svg class="w-4 h-4 text-[#8DD311] flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg> Přednostní přístup k Beta modulům (Dílna, Šatník, Sklad)</li>
-                    </ul>
-                    <button onclick="handlePayment()" class="mt-auto py-3 px-6 rounded-full bg-[#8DD311] text-black font-bold hover:bg-[#7bc00f] transition">
-                        Přejít na Pro
-                    </button>
-                    <p class="text-xs text-slate-400 mt-2 text-center">Žádná karta. Žádné závazky.</p>
-                </div>
-    
-            </div>
-            <p class="text-sm text-gray-500 font-extralight mt-10 text-center">7 dní na vyzkoušení Pro verze zdarma. Žádné závazky.</p>
-            <p class="text-xs text-gray-500 mt-6 text-center">* Aktuálně plně spuštěno: Knihovna a Dětská knihovna.</p>
-        </div>
-    </section>
-    <section id="faq" class="py-24 bg-[#fafaf8]">
-        <div class="max-w-3xl mx-auto px-6">
-            <h2 class="text-3xl font-bold tracking-tight text-[#1d1d1f] mb-16 text-center">Často kladené otázky</h2>
-            <div class="divide-y divide-gray-200">
-                <div class="faq-item py-5">
-                    <button type="button" onclick="toggleFaq(this)" class="w-full flex items-center justify-between text-left gap-4 group">
-                        <span class="font-medium text-slate-800">Ako dlho trvá naskenovanie celej knihovny?</span>
-                        <span class="flex-shrink-0 text-[#8DD311]">
-                            <svg class="faq-icon-plus w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                            <svg class="faq-icon-minus w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/></svg>
-                        </span>
-                    </button>
-                    <div class="faq-answer">
-                        <p class="pt-2 text-slate-600 font-light leading-relaxed">Vďaka našej AI nemusíte nič vypisovať. Stačí pomaly prejsť kamerou pozdĺž hrbátov kníh. Priemerná knižnica o 200 zväzkoch je v aplikácii za menej ako 5 minút.</p>
-                    </div>
-                </div>
-                <div class="faq-item py-5">
-                    <button type="button" onclick="toggleFaq(this)" class="w-full flex items-center justify-between text-left gap-4 group">
-                        <span class="font-medium text-slate-800">Sú moje fotky a dáta u vás v bezpečí?</span>
-                        <span class="flex-shrink-0 text-[#8DD311]">
-                            <svg class="faq-icon-plus w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                            <svg class="faq-icon-minus w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/></svg>
-                        </span>
-                    </button>
-                    <div class="faq-answer">
-                        <p class="pt-2 text-slate-600 font-light leading-relaxed">Absolútne. Vaše súkromie je priorita. Fotky využívame iba na identifikáciu predmetov pomocou AI a nikto iný k nim nemá prístup. Dáta sú šifrované podľa bankových štandardov.</p>
-                    </div>
-                </div>
-                <div class="faq-item py-5">
-                    <button type="button" onclick="toggleFaq(this)" class="w-full flex items-center justify-between text-left gap-4 group">
-                        <span class="font-medium text-slate-800">Musím mať v regáloch dokonalý poriadok, aby to fungovalo?</span>
-                        <span class="flex-shrink-0 text-[#8DD311]">
-                            <svg class="faq-icon-plus w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                            <svg class="faq-icon-minus w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/></svg>
-                        </span>
-                    </button>
-                    <div class="faq-answer">
-                        <p class="pt-2 text-slate-600 font-light leading-relaxed">Práve naopak! Omshelf je tu pre tých, čo bojujú s chaosom. AI si poradí aj s miernym neporiadkom a pomôže vám nájsť systém, ktorý konečne udržíte.</p>
-                    </div>
-                </div>
-                <div class="faq-item py-5">
-                    <button type="button" onclick="toggleFaq(this)" class="w-full flex items-center justify-between text-left gap-4 group">
-                        <span class="font-medium text-slate-800">Funguje to aj na náradie bez čiarových kódov?</span>
-                        <span class="flex-shrink-0 text-[#8DD311]">
-                            <svg class="faq-icon-plus w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                            <svg class="faq-icon-minus w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/></svg>
-                        </span>
-                    </button>
-                    <div class="faq-answer">
-                        <p class="pt-2 text-slate-600 font-light leading-relaxed">Áno. Naša AI nečíta len kódy, ale rozpoznáva tvary a typy predmetov. Pozná kladivo, vŕtačku aj špecifický druh skrutkovača.</p>
-                    </div>
-                </div>
-                <div class="faq-item py-5">
-                    <button type="button" onclick="toggleFaq(this)" class="w-full flex items-center justify-between text-left gap-4 group">
-                        <span class="font-medium text-slate-800">Ako mi Omshelf pomôže, ak mám ADHD?</span>
-                        <span class="flex-shrink-0 text-[#8DD311]">
-                            <svg class="faq-icon-plus w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                            <svg class="faq-icon-minus w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/></svg>
-                        </span>
-                    </button>
-                    <div class="faq-answer">
-                        <p class="pt-2 text-slate-600 font-light leading-relaxed">Aplikácia funguje ako váš externý mozog. Znižuje vizuálny šum, rozbíja veľké úlohy na mikro-kroky a vizuálne vás navedie, keď váš vnútorný kompas stratí smer.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <section id="bethere" class="py-24 bg-gradient-to-b from-white to-[#f7fee7]/50">
-        <div class="max-w-3xl mx-auto px-6 text-center">
-            <h2 class="text-3xl md:text-4xl font-bold tracking-tight text-[#1d1d1f] mb-6">Buďte u toho</h2>
-            <p class="text-lg md:text-xl text-gray-600 font-light leading-relaxed mb-8">Stavíme Omshelf s vámi. Nejsme korporát, jsme komunita. Chcete, aby aplikace fungovala přesně podle vašich potřeb? Přihlášením do testování získáte prémiové funkce za zlomek ceny.</p>
-            <button onclick="openTesterModal()" class="inline-flex items-center justify-center py-3 px-8 rounded-full bg-[#8DD311] text-black font-bold hover:bg-[#7bc00f] transition">
-                Chci testovat
-            </button>
-        </div>
-    </section>
-    <!-- Modál Ceník (CZK) – Gatekeeper pro Kids -->
-    <div class="pricing-modal-overlay" id="pricingModalOverlay" role="dialog" aria-modal="true" aria-labelledby="pricingModalTitle" aria-hidden="true">
-        <div class="pricing-modal" id="pricingModal">
-            <div class="pricing-modal-header">
-                <h2 class="pricing-modal-title" id="pricingModalTitle">Ceník</h2>
-                <button type="button" class="pricing-modal-close" id="pricingModalClose" aria-label="Zavřít">×</button>
-            </div>
-            <div class="pricing-billing-toggle-wrap">
-                <span class="pricing-billing-label">Období:</span>
-                <div class="pricing-billing-toggle" role="group" aria-label="Měsíční nebo roční platba">
-                    <button type="button" class="pricing-billing-btn active" id="pricingBillingMonthly" data-interval="monthly">Měsíčně</button>
-                    <button type="button" class="pricing-billing-btn" id="pricingBillingYearly" data-interval="yearly">Ročně <span class="pricing-billing-badge">−20 %</span></button>
-                </div>
-            </div>
-            <div class="pricing-table-wrap">
-                <table class="pricing-table" id="pricingTable">
-                    <thead>
-                        <tr>
-                            <th>Tarif</th>
-                            <th>Cena</th>
-                            <th>Co získáte</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="pricing-tier-name" data-label="">FREE</td>
-                            <td data-label="Cena"><span class="pricing-price" id="priceFree">0 Kč</span><br><span class="pricing-price-year" id="priceFreeYear">vždy zdarma</span></td>
-                            <td data-label="Co získáte"><span class="pricing-desc">Základní Knihovna, 1 sektor</span></td>
-                            <td class="pricing-cta" data-label=""><button type="button" class="btn-pricing btn-pricing-free" disabled>Aktuální tarif</button></td>
-                        </tr>
-                        <tr>
-                            <td class="pricing-tier-name" data-label="">PRO</td>
-                            <td data-label="Cena"><span class="pricing-price" id="pricePro">149 Kč</span><span class="pricing-price-year" id="priceProSuffix">/měsíc</span><br><span class="pricing-price-year" id="priceProYear" style="display:none;">1 430 Kč/rok</span></td>
-                            <td data-label="Co získáte"><span class="pricing-desc">Všechny sektory (Dílna, Šatník…), neomezené nahrávání, Vizuální mapy</span></td>
-                            <td class="pricing-cta" data-label=""><button type="button" class="btn-pricing btn-pricing-pro" id="btnPricingPro">Předplatit</button></td>
-                        </tr>
-                        <tr>
-                            <td class="pricing-tier-name" data-label="">FAMILY / KIDS</td>
-                            <td data-label="Cena"><span class="pricing-price" id="priceFamily">249 Kč</span><span class="pricing-price-year" id="priceFamilySuffix">/měsíc</span><br><span class="pricing-price-year" id="priceFamilyYear" style="display:none;">2 390 Kč/rok</span></td>
-                            <td data-label="Co získáte"><span class="pricing-desc">Vše z PRO + Omshelf Kids pro celou rodinu</span></td>
-                            <td class="pricing-cta" data-label=""><button type="button" class="btn-pricing btn-pricing-family" id="btnPricingFamily">Předplatit</button></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-    <dialog id="testerModal" class="rounded-3xl p-0 w-[95vw] max-w-md shadow-2xl border border-gray-100 backdrop:bg-black/20">
-        <div class="p-8 md:p-10">
-            <h3 class="text-xl font-bold text-[#1d1d1f] mb-4">Tento modul pro vás ladíme</h3>
-            <p class="text-gray-600 font-light leading-relaxed mb-6">Staňte se testerem Omshelf Pro a získejte k němu přístup jako první s doživotní slevou.</p>
-            <button onclick="closeTesterAndScrollToPricing()" class="w-full py-3 px-6 rounded-full bg-[#8DD311] text-black font-bold hover:bg-[#7bc00f] transition">
-                Chci být testerem
-            </button>
-            <button onclick="document.getElementById('testerModal').close()" class="w-full mt-3 py-2 text-gray-500 hover:text-gray-700 text-sm">
-                Zavřít
-            </button>
-        </div>
-    </dialog>
-    <footer class="border-t border-gray-100" style="background: linear-gradient(180deg, #f7fee7 0%, #fafff0 100%);">
-        <div class="max-w-6xl mx-auto px-6 py-16">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 items-start text-center md:text-left">
+        </section>
+
+        <section id="kontakt" class="container">
+            <div class="cta">
                 <div>
-                    <div class="text-xl font-bold tracking-tight text-[#1d1d1f] mb-3">Omshelf</div>
-                    <p class="text-sm text-gray-500 font-light leading-relaxed">Váš domov v dokonalé harmonii. AI nástroj pro moderní organizaci.</p>
+                    <h2>Chcete obsah, který je rychlý, brandový a skutečně použitelný?</h2>
+                    <p>
+                        Napište nám. Na úvod stačí poslat základní informace o značce a cílech.
+                        Připravíme návrh spolupráce, který dává smysl byznysově i kreativně.
+                    </p>
+                    <div class="contact-meta">
+                        Kontakt: <a href="mailto:kontakt@studiolucifera.cz">kontakt@studiolucifera.cz</a>
+                    </div>
                 </div>
                 <div>
-                    <h4 class="text-xs font-medium text-gray-400 uppercase tracking-wider mb-4">Sektory</h4>
-                    <ul class="space-y-2">
-                        <li><a href="#sektory" class="text-gray-600 hover:text-[#84cc16] transition-colors text-sm font-light">Knihovna</a></li>
-                        <li><a href="#sektory" class="text-gray-600 hover:text-[#84cc16] transition-colors text-sm font-light">Dílna</a></li>
-                        <li><a href="#sektory" class="text-gray-600 hover:text-[#84cc16] transition-colors text-sm font-light">Šatník</a></li>
-                        <li><a href="#sektory" class="text-gray-600 hover:text-[#84cc16] transition-colors text-sm font-light">Vinotéka</a></li>
-                        <li><a href="#sektory" class="text-gray-600 hover:text-[#84cc16] transition-colors text-sm font-light">Hudba</a></li>
-                        <li><a href="#sektory" class="text-gray-600 hover:text-[#84cc16] transition-colors text-sm font-light">Sklad</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="text-xs font-medium text-gray-400 uppercase tracking-wider mb-4">Informace</h4>
-                    <ul class="space-y-2">
-                        <li><a href="about.html" class="text-gray-600 hover:text-[#84cc16] transition-colors text-sm font-light">O nás</a></li>
-                        <li><a href="terms.html" class="text-gray-600 hover:text-[#84cc16] transition-colors text-sm font-light">Obchodní podmínky</a></li>
-                        <li><a href="privacy.html" class="text-gray-600 hover:text-[#84cc16] transition-colors text-sm font-light">Ochrana osobních údajů (GDPR)</a></li>
-                        <li><a href="#" class="text-gray-600 hover:text-[#84cc16] transition-colors text-sm font-light">Kontakt</a></li>
-                        <li><a href="faq.html" class="text-gray-600 hover:text-[#84cc16] transition-colors text-sm font-light">Časté dotazy (FAQ)</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="text-xs font-medium text-gray-400 uppercase tracking-wider mb-4">Aplikace & sociální sítě</h4>
-                    <p class="text-sm text-gray-500 font-light mb-4">Brzy na App Store & Google Play</p>
-                    <div class="flex gap-4 justify-center md:justify-start">
-                        <a href="#" class="text-[#84cc16] hover:text-[#65a30d] transition-colors" aria-label="Instagram">
-                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-                        </a>
-                        <a href="#" class="text-[#84cc16] hover:text-[#65a30d] transition-colors" aria-label="Facebook">
-                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-                        </a>
-                    </div>
+                    <a href="mailto:kontakt@studiolucifera.cz?subject=Poptavka%20AI%20Content%20Creator" class="btn btn--accent">Poptat AI Content Creator</a>
                 </div>
             </div>
-            <div class="border-t border-gray-200 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-                <div class="flex flex-col gap-1">
-                    <p class="text-xs text-gray-500">© 2026 Omshelf. Všechna práva vyhrazena. Navrženo s důrazem na soukromí a jednoduchost.</p>
-                    <p class="text-xs text-gray-400 font-light">Projekt vytvořilo Studio Lucifera – Katarína Brič &amp; Luboš Novotný</p>
-                </div>
-                <div class="flex gap-6">
-                    <a href="terms.html" class="text-xs text-gray-400 hover:text-[#84cc16] transition-colors">Obchodní podmínky</a>
-                    <a href="privacy.html" class="text-xs text-gray-400 hover:text-[#84cc16] transition-colors">GDPR</a>
-                </div>
-            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>© <span id="year"></span> Studio Lucifera. AI Content Creator.</p>
         </div>
     </footer>
-    <script src="./js/config/user-state.js"></script>
+
     <script>
-        function openPricingModal() {
-            var overlay = document.getElementById('pricingModalOverlay');
-            if (overlay) {
-                overlay.classList.add('is-open');
-                overlay.setAttribute('aria-hidden', 'false');
-            }
-        }
-        function closePricingModal() {
-            var overlay = document.getElementById('pricingModalOverlay');
-            if (overlay) {
-                overlay.classList.remove('is-open');
-                overlay.setAttribute('aria-hidden', 'true');
-            }
-        }
-        function setPricingInterval(interval) {
-            var monthly = interval === 'monthly';
-            document.querySelectorAll('.pricing-billing-btn').forEach(function (b) {
-                b.classList.toggle('active', (b.getAttribute('data-interval') === 'monthly') === monthly);
-            });
-            var suf = document.getElementById('priceProSuffix');
-            var yPro = document.getElementById('priceProYear');
-            var yFamily = document.getElementById('priceFamilyYear');
-            var sufF = document.getElementById('priceFamilySuffix');
-            if (suf) suf.style.display = monthly ? '' : 'none';
-            if (yPro) yPro.style.display = monthly ? 'none' : '';
-            if (sufF) sufF.style.display = monthly ? '' : 'none';
-            if (yFamily) yFamily.style.display = monthly ? 'none' : '';
-            var pricePro = document.getElementById('pricePro');
-            var priceFamily = document.getElementById('priceFamily');
-            if (pricePro) pricePro.textContent = monthly ? '149 Kč' : '1 430 Kč';
-            if (priceFamily) priceFamily.textContent = monthly ? '249 Kč' : '2 390 Kč';
-        }
-        document.addEventListener('DOMContentLoaded', function () {
-            var enterBtn = document.getElementById('welcomeBtnEnterApp');
-            var startBtn = document.getElementById('welcomeBtnStartFree');
-            if (enterBtn) {
-                enterBtn.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    window.location.href = 'login.html?next=' + encodeURIComponent('app.html');
-                });
-            }
-            if (startBtn) {
-                startBtn.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    window.location.href = 'login.html?next=' + encodeURIComponent('app.html');
-                });
-            }
-            var kidsCard = document.getElementById('welcomeCardKids');
-            if (kidsCard) {
-                function goKids() {
-                    if (window.OMNI_UserState && window.OMNI_UserState.canAccessKids()) {
-                        window.location.href = 'app.html?mode=kids';
-                    } else {
-                        openPricingModal();
-                    }
-                }
-                kidsCard.addEventListener('click', goKids);
-                kidsCard.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); goKids(); } });
-            }
-            var overlay = document.getElementById('pricingModalOverlay');
-            var closeBtn = document.getElementById('pricingModalClose');
-            if (overlay) overlay.addEventListener('click', function (e) { if (e.target === overlay) closePricingModal(); });
-            if (closeBtn) closeBtn.addEventListener('click', closePricingModal);
-            document.getElementById('pricingBillingMonthly') && document.getElementById('pricingBillingMonthly').addEventListener('click', function () { setPricingInterval('monthly'); });
-            document.getElementById('pricingBillingYearly') && document.getElementById('pricingBillingYearly').addEventListener('click', function () { setPricingInterval('yearly'); });
-            var btnNewAccount = document.getElementById('welcomeBtnNewAccount');
-            if (btnNewAccount) {
-                btnNewAccount.addEventListener('click', function () {
-                    var keysToRemove = [];
-                    for (var i = 0; i < localStorage.length; i++) {
-                        var key = localStorage.key(i);
-                        if (key && key.indexOf('omnishelf') === 0) keysToRemove.push(key);
-                    }
-                    keysToRemove.forEach(function (k) { localStorage.removeItem(k); });
-                    if (window.OMNI_UserState && window.OMNI_UserState.load) window.OMNI_UserState.load();
-                    window.location.href = 'login.html?next=' + encodeURIComponent('app.html');
-                });
-            }
-        });
-        const CAROUSEL_INTERVAL = 5000;
-        let carouselAutoplayTimer = null;
-        document.addEventListener('DOMContentLoaded', function() {
-            const carousel = document.getElementById('sectorCarousel');
-            const container = document.getElementById('carouselContainer');
-            const cards = carousel.querySelectorAll('.sector-card');
-            const dotsEl = document.getElementById('carouselDots');
-            const total = cards.length;
-            const gap = 24;
-            function getCardWidth() { return cards[0] ? cards[0].offsetWidth + gap : 424; }
-            function getMaxScroll() { return Math.max(0, carousel.scrollWidth - carousel.clientWidth); }
-            function isAtEnd() { return carousel.scrollLeft >= getMaxScroll() - 2; }
-            function getCurrentIndex() {
-                const w = getCardWidth();
-                const scroll = carousel.scrollLeft;
-                const idx = Math.round(scroll / w);
-                return Math.max(0, Math.min(idx, total - 1));
-            }
-            function updateDots() {
-                const idx = getCurrentIndex();
-                var dots = dotsEl.querySelectorAll('.carousel-dot');
-                for (var i = 0; i < dots.length; i++) dots[i].classList.toggle('active', i === idx);
-            }
-            dotsEl.innerHTML = '';
-            for (let i = 0; i < total; i++) {
-                const dot = document.createElement('button');
-                dot.type = 'button';
-                dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
-                dot.setAttribute('aria-label', 'Snímek ' + (i + 1));
-                dot.onclick = () => {
-                    const w = getCardWidth();
-                    carousel.scrollTo({ left: i * w, behavior: 'smooth' });
-                    resetAutoplay();
-                };
-                dotsEl.appendChild(dot);
-            }
-            var loopBackTimer = null;
-            carousel.addEventListener('scroll', function() {
-                updateDots();
-                clearTimeout(loopBackTimer);
-                loopBackTimer = setTimeout(function() {
-                    if (isAtEnd()) {
-                        loopBackTimer = setTimeout(function() {
-                            carousel.scrollTo({ left: 0, behavior: 'smooth' });
-                            if (window.carouselResetAutoplay) window.carouselResetAutoplay();
-                        }, 250);
-                    }
-                }, 200);
-            });
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        cards.forEach(c => c.classList.remove('focused'));
-                        entry.target.classList.add('focused');
-                    }
-                });
-            }, { root: carousel, rootMargin: '0px -38% 0px -38%', threshold: 0.2 });
-            cards.forEach(card => observer.observe(card));
-            function startAutoplay() {
-                stopAutoplay();
-                carouselAutoplayTimer = setInterval(() => {
-                    const idx = getCurrentIndex();
-                    if (idx >= total - 1) {
-                        carousel.scrollTo({ left: 0, behavior: 'smooth' });
-                    } else {
-                        carousel.scrollBy({ left: getCardWidth(), behavior: 'smooth' });
-                    }
-                }, CAROUSEL_INTERVAL);
-            }
-            function stopAutoplay() {
-                if (carouselAutoplayTimer) { clearInterval(carouselAutoplayTimer); carouselAutoplayTimer = null; }
-            }
-            function resetAutoplay() { startAutoplay(); }
-            window.carouselStartAutoplay = startAutoplay;
-            window.carouselStopAutoplay = stopAutoplay;
-            window.carouselResetAutoplay = resetAutoplay;
-            container.addEventListener('mouseenter', stopAutoplay);
-            container.addEventListener('mouseleave', startAutoplay);
-            startAutoplay();
-        });
-        function carouselPrev() {
-            const el = document.getElementById('sectorCarousel');
-            const cards = el.querySelectorAll('.sector-card');
-            const gap = 24;
-            const cardWidth = cards[0] ? cards[0].offsetWidth + gap : 424;
-            const total = cards.length;
-            const idx = Math.round(el.scrollLeft / cardWidth);
-            if (idx <= 0) {
-                el.scrollTo({ left: (total - 1) * cardWidth, behavior: 'smooth' });
-            } else {
-                el.scrollBy({ left: -cardWidth, behavior: 'smooth' });
-            }
-            if (window.carouselResetAutoplay) window.carouselResetAutoplay();
-        }
-        function carouselNext() {
-            const el = document.getElementById('sectorCarousel');
-            const cards = el.querySelectorAll('.sector-card');
-            const gap = 24;
-            const cardWidth = cards[0] ? cards[0].offsetWidth + gap : 424;
-            const total = cards.length;
-            const idx = Math.round(el.scrollLeft / cardWidth);
-            if (idx >= total - 1) {
-                el.scrollTo({ left: 0, behavior: 'smooth' });
-            } else {
-                el.scrollBy({ left: cardWidth, behavior: 'smooth' });
-            }
-            if (window.carouselResetAutoplay) window.carouselResetAutoplay();
-        }
-        function toggleFaq(btn) {
-            const item = btn.closest('.faq-item');
-            item.classList.toggle('open');
-        }
-        function playShowcaseVideo() {
-            const video = document.getElementById('showcaseVideo');
-            const btn = document.getElementById('videoPlayBtn');
-            if (video && btn) {
-                video.muted = false;
-                video.play();
-                btn.style.display = 'none';
-            }
-        }
-        document.getElementById('showcaseVideo')?.addEventListener('ended', function() {
-            const btn = document.getElementById('videoPlayBtn');
-            if (btn) btn.style.display = 'flex';
-        });
-        document.getElementById('showcaseVideo')?.addEventListener('pause', function() {
-            const btn = document.getElementById('videoPlayBtn');
-            const video = document.getElementById('showcaseVideo');
-            if (btn && video && video.currentTime > 0 && !video.ended) btn.style.display = 'flex';
-        });
-        function openTesterModal() {
-            document.getElementById('testerModal')?.showModal();
-        }
-        function closeTesterAndScrollToPricing() {
-            document.getElementById('testerModal')?.close();
-            document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' });
-        }
-        function handlePayment() {
-            // Zde zítra napojíme skutečný Stripe Checkout
-            alert('Přesměrovávám na platební bránu Stripe... (Simulace)');
-            
-            // Prozatím po potvrzení simulujeme úspěch a pošleme je do aplikace
-            setTimeout(() => {
-                window.location.href = 'app.html?status=success';
-            }, 2000);
-        }
+        document.getElementById("year").textContent = new Date().getFullYear();
     </script>
 </body>
 </html>
